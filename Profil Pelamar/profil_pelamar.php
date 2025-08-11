@@ -26,7 +26,6 @@
                     <span><i class="fas fa-phone mr-1"></i> 0812-3456-7890</span>
                     <span><i class="fas fa-map-marker-alt mr-1"></i> Bandung, Indonesia</span>
                 </div>
-                <button class="mt-5 px-6 py-2 bg-[#00646A] text-white rounded-full shadow hover:bg-teal-800 transition">Edit Profil</button>
             </div>
             <!-- Section Ringkasan -->
             <div class="mt-10">
@@ -61,6 +60,11 @@
                     <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Adobe XD</span>
                     <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Prototyping</span>
                     <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Teamwork</span>
+                </div>
+                <div class="flex justify-end mt-8 w-full">
+                    <a href="edit_profil.php" class="px-6 py-2 bg-[#00646A] text-white rounded-full shadow hover:bg-teal-800 transition">
+                        Edit
+                    </a>
                 </div>
             </div>
         </div>
