@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login</title>
+    <title>Register</title>
     <!-- Tailwind Play CDN (untuk demo cepat). Untuk produksi gunakan build Tailwind yang sebenarnya. -->
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
@@ -16,7 +16,7 @@
       </div><!-- Register / Login card content -->
   <div class="p-8">
     <div class="mb-6">
-      <div class="bg-gray-200 text-center py-2 font-bold">Login</div>
+      <div class="bg-gray-200 text-center py-2 font-bold">Register</div>
     </div>
 
     <form class="space-y-4" action="#" method="post">
@@ -38,25 +38,20 @@
         <input type="password" name="password" class="flex-1 bg-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Masukkan password" />
       </div>
 
+      <div class="flex items-center">
+        <label class="w-40 font-semibold">Confirm Password</label>
+        <span class="mr-2">:</span>
+        <input type="password" name="confirm_password" class="flex-1 bg-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Konfirmasi password" />
+      </div>
+
       <div class="flex justify-center">
-        <button type="submit" class="bg-gray-300 px-6 py-2 rounded font-semibold hover:opacity-90">Login</button>
+        <button type="submit" class="bg-gray-300 px-6 py-2 rounded font-semibold hover:opacity-90">Register</button>
       </div>
     </form>
 
-    <div class="mt-4 flex items-start space-x-2">
-        <input id="remember" type="checkbox" class="mt-1" />
-        <label for="remember" class="text-sm">ingat saya</label>
-      </div>
-
-      <div class="mt-3 text-sm">
-        <a href="#" class="text-gray-700 underline">Lupa password?</a>
-      </div>
-
-    </form>
-
-    <div class="mt-8 text-center text-sm">
-      <p>Belum punya akun?</p>
-      <a href="#" class="text-teal-700 font-semibold">[ Daftar sekarang ]</a>
+    <div class="mt-6 text-center text-sm">
+      <p>Sudah punya akun?</p>
+      <a href="#login" class="text-teal-700 font-semibold">[ Login sekarang ]</a>
     </div>
   </div>
 </div>
