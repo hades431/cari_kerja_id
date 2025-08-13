@@ -67,6 +67,24 @@
                     </a>
                 </div>
             </div>
+            <!-- Section CV -->
+            <div class="mt-10">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Curriculum Vitae (CV)</h3>
+                <div class="bg-gray-100 rounded p-4 flex flex-col sm:flex-row items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-file-pdf text-red-500 text-2xl"></i>
+                        <span class="text-gray-700 text-sm">cv_namapelamar.pdf</span>
+                    </div>
+                    <div class="flex gap-2 mt-2 sm:mt-0">
+                        <a href="#" class="text-[#00646A] hover:underline flex items-center gap-1">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="#" class="text-blue-600 hover:underline flex items-center gap-1">
+                            <i class="fas fa-eye"></i> Lihat
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Font Awesome CDN for icons -->
