@@ -1,3 +1,21 @@
+<?php 
+session_start();
+include '../function/logic.php';
+if(isset($_POST["submit"])){
+    $name = $_POST["username"];
+    $password = $_POST["password"];
+    if(empty($name) || empty($password)){
+        $error2 = true;
+    } else {
+        $result  = mysqli_query($koneksi, "SELECT*FROM user WHERE Username = '$name'");
+        $row = mysqli_fetch_assoc($result);
+        if($row > 0 ){
+            $error = true;
+        } 
+        $error1 = true;
+    }
+}
+?>
 <!doctype html>
 
 <html lang="id">
@@ -54,10 +72,9 @@
 
     </form>
 
-    <div class="mt-8 text-center text-sm">
-      <p>Belum punya akun?</p>
-      <a href="#" class="text-teal-700 font-semibold">[ Daftar sekarang ]</a>
-    </div>
+                <div class="text-sm text-gray-600 mt-6 text-center">
+                Belum punya akun? <a href="register.php" class="text-indigo-600 hover:underline font-semibold">Daftar sekarang</a>.
+            </div>
   </div>
 </div>
 

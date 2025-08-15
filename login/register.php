@@ -1,3 +1,14 @@
+<?php
+include '../function/logic.php';
+if(isset($_POST['submit'])){
+    if(register($_POST) > 0){
+        echo "<script>alert('User baru berhasil ditambahkan!');window.location='login.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('User baru gagal ditambahkan!');</script>";
+    }
+}
+?>
 <!doctype html>
 
 <html lang="id">
@@ -49,10 +60,9 @@
       </div>
     </form>
 
-    <div class="mt-6 text-center text-sm">
-      <p>Sudah punya akun?</p>
-      <a href="#login" class="text-teal-700 font-semibold">[ Login sekarang ]</a>
-    </div>
+    <div class="w-full mt-4 text-center text-sm text-gray-600">
+                Sudah punya akun? <a href="login.php" class="text-indigo-600 hover:underline font-semibold">Login sekarang</a>
+            </div>
   </div>
 </div>
 
