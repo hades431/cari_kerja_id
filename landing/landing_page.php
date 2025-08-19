@@ -11,7 +11,7 @@
     <!-- Header -->
     <header class="bg-[#00646A] p-4 flex flex-col gap-2">
         <div class="flex items-center justify-between">
-            <div class="bg-white px-6 py-2 rounded w-48 text-center font-semibold">Logo</div>
+            <img src="logo.png" alt="Logo" class="px-6 py-2 rounded w-64 h-30 object-contain">
         </div>
         <div class="flex justify-end gap-4 mt-2">
             <button class="bg-white px-4 py-1 rounded text-xs">Info & Tips Kerja</button>
@@ -111,10 +111,16 @@
                 <div class="flex gap-3">
                     <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
                         <option>Lokasi</option>
+                        <option value="bandung">Bandung</option>
+                        <option value="baleendah">Baleendah</option>
                         <!-- ...opsi lokasi lain... -->
                     </select>
                     <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
                         <option>Pendidikan</option>
+                        <option value="sma">SMA/SMK</option>
+                        <option value="d3">D3</option>
+                        <option value="s1">S1</option>
+                        <option value="s2">S2</option>  
                         <!-- ...opsi pendidikan lain... -->
                     </select>
                 </div>
