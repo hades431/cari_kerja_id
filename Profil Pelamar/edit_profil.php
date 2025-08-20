@@ -1,3 +1,21 @@
+<?php
+session_start();
+require_once '../function/logic.php';
+
+if (isset($_POST['submit'])) {
+    // Insert data
+    if (profilPelamar($_POST) > 0) {
+        echo "<script>
+                alert('Berhasil edit profil');
+                document.location.href = 'profil_pelamar.php';
+              </script>";
+    } else {
+        echo "<script>
+                alert('Gagal edit profil');
+              </script>";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -27,33 +45,33 @@
             </div>
             <!-- Nama -->
             <div>
-                <label class="block text-gray-700 mb-1">Nama Lengkap</label>
+                <label for="nama_lengkap" class="block text-gray-700 mb-1">Nama Lengkap</label>
                 <input type="text" name="nama" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nama Lengkap">
             </div>
             <!-- Email -->
             <div>
-                <label class="block text-gray-700 mb-1">Email</label>
+                <label for="email" class="block text-gray-700 mb-1">Email</label>
                 <input type="email" name="email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Email">
             </div>
             <!-- Telepon -->
             <div>
-                <label class="block text-gray-700 mb-1">Telepon</label>
+                <label for="telepon" class="block text-gray-700 mb-1">Telepon</label>
                 <input type="text" name="telepon" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nomor Telepon">
             </div>
             <!-- Jabatan -->
             <div>
-                <label class="block text-gray-700 mb-1">Jabatan/Posisi</label>
+                <label for="jabatan" class="block text-gray-700 mb-1">Jabatan/Posisi</label>
                 <input type="text" name="jabatan" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: UI/UX Designer">
             </div>
             <!-- Lokasi -->
             <div>
-                <label class="block text-gray-700 mb-1">Lokasi</label>
-                <input type="text" name="lokasi" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: Bandung, Indonesia">
+                <label for="alamat" class="block text-gray-700 mb-1">Alamat</label>
+                <input type="text" name="alamat" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: Bandung, Indonesia">
             </div>
-            <!-- Ringkasan -->
+            <!-- Deskripsi Profil -->
             <div>
-                <label class="block text-gray-700 mb-1">Ringkasan Profil</label>
-                <textarea name="ringkasan" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Ceritakan tentang diri Anda..."></textarea>
+                <label for="deskripsi" class="block text-gray-700 mb-1">Deskripsi Profil</label>
+                <textarea name="deskripsi" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Ceritakan tentang diri Anda..."></textarea>
             </div>
             <!-- Pengalaman Kerja -->
             <div>
@@ -118,7 +136,7 @@
             </div>
             <!-- Upload CV -->
             <div>
-                <label class="block text-gray-700 mb-1">Upload CV (PDF, maks 2MB)</label>
+                <label for="cv" class="block text-gray-700 mb-1">Upload CV (PDF, maks 2MB)</label>
                 <input type="file" name="cv" accept=".pdf" class="block w-full text-sm text-gray-500
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-full file:border-0

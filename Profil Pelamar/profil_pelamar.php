@@ -29,7 +29,7 @@
             </div>
             <!-- Section Ringkasan -->
             <div class="mt-10">
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">Ringkasan</h3>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Deskripsi</h3>
                 <div class="bg-gray-100 rounded p-4 text-gray-700">
                     Seorang UI/UX Designer dengan pengalaman lebih dari 3 tahun di industri teknologi. Memiliki keahlian dalam desain antarmuka, prototyping, dan kolaborasi tim lintas fungsi.
                 </div>
