@@ -20,20 +20,21 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="bg-gray-200 py-8 px-4">
-        <div class="max-w-5xl mx-auto">
-            <div class="bg-white p-4 rounded shadow mb-4">
-                <h1 class="text-xl font-semibold">Headline</h1>
-            </div>
-            <div class="flex gap-4 justify-center mb-4">
-                <button class="bg-white px-4 py-2 rounded shadow text-sm">Info Lowongan</button>
-                <button class="bg-white px-4 py-2 rounded shadow text-sm">Buka Lowongan</button>
+    <section class="bg-[#e6eef5] py-8 px-4 relative overflow-visible">
+        <div class="max-w-7xl mx-auto flex flex-col items-center">
+            <!-- Headline -->
+            <h1 class="text-4xl md:text-5xl font-semibold text-center text-[#23395d] mb-2 leading-tight">
+                Cari Kerja <span class="font-bold text-[#00646A]">Bandung</span>
+            </h1>
+            <!-- Subheadline -->
+            <div class="text-xl md:text-2xl text-center text-[#23395d] mb-6 font-normal">
+                Temukan loker Bandung terbaru bulan Agustus 2025 dengan mudah. Minimalkan
             </div>
             <!-- Search Box Start -->
-            <div class="bg-[#00646A] rounded-[48px] px-8 py-12 flex flex-col items-center mb-8 w-full">
+            <div class="bg-[#00646A] rounded-[48px] px-8 py-12 flex flex-col items-center mb-8 w-full max-w-4xl shadow-lg z-10 relative">
                 <form class="w-full flex flex-col gap-8">
                     <div class="flex flex-col md:flex-row gap-8 w-full justify-center items-center">
-                        <input type="text" placeholder="Nama perusahaan" class="bg-white rounded px-4 py-2 w-full md:w-[340px] text-gray-700" />
+                        <input type="text" placeholder="Search..." class="bg-white rounded px-4 py-2 w-full md:w-[340px] text-gray-700" />
                         <select class="bg-white rounded px-4 py-2 w-full md:w-[340px] text-gray-700">
                             <option value="">Lulusan</option>
                             <option value="sma">SMA/SMK</option>
@@ -42,7 +43,7 @@
                             <option value="s2">S2</option>
                         </select>
                     </div>
-                   <div class="flex flex-col md:flex-row gap-8 w-full justify-center items-center">
+                    <div class="flex flex-col md:flex-row gap-8 w-full justify-center items-center">
                         <button type="button" class="bg-white rounded-full px-6 py-2 text-gray-700 text-sm font-normal focus:bg-gray-200 transition">Tanpa pengalaman</button>
                         <button type="button" class="bg-white rounded-full px-6 py-2 text-gray-700 text-sm font-normal focus:bg-gray-200 transition">1-5 Tahun</button>
                         <button type="button" class="bg-white rounded-full px-6 py-2 text-gray-700 text-sm font-normal focus:bg-gray-200 transition">5 Tahun Lebih</button>
@@ -59,6 +60,13 @@
                 </form>
             </div>
             <!-- Search Box End -->
+            <!-- Info Card -->
+            <div class="bg-white rounded-3xl shadow-lg p-8 max-w-2xl w-full mt-[-40px] z-20 relative">
+                <div class="text-lg text-gray-800 leading-relaxed">
+                    <span class="font-semibold">LokerBandung.id</span> adalah sebuah portal informasi <a href="#" class="text-[#00646A] underline">lowongan kerja Bandung</a>.<br>
+                    Kami menghadirkan informasi pekerjaan terbaru setiap hari kepada masyarakat Bandung Raya ataupun sekitar provinsi Jawa Barat. Sebagai kota metropolitan terbesar nomor 3 di Indonesia yang terdiri atas wilayah kota Bandung, kabupaten Bandung, kabupaten Bandung Barat, kota
+                </div>
+            </div>
         </div>
     </section>
 
@@ -66,19 +74,19 @@
     <section class="py-6 px-4">
         <div class="flex flex-wrap gap-4 justify-center">
             <div class="bg-white rounded shadow p-4 w-64">
-                <div class="bg-gray-300 h-24 mb-2 rounded"></div>
+                <div class="bg-gray-300 h-24 mb-2 rounded" style="background-image: url('../img/images.jpg'); background-size: cover; background-position: center;"></div>
+                <div class="h-4 bg-gray-200 rounded w-3/4 mb-2" ></div>
+                <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
+                <div class="h-3 bg-gray-100 rounded w-1/3"></div>
+            </div>
+            <div class="bg-white rounded shadow p-4 w-64">
+                <div class="bg-gray-300 h-24 mb-2 rounded"  style="background-image: url('../img/montir.jpg'); background-size: cover; background-position: center;"></div>
                 <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
                 <div class="h-3 bg-gray-100 rounded w-1/3"></div>
             </div>
             <div class="bg-white rounded shadow p-4 w-64">
-                <div class="bg-gray-300 h-24 mb-2 rounded"></div>
-                <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
-                <div class="h-3 bg-gray-100 rounded w-1/3"></div>
-            </div>
-            <div class="bg-white rounded shadow p-4 w-64">
-                <div class="bg-gray-300 h-24 mb-2 rounded"></div>
+                <div class="bg-gray-300 h-24 mb-2 rounded"  style="background-image: url('../img/barber.jpg'); background-size: cover; background-position: center;"></div>
                 <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
                 <div class="h-3 bg-gray-100 rounded w-1/3"></div>
@@ -145,7 +153,13 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-200 mt-auto py-6 px-4">
+     <div class="inner">
+        <div class="left">
+
+        </div>
+     </div>
+     <hr class="border-t border-gray-300 my-0 mt-10">
+    <footer class="bg-[#e6eef5] mt-auto py-6 px-4 border-t border-gray-200">
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <img src="../img/logo2.png" class="bg-[#00646A] px-6 py-2 rounded w-64 h-20 object-contain">
             <div class="flex gap-4">
