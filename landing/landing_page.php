@@ -15,7 +15,14 @@
         </div>
         <div class="flex justify-end gap-4 mt-2">
             <button class="bg-white px-4 py-1 rounded text-xs">Info & Tips Kerja</button>
-            <button class="bg-white px-4 py-1 rounded text-xs">Login</button>
+        </div>
+        </div>
+        <a href="login.php" 
+           class="bg-green-500 hover:bg-green-600 active:bg-green-700 
+              text-white px-6 py-2 rounded-full font-bold shadow transition">
+               Login
+            </a>
+
         </div>
     </header>
 
