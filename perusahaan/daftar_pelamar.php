@@ -28,11 +28,25 @@
         <main class="flex-1 p-8">
             <h2 class="text-2xl font-bold mb-6">Daftar Pelamar</h2>
 
-            <!-- Search -->
-            <form method="GET" class="flex justify-between mb-4 flex-col sm:flex-row gap-2">
-                <input type="text" name="q" value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>" placeholder="Cari pelamar..." class="border rounded px-3 py-2 w-full sm:w-1/3">
-                <button type="submit" class="border px-3 py-2 rounded bg-teal-600 text-white">🔍 Cari</button>
-            </form>
+           <!-- Search -->
+<form method="GET" class="flex justify-start mb-4 w-full sm:w-1/3">
+    <div class="flex w-full">
+        <input 
+            type="text" 
+            name="q" 
+            value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>" 
+            placeholder="Cari posisi..." 
+            class="border border-r-0 rounded-l px-3 py-2 w-full"
+        >
+        <button 
+            type="submit" 
+            class="border border-l-0 rounded-r bg-teal-600 text-white px-4"
+        >
+            🔍
+        </button>
+    </div>
+</form>
+
 
             <!-- Table -->
             <div class="bg-white rounded shadow overflow-x-auto">
@@ -47,7 +61,6 @@
                     </thead>
                     <tbody>
                         <?php
-                            // Data dummy (sementara, belum database)
                             $pelamar = [
                                 ["nama" => "Khaura", "email" => "khaura@example.com", "posisi" => "Frontend Developer", "tgl" => "2025-08-01"],
                                 ["nama" => "Satria", "email" => "satria@example.com", "posisi" => "UI Designer", "tgl" => "2025-08-03"],
@@ -55,18 +68,18 @@
                                 ["nama" => "Dinda", "email" => "dinda@example.com", "posisi" => "Project Manager", "tgl" => "2025-08-07"],
                             ];
 
-                            // Ambil query pencarian
-                            $q = isset($_GET['q']) ? strtolower($_GET['q']) : "";
+                           $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
 
-                            // Filter data berdasarkan pencarian
-                            $filtered = array_filter($pelamar, function($p) use ($q) {
-                                return $q === "" 
-                                    || strpos(strtolower($p['nama']), $q) !== false
-                                    || strpos(strtolower($p['email']), $q) !== false
-                                    || strpos(strtolower($p['posisi']), $q) !== false;
-                            });
+if ($q === "") {
+    $filtered = $pelamar;
+} else {
+    $filtered = array_filter($pelamar, function($p) use ($q) {
+        return strpos(strtolower($p['posisi']), $q) !== false;
+    });
+}
 
-                            if (count($filtered) > 0) {
+                            if (count($filtered) > 0) 
+                                {
                                 foreach ($filtered as $p) {
                                     echo "<tr class='hover:bg-gray-100'>
                                             <td class='p-3 border'>{$p['nama']}</td>
