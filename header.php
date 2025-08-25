@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 <header class="bg-[#00646A] p-4 flex flex-col gap-2">
     <div class="flex items-center justify-between">
         <img src="../img/logo2.png" alt="Logo" class="px-6 py-2 rounded w-64 h-30 object-contain">
