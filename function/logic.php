@@ -28,20 +28,17 @@ function profilPelamar($nik) {
 }
 
 function getTipsKerjaList() {
-    $conn = new mysqli("localhost", "root", "", "lowongan_kerja");
-    if ($conn->connect_error) {
-        return [];
-    }
-    $sql = "SELECT id, judul, tanggal FROM tips_kerja ORDER BY tanggal DESC";
+    global $conn;
+    $sql = "SELECT id, judul, ringkasan, isi, gambar FROM tips_kerja ORDER BY id DESC";
+    $result = mysqli_query($conn, $sql);
+
     $data = [];
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
+    if ($result && mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
             $data[] = $row;
         }
     }
-    $conn->close();
     return $data;
 }
-
 
 ?>
