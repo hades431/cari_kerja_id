@@ -1,10 +1,7 @@
 <?php
 session_start();
 include '../function/logic.php';
-if(!isset($_SESSION["login"])){
-    header("Location: tampilan awal.php");
-    exit;
-}
+
 $tipsList = getTipsKerjaList();
 ?>
 
