@@ -161,387 +161,38 @@ $topDeals = [
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Perusahaan</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #003110ff;
-            color: #fff;
-        }
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 220px;
-            background: linear-gradient(180deg, #024629ff 80%, #01331e 100%);
-            color: white;
-            padding: 28px 18px 18px 18px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 2px 0 12px #0002;
-        }
-        .sidebar img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 30px;
-            border: 3px solid #fff3;
-        }
-        .sidebar button {
-            width: 100%;
-            padding: 12px 0;
-            margin: 7px 0;
-            border: none;
-            background-color: #fff;
-            color: #024629;
-            border-radius: 7px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.05em;
-            transition: background 0.2s, color 0.2s;
-        }
-        .sidebar button:hover {
-            background: #a97cff;
-            color: #fff;
-        }
-        .main-content {
-            flex: 1;
-            padding: 36px 36px 0 36px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: 130px 240px;
-            gap: 18px;
-        }
-        .box, .box2 {
-            background: #23235b;
-            border-radius: 14px;
-            padding: 18px 16px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 2px 8px #0001;
-        }
-        .box2 {
-            grid-row: 2 / span 1;
-            grid-column: span 2;
-            min-height: 220px;
-        }
-        .alert-box {
-            background: #3a235b;
-            border: 2px solid #a97cff;
-            color: #fff;
-            border-radius: 12px;
-            padding: 10px 14px 10px 10px;
-            margin-top: 12px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .alert-box .excl {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            background: #ff4d6d;
-            color: #fff;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1em;
-        }
-        .stat-big {
-            font-size: 2.2em;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .stat-label {
-            font-size: 1.08em;
-            margin-bottom: 7px;
-            font-weight: 500;
-            color: #a0a0ff;
-        }
-        .stat-small {
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-        .stat-change {
-            color: #ff4d6d;
-            font-size: 0.95em;
-            margin-left: 8px;
-        }
-        .gauge {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: conic-gradient(#7cffb2 <?php echo $csatGauge; ?>%, #23235b <?php echo $csatGauge; ?>%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px auto;
-            box-shadow: 0 0 0 4px #23235b;
-        }
-        .gauge-label {
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-        .table-list {
-            width: 100%;
-            border-collapse: collapse;
-            color: #fff;
-            font-size: 0.98em;
-        }
-        .table-list th, .table-list td {
-            padding: 5px 8px;
-            text-align: left;
-        }
-        .table-list th {
-            color: #a0a0ff;
-            font-weight: bold;
-            font-size: 1em;
-            border-bottom: 1px solid #35357a;
-        }
-        .table-list tr:not(:last-child) td {
-            border-bottom: 1px solid #23235b;
-        }
-        .feedback-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .feedback-list li {
-            margin-bottom: 13px;
-            display: flex;
-            align-items: flex-start;
-        }
-        .feedback-list .icon {
-            color: #7cffb2;
-            margin-right: 10px;
-            font-size: 1.15em;
-        }
-        .feedback-list .msg {
-            flex: 1;
-        }
-        .feedback-list .time {
-            color: #a0a0ff;
-            font-size: 0.93em;
-            margin-top: 2px;
-        }
-        .footer {
-            text-align: right;
-            color: #a0a0ff;
-            font-size: 1.08em;
-            margin-top: 16px;
-            padding-bottom: 8px;
-        }
-        /* Dummy chart */
-        .chart {
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(180deg, #2e2e6a 60%, #23235b 100%);
-            border-radius: 10px;
-            position: relative;
-            margin-top: 8px;
-        }
-        .chart-label {
-            position: absolute;
-            left: 10px;
-            bottom: 10px;
-            color: #7cffb2;
-            font-size: 1em;
-        }
-        /* Responsive */
-        @media (max-width: 1100px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: repeat(4, 1fr);
-            }
-            .box2, .box {
-                min-width: 0;
-            }
-        }
-        @media (max-width: 800px) {
-            .dashboard-container {
-                flex-direction: column;
-            }
-            .sidebar {
-                flex-direction: row;
-                width: 100%;
-                height: auto;
-                justify-content: flex-start;
-                align-items: center;
-                padding: 12px 10px;
-            }
-            .sidebar img {
-                margin-bottom: 0;
-                margin-right: 18px;
-            }
-            .main-content {
-                padding: 18px 6px 0 6px;
-            }
-        }
-        .stat-row {
-            display: flex;
-            gap: 18px;
-            margin-bottom: 18px;
-        }
-        .stat-card {
-            flex: 1;
-            border-radius: 10px;
-            background: #024629ff; /* hijau sidebar */
-            color: #fff;
-            padding: 18px 20px 12px 20px;
-            box-shadow: 0 2px 8px #0001;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-width: 0;
-            position: relative;
-        }
-        .stat-card .stat-title {
-            font-size: 1.05em;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #a7ffd7;
-        }
-        .stat-card .stat-value {
-            font-size: 2.1em;
-            font-weight: bold;
-            margin-bottom: 2px;
-            color: #fff;
-        }
-        .stat-card .stat-sub {
-            font-size: 1em;
-            color: #d2ffe9;
-        }
-        .stat-card .stat-chart {
-            width: 100%;
-            height: 36px;
-            margin-top: 10px;
-        }
-        .stat-card .gauge {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-        }
-        .stat-card .gauge-inner {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: conic-gradient(#f36c21 0% 66%, #eee 66% 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #f36c21;
-        }
-        .dashboard-main {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            grid-template-rows: 220px 180px;
-            gap: 18px;
-        }
-        .main-card {
-            background: #fff;
-            color: #222;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px #0001;
-            padding: 18px 20px;
-            min-width: 0;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-        .main-card h4 {
-            margin: 0 0 10px 0;
-            font-size: 1.08em;
-            font-weight: 600;
-        }
-        .bar-chart {
-            width: 100%;
-            height: 120px;
-        }
-        .pie-chart {
-            width: 100%;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .scatter-chart {
-            width: 100%;
-            height: 120px;
-        }
-        .deals-bar-chart {
-            width: 100%;
-            height: 120px;
-        }
-        .main-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.98em;
-        }
-        .main-table th, .main-table td {
-            padding: 4px 8px;
-            text-align: left;
-        }
-        .main-table th {
-            color: #00b6b9;
-            font-weight: bold;
-            border-bottom: 1px solid #eee;
-        }
-        .main-table tr:not(:last-child) td {
-            border-bottom: 1px solid #f3f3f3;
-        }
-    </style>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="dashboard-container">
+<body class="bg-white text-gray-900">
+<div class="flex min-h-screen">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <img src="<?php echo $gambarAktif; ?>" alt="Logo ">
-        <button>Perusahaan</button>
-        <button>Dashboard</button>
-        <button>Daftar Pelamar</button>
-        <button>Dashboard</button>
+    <div class="w-56 bg-gradient-to-b from-[#024629] to-[#01331e] text-white flex flex-col items-center p-7 shadow-lg">
+        <img src="<?php echo $gambarAktif; ?>" alt="Logo " class="w-24 h-24 rounded-full object-cover mb-8 border-4 border-white/20">
+        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Perusahaan</button>
+        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Dashboard</button>
+        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Daftar Pelamar</button>
+        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Dashboard</button>
     </div>
     <!-- Main Content -->
-    <div class="main-content">
+    <div class="flex-1 flex flex-col gap-6 px-9 pt-9 bg-white">
         <!-- Stat Row -->
-        <div class="stat-row">
+        <div class="flex gap-4 mb-4">
             <?php foreach ($dashboardStats as $stat): ?>
-                <div class="stat-card" style="background:<?php echo $stat['color']; ?>;color:#fff;">
-                    <div class="stat-title"><?php echo $stat['title']; ?></div>
-                    <div class="stat-value"><?php echo $stat['value']; ?></div>
-                    <div class="stat-sub"><?php echo $stat['subtitle']; ?></div>
+                <div class="flex-1 rounded-xl bg-[#024629] text-white px-6 py-5 flex flex-col justify-between min-w-0 relative shadow">
+                    <div class="text-base font-semibold mb-2 text-green-100"><?php echo $stat['title']; ?></div>
+                    <div class="text-3xl font-bold mb-1 text-white"><?php echo $stat['value']; ?></div>
+                    <div class="text-sm text-green-50 mb-2"><?php echo $stat['subtitle']; ?></div>
                     <?php if (!empty($stat['gauge'])): ?>
-                        <div class="gauge" style="background:#fff;">
-                            <div class="gauge-inner" style="background:conic-gradient(#f36c21 0% 66%, #eee 66% 100%);">
-                                <?php echo $stat['value']; ?>
+                        <div class="flex justify-center">
+                            <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl text-orange-500" style="background:conic-gradient(#f36c21 0% 66%, #eee 66% 100%)">
+                                    <?php echo $stat['value']; ?>
+                                </div>
                             </div>
                         </div>
                     <?php else: ?>
-                        <svg class="stat-chart" viewBox="0 0 100 36">
+                        <svg class="w-full h-9 mt-2" viewBox="0 0 100 36">
                             <polyline
                                 fill="none"
                                 stroke="#fff"
@@ -563,11 +214,11 @@ $topDeals = [
             <?php endforeach; ?>
         </div>
         <!-- Main Dashboard Grid -->
-        <div class="dashboard-main">
+        <div class="grid grid-cols-3 grid-rows-2 gap-4">
             <!-- Bar Chart -->
-            <div class="main-card" style="grid-row:1;grid-column:1;">
-                <h4>Avg. Contract Value</h4>
-                <svg class="bar-chart" viewBox="0 0 350 120">
+            <div class="bg-white rounded-xl shadow p-5 flex flex-col" style="grid-row:1;grid-column:1;">
+                <h4 class="font-semibold mb-2 text-base text-[#024629]">Avg. Contract Value</h4>
+                <svg class="w-full h-28" viewBox="0 0 350 120">
                     <?php
                     $max = max(array_column($barChartData, 'value'));
                     $barWidth = 32;
@@ -584,22 +235,30 @@ $topDeals = [
                 </svg>
             </div>
             <!-- Table Top Channels -->
-            <div class="main-card" style="grid-row:1;grid-column:2;">
-                <h4>Top 5 Channels</h4>
-                <table class="main-table">
-                    <tr><th>Order Date</th><th>Country</th><th>Units Sold</th></tr>
+            <div class="bg-white rounded-xl shadow p-5 flex flex-col" style="grid-row:1;grid-column:2;">
+                <h4 class="font-semibold mb-2 text-base text-[#024629]">Top 5 Channels</h4>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="text-[#00b6b9] font-bold py-1 px-2 text-left">Order Date</th>
+                            <th class="text-[#00b6b9] font-bold py-1 px-2 text-left">Country</th>
+                            <th class="text-[#00b6b9] font-bold py-1 px-2 text-left">Units Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <?php foreach ($topChannels as $row): ?>
-                        <tr>
-                            <td><?php echo $row[0]; ?></td>
-                            <td><?php echo $row[1]; ?></td>
-                            <td><?php echo $row[2]; ?></td>
+                        <tr class="border-b last:border-0">
+                            <td class="py-1 px-2"><?php echo $row[0]; ?></td>
+                            <td class="py-1 px-2"><?php echo $row[1]; ?></td>
+                            <td class="py-1 px-2"><?php echo $row[2]; ?></td>
                         </tr>
                     <?php endforeach; ?>
+                    </tbody>
                 </table>
             </div>
             <!-- KPI Gauge -->
-            <div class="main-card" style="grid-row:1;grid-column:3;">
-                <h4>Sales KPI</h4>
+            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center justify-center" style="grid-row:1;grid-column:3;">
+                <h4 class="font-semibold mb-2 text-base text-[#024629]">Sales KPI</h4>
                 <svg width="100%" height="100" viewBox="0 0 120 100">
                     <path d="M10,90 Q60,10 110,90" fill="none" stroke="#f36c21" stroke-width="10"/>
                     <path d="M10,90 Q60,10 110,90" fill="none" stroke="#eee" stroke-width="10" stroke-dasharray="0 180"/>
@@ -607,9 +266,9 @@ $topDeals = [
                 </svg>
             </div>
             <!-- Pie Chart -->
-            <div class="main-card" style="grid-row:2;grid-column:1;">
-                <h4>Item Type</h4>
-                <svg class="pie-chart" viewBox="0 0 100 100">
+            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center" style="grid-row:2;grid-column:1;">
+                <h4 class="font-semibold mb-2 text-base text-[#024629]">Item Type</h4>
+                <svg class="w-full h-28" viewBox="0 0 100 100">
                     <?php
                     $total = array_sum(array_column($pieChartData, 'value'));
                     $angle = 0;
@@ -628,18 +287,18 @@ $topDeals = [
                 </svg>
             </div>
             <!-- Scatter Chart -->
-            <div class="main-card" style="grid-row:2;grid-column:2;">
-                <h4>Sales Activity</h4>
-                <svg class="scatter-chart" viewBox="0 0 100 100">
+            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center" style="grid-row:2;grid-column:2;">
+                <h4 class="font-semibold mb-2 text-base text-[#024629]">Sales Activity</h4>
+                <svg class="w-full h-28" viewBox="0 0 100 100">
                     <?php foreach ($salesActivity as $dot): ?>
                         <circle cx="<?php echo $dot[0]*3; ?>" cy="<?php echo 100-$dot[1]*3; ?>" r="5" fill="<?php echo $dot[2]; ?>" opacity="0.8"/>
                     <?php endforeach; ?>
                 </svg>
             </div>
             <!-- Deals Bar Chart -->
-            <div class="main-card" style="grid-row:2;grid-column:3;">
-                <h4>Top Deals</h4>
-                <svg class="deals-bar-chart" viewBox="0 0 120 100">
+            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center" style="grid-row:2;grid-column:3;">
+                <h4 class="font-semibold mb-2 text-base text-[#024629]">Top Deals</h4>
+                <svg class="w-full h-28" viewBox="0 0 120 100">
                     <?php
                     $max = max(array_column($topDeals, 'value'));
                     foreach ($topDeals as $i => $deal) {
@@ -653,7 +312,7 @@ $topDeals = [
                 </svg>
             </div>
         </div>
-        <div class="footer">
+        <div class="text-right text-[#a0a0ff] text-base mt-4 pb-2">
             11:41
         </div>
     </div>
