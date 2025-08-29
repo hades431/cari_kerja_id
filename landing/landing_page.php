@@ -14,7 +14,11 @@ include '../header.php'; ?>
         <!-- Subheadline -->
         <div class="text-xl md:text-2xl text-center text-[#23395d] mb-6 font-normal">
             Temukan loker Bandung terbaru bulan Agustus 2025 dengan mudah di CariKerjaID.
-            <input type="button" onclick="lk_growDiv()" value="Minimalkan" id="l2-button">
+            <button type="button"
+                class="ml-2 text-[#23395d] text-xl md:text-2xl font-normal hover:underline transition bg-transparent p-0 border-0 align-baseline"
+                onclick="document.getElementById('info-card').classList.toggle('hidden')">
+                Selengkapnya
+            </button>
         </div>
         <!-- Search Box Start -->
         <div
@@ -64,7 +68,7 @@ include '../header.php'; ?>
         </div>
         <!-- Search Box End -->
         <!-- Info Card -->
-        <div class="bg-white rounded-3xl shadow-lg p-8 max-w-2xl w-full mt-[-40px] z-20 relative">
+        <div id="info-card" class="bg-white rounded-3xl shadow-lg p-8 max-w-2xl w-full mt-[-40px] z-20 relative hidden">
             <div class="text-lg text-gray-800 leading-relaxed">
                 <span class="font-semibold">CariKerjaID</span> adalah platform informasi <a href="#"
                     class="text-[#00646A] underline">lowongan kerja Bandung</a>.<br>
