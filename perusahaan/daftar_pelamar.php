@@ -1,3 +1,23 @@
+<?php
+// DATA PELAMAR 
+$pelamar = [
+    ["nama" => "Khaura", "email" => "khaura@example.com", "posisi" => "Frontend Developer", "tgl" => "2025-08-01"],
+    ["nama" => "Ola", "email" => "ola@example.com", "posisi" => "Backend Developer", "tgl" => "2025-08-05"],
+    ["nama" => "Dinda", "email" => "dinda@example.com", "posisi" => "Project Manager", "tgl" => "2025-08-07"],
+];
+
+// FILTER SEARCH 
+$q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
+
+if ($q === "") {
+    $filtered = $pelamar;
+} else {
+    $filtered = array_filter($pelamar, function($p) use ($q) {
+        return strpos(strtolower($p['posisi']), $q) !== false;
+    });
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,14 +30,14 @@
 
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-teal-800 text-white p-6 flex flex-col">
+        <aside class="w-64 text-white p-6 flex flex-col" style="background-color: #00646A;">
             <div class="flex flex-col items-center mb-10">
                 <div class="w-20 h-20 bg-white rounded-full mb-3"></div>
                 <h1 class="text-lg font-bold">Perusahaan</h1>
             </div>
             <nav class="flex flex-col space-y-4">
-                <a href="#" class="bg-teal-600 px-4 py-2 rounded">Dashboard</a>
-                <a href="#" class="bg-teal-900 px-4 py-2 rounded">Daftar Pelamar</a>
+                <a href="../dashboard/dashboard_perusahaan.php" class="px-4 py-2 rounded" style="background-color: #00949A;">Dashboard</a>
+                <a href="daftar_pelamar.php" class="px-4 py-2 rounded" style="background-color: #004F52;">Daftar Pelamar</a>
             </nav>
             <div class="mt-auto">
                 <p class="text-center text-sm opacity-75">© 2025 Carikerja.id</p>
@@ -28,25 +48,25 @@
         <main class="flex-1 p-8">
             <h2 class="text-2xl font-bold mb-6">Daftar Pelamar</h2>
 
-           <!-- Search -->
-<form method="GET" class="flex justify-start mb-4 w-full sm:w-1/3">
-    <div class="flex w-full">
-        <input 
-            type="text" 
-            name="q" 
-            value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>" 
-            placeholder="Cari posisi..." 
-            class="border border-r-0 rounded-l px-3 py-2 w-full"
-        >
-        <button 
-            type="submit" 
-            class="border border-l-0 rounded-r bg-teal-600 text-white px-4"
-        >
-            🔍
-        </button>
-    </div>
-</form>
-
+            <!-- Search -->
+            <form method="GET" class="flex justify-start mb-4 w-full sm:w-1/3">
+                <div class="flex w-full">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        value="<?= htmlspecialchars($q) ?>" 
+                        placeholder="Cari posisi..." 
+                        class="border border-r-0 rounded-l px-3 py-2 w-full"
+                    >
+                    <button 
+                        type="submit" 
+                        class="border border-l-0 rounded-r text-white px-4"
+                        style="background-color: #00646A;"
+                    >
+                        🔍
+                    </button>
+                </div>
+            </form>
 
             <!-- Table -->
             <div class="bg-white rounded shadow overflow-x-auto">
@@ -60,38 +80,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                            $pelamar = [
-                                ["nama" => "Khaura", "email" => "khaura@example.com", "posisi" => "Frontend Developer", "tgl" => "2025-08-01"],
-                                ["nama" => "Satria", "email" => "satria@example.com", "posisi" => "UI Designer", "tgl" => "2025-08-03"],
-                                ["nama" => "Ola", "email" => "ola@example.com", "posisi" => "Backend Developer", "tgl" => "2025-08-05"],
-                                ["nama" => "Dinda", "email" => "dinda@example.com", "posisi" => "Project Manager", "tgl" => "2025-08-07"],
-                            ];
-
-                           $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
-
-if ($q === "") {
-    $filtered = $pelamar;
-} else {
-    $filtered = array_filter($pelamar, function($p) use ($q) {
-        return strpos(strtolower($p['posisi']), $q) !== false;
-    });
-}
-
-                            if (count($filtered) > 0) 
-                                {
-                                foreach ($filtered as $p) {
-                                    echo "<tr class='hover:bg-gray-100'>
-                                            <td class='p-3 border'>{$p['nama']}</td>
-                                            <td class='p-3 border'>{$p['email']}</td>
-                                            <td class='p-3 border'>{$p['posisi']}</td>
-                                            <td class='p-3 border'>{$p['tgl']}</td>
-                                          </tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='4' class='text-center p-4'>Tidak ada data pelamar</td></tr>";
-                            }
-                        ?>
+                        <?php if (count($filtered) > 0): ?>
+                            <?php foreach ($filtered as $p): ?>
+                                <tr class='hover:bg-gray-100'>
+                                    <td class='p-3 border'><?= $p['nama'] ?></td>
+                                    <td class='p-3 border'><?= $p['email'] ?></td>
+                                    <td class='p-3 border'><?= $p['posisi'] ?></td>
+                                    <td class='p-3 border'><?= $p['tgl'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="text-center p-4">Tidak ada data pelamar</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
