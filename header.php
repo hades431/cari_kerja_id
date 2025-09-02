@@ -36,7 +36,7 @@ session_start();
                         Buka Lowongan
                     </a>
                     <?php if (!isset($_SESSION['user'])): ?>
-                        <a href="login.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
+                        <a href="../login/login.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
                       text-white px-6 py-2 rounded-full font-bold shadow transition">
                             Login
                         </a>
