@@ -112,7 +112,7 @@ $error2 = true;
                     class="w-full bg-gradient-to-r from-teal-500 via-teal-600 to-teal-500 bg-size-200 text-white py-3 rounded-xl font-medium
                     transition-all duration-500 transform hover:scale-[1.02] hover:bg-pos-100 hover:shadow-xl active:scale-95
                     relative overflow-hidden group">
-                    <span class="relative z-10">Masuk</span>
+                    <span class="relative z-10">Login</span>
                     <div class="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-gradient-to-r from-teal-600 via-teal-500 to-teal-600"></div>
                 </button>
             </form>
