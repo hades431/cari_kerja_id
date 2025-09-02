@@ -169,10 +169,9 @@ $topDeals = [
     <!-- Sidebar -->
     <div class="w-56 bg-gradient-to-b from-[#024629] to-[#01331e] text-white flex flex-col items-center p-7 shadow-lg">
         <img src="<?php echo $gambarAktif; ?>" alt="Logo " class="w-24 h-24 rounded-full object-cover mb-8 border-4 border-white/20">
-        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Perusahaan</button>
-        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Dashboard</button>
+        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">profile</button>
+        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">pengajuan</button>
         <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Daftar Pelamar</button>
-        <button class="w-full py-3 mb-2 rounded-lg bg-white text-[#024629] font-semibold hover:bg-purple-400 hover:text-white transition">Dashboard</button>
     </div>
     <!-- Main Content -->
     <div class="flex-1 flex flex-col gap-6 px-9 pt-9 bg-white">
@@ -213,107 +212,9 @@ $topDeals = [
                 </div>
             <?php endforeach; ?>
         </div>
-        <!-- Main Dashboard Grid -->
-        <div class="grid grid-cols-3 grid-rows-2 gap-4">
-            <!-- Bar Chart -->
-            <div class="bg-white rounded-xl shadow p-5 flex flex-col" style="grid-row:1;grid-column:1;">
-                <h4 class="font-semibold mb-2 text-base text-[#024629]">Avg. Contract Value</h4>
-                <svg class="w-full h-28" viewBox="0 0 350 120">
-                    <?php
-                    $max = max(array_column($barChartData, 'value'));
-                    $barWidth = 32;
-                    $gap = 12;
-                    foreach ($barChartData as $i => $d) {
-                        $x = 10 + $i * ($barWidth + $gap);
-                        $y = 110 - ($d['value']/$max)*90;
-                        $h = ($d['value']/$max)*90;
-                        echo "<rect x='$x' y='$y' width='$barWidth' height='$h' fill='#00b6b9' rx='4'></rect>";
-                        echo "<text x='".($x+$barWidth/2)."' y='".($y-5)."' font-size='9' fill='#222' text-anchor='middle'>".$d['value']."</text>";
-                        echo "<text x='".($x+$barWidth/2)."' y='118' font-size='9' fill='#666' text-anchor='middle' transform='rotate(-18 ".($x+$barWidth/2).",118)'>".$d['label']."</text>";
-                    }
-                    ?>
-                </svg>
-            </div>
-            <!-- Table Top Channels -->
-            <div class="bg-white rounded-xl shadow p-5 flex flex-col" style="grid-row:1;grid-column:2;">
-                <h4 class="font-semibold mb-2 text-base text-[#024629]">Top 5 Channels</h4>
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b">
-                            <th class="text-[#00b6b9] font-bold py-1 px-2 text-left">Order Date</th>
-                            <th class="text-[#00b6b9] font-bold py-1 px-2 text-left">Country</th>
-                            <th class="text-[#00b6b9] font-bold py-1 px-2 text-left">Units Sold</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($topChannels as $row): ?>
-                        <tr class="border-b last:border-0">
-                            <td class="py-1 px-2"><?php echo $row[0]; ?></td>
-                            <td class="py-1 px-2"><?php echo $row[1]; ?></td>
-                            <td class="py-1 px-2"><?php echo $row[2]; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            <!-- KPI Gauge -->
-            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center justify-center" style="grid-row:1;grid-column:3;">
-                <h4 class="font-semibold mb-2 text-base text-[#024629]">Sales KPI</h4>
-                <svg width="100%" height="100" viewBox="0 0 120 100">
-                    <path d="M10,90 Q60,10 110,90" fill="none" stroke="#f36c21" stroke-width="10"/>
-                    <path d="M10,90 Q60,10 110,90" fill="none" stroke="#eee" stroke-width="10" stroke-dasharray="0 180"/>
-                    <text x="60" y="70" text-anchor="middle" font-size="2em" fill="#f36c21" font-weight="bold">263</text>
-                </svg>
-            </div>
-            <!-- Pie Chart -->
-            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center" style="grid-row:2;grid-column:1;">
-                <h4 class="font-semibold mb-2 text-base text-[#024629]">Item Type</h4>
-                <svg class="w-full h-28" viewBox="0 0 100 100">
-                    <?php
-                    $total = array_sum(array_column($pieChartData, 'value'));
-                    $angle = 0;
-                    foreach ($pieChartData as $slice) {
-                        $v = $slice['value'];
-                        $a = ($v/$total)*360;
-                        $x1 = 50 + 40 * cos(deg2rad($angle));
-                        $y1 = 50 + 40 * sin(deg2rad($angle));
-                        $angle += $a;
-                        $x2 = 50 + 40 * cos(deg2rad($angle));
-                        $y2 = 50 + 40 * sin(deg2rad($angle));
-                        $largeArc = $a > 180 ? 1 : 0;
-                        echo "<path d='M50,50 L$x1,$y1 A40,40 0 $largeArc,1 $x2,$y2 Z' fill='".$slice['color']."' opacity='0.8'/>";
-                    }
-                    ?>
-                </svg>
-            </div>
-            <!-- Scatter Chart -->
-            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center" style="grid-row:2;grid-column:2;">
-                <h4 class="font-semibold mb-2 text-base text-[#024629]">Sales Activity</h4>
-                <svg class="w-full h-28" viewBox="0 0 100 100">
-                    <?php foreach ($salesActivity as $dot): ?>
-                        <circle cx="<?php echo $dot[0]*3; ?>" cy="<?php echo 100-$dot[1]*3; ?>" r="5" fill="<?php echo $dot[2]; ?>" opacity="0.8"/>
-                    <?php endforeach; ?>
-                </svg>
-            </div>
-            <!-- Deals Bar Chart -->
-            <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center" style="grid-row:2;grid-column:3;">
-                <h4 class="font-semibold mb-2 text-base text-[#024629]">Top Deals</h4>
-                <svg class="w-full h-28" viewBox="0 0 120 100">
-                    <?php
-                    $max = max(array_column($topDeals, 'value'));
-                    foreach ($topDeals as $i => $deal) {
-                        $w = ($deal['value']/$max)*90;
-                        $y = 20 + $i*25;
-                        echo "<rect x='20' y='$y' width='$w' height='16' fill='#f6a700' rx='4'></rect>";
-                        echo "<text x='10' y='".($y+12)."' font-size='10' fill='#222'>".$deal['label']."</text>";
-                        echo "<text x='".($w+25)."' y='".($y+12)."' font-size='10' fill='#222'>".$deal['value']."M</text>";
-                    }
-                    ?>
-                </svg>
-            </div>
-        </div>
+        <!-- Footer -->
         <div class="text-right text-[#a0a0ff] text-base mt-4 pb-2">
-            11:41
+             
         </div>
     </div>
 </div>
