@@ -14,9 +14,9 @@ include '../header.php'; ?>
         <!-- Subheadline -->
         <div class="text-xl md:text-2xl text-center text-[#23395d] mb-6 font-normal">
             Temukan loker Bandung terbaru bulan Agustus 2025 dengan mudah di CariKerjaID.
-            <button type="button"
+            <button type="button" id="toggle-info-btn"
                 class="ml-2 text-[#23395d] text-xl md:text-2xl font-normal hover:underline transition bg-transparent p-0 border-0 align-baseline"
-                onclick="document.getElementById('info-card').classList.toggle('hidden')">
+                onclick="toggleInfoCard()">
                 Selengkapnya
             </button>
         </div>
@@ -30,25 +30,25 @@ include '../header.php'; ?>
                     <select class="bg-white rounded px-4 py-2 w-full md:w-[340px] text-gray-700">
                         <option value="">Lulusan</option>
                         <option value="sma">SMA/SMK</option>
-                        <option value="d3">D3</option>
+                        <option value="d3">D3/D4</option>
                         <option value="s1">S1</option>
                         <option value="s2">S2</option>
                     </select>
                 </div>
-                <div class="flex flex-col md:flex-row gap-8 w-full justify-center items-center">
+                <div class="flex flex-col md:flex-row gap-8 w-full justify-center items-center justify-center">
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="tanpa-pengalaman" name="tanpa_pengalaman"
-                            class="accent-[#00646A] w-5 h-5">
+                            class="accent-[#00646A] w-5 h-5 rounded-full">
                         <label for="tanpa-pengalaman" class="text-white text-sm font-normal">Tanpa pengalaman</label>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="satu-lima-tahun" name="satu_lima_tahun"
-                            class="accent-[#00646A] w-5 h-5">
+                            class="accent-[#00646A] w-5 h-5 rounded-full">
                         <label for="satu-lima-tahun" class="text-white text-sm font-normal">1-5 Tahun</label>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="lima-lebih-tahun" name="lima_lebih_tahun"
-                            class="accent-[#00646A] w-5 h-5">
+                            class="accent-[#00646A] w-5 h-5 rounded-full">
                         <label for="lima-lebih-tahun" class="text-white text-sm font-normal">5 Tahun Lebih</label>
                     </div>
                     <div class="flex-1 flex justify-end mt-6 md:mt-0">
@@ -68,7 +68,8 @@ include '../header.php'; ?>
         </div>
         <!-- Search Box End -->
         <!-- Info Card -->
-        <div id="info-card" class="bg-white rounded-3xl shadow-lg p-8 max-w-2xl w-full mt-[-40px] z-20 relative hidden">
+        <div id="info-card"
+            class="bg-white rounded-3xl shadow-lg p-8 max-w-2xl w-full mt-[-40px] z-20 relative hidden transition-all duration-300 scale-95 opacity-0">
             <div class="text-lg text-gray-800 leading-relaxed">
                 <span class="font-semibold">CariKerjaID</span> adalah platform informasi <a href="#"
                     class="text-[#00646A] underline">lowongan kerja Bandung</a>.<br>
@@ -86,6 +87,29 @@ include '../header.php'; ?>
                 pencari kerja dan perusahaan untuk berkembang bersama.
             </div>
         </div>
+        <script>
+        // filepath: c:\xamp\htdocs\cari_kerja_id\landing\landing_page.php
+        function toggleInfoCard() {
+            const card = document.getElementById('info-card');
+            const btn = document.getElementById('toggle-info-btn');
+            const isHidden = card.classList.contains('hidden');
+            if (isHidden) {
+                card.classList.remove('hidden');
+                setTimeout(() => {
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                btn.textContent = 'Minimalkan';
+            } else {
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    card.classList.add('hidden');
+                }, 300);
+                btn.textContent = 'Selengkapnya';
+            }
+        }
+        </script>
     </div>
 </section>
 
@@ -123,18 +147,18 @@ include '../header.php'; ?>
 <section class="flex flex-col md:flex-row gap-6 px-4">
     <div class="flex-1 flex flex-col gap-4">
         <?php for ($i = 0; $i < 3; $i++): ?>
-            <div class="bg-white rounded shadow flex p-4 gap-4 items-center">
-                <div class="bg-gray-300 h-20 w-24 rounded"></div>
-                <div class="flex-1">
-                    <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                    <div class="h-3 bg-gray-100 rounded w-1/3 mb-1"></div>
-                    <div class="h-3 bg-gray-100 rounded w-1/4 mb-1"></div>
-                    <div class="flex gap-2 mt-2">
-                        <div class="h-3 bg-gray-200 rounded w-12"></div>
-                        <div class="h-3 bg-gray-200 rounded w-12"></div>
-                    </div>
+        <div class="bg-white rounded shadow flex p-4 gap-4 items-center">
+            <div class="bg-gray-300 h-20 w-24 rounded"></div>
+            <div class="flex-1">
+                <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div class="h-3 bg-gray-100 rounded w-1/3 mb-1"></div>
+                <div class="h-3 bg-gray-100 rounded w-1/4 mb-1"></div>
+                <div class="flex gap-2 mt-2">
+                    <div class="h-3 bg-gray-200 rounded w-12"></div>
+                    <div class="h-3 bg-gray-200 rounded w-12"></div>
                 </div>
             </div>
+        </div>
         <?php endfor; ?>
     </div>
     <!-- Sidebar -->
@@ -153,7 +177,7 @@ include '../header.php'; ?>
                 <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
                     <option>Pendidikan</option>
                     <option value="sma">SMA/SMK</option>
-                    <option value="d3">D3</option>
+                    <option value="d3">D3/D4</option>
                     <option value="s1">S1</option>
                     <option value="s2">S2</option>
                     <!-- ...opsi pendidikan lain... -->
@@ -173,9 +197,10 @@ include '../header.php'; ?>
             <div class="flex justify-center">
                 <!-- Tambahkan wrapper flex untuk memusatkan -->
                 <button type="button"
-                    class="flex items-center justify-center gap-2 border rounded-xl px-4 py-3 w-2/3 text-[#23395d] text-lg font-semibold bg-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#23395d]" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+                    class="group flex items-center justify-center gap-2 border rounded-xl px-4 py-3 w-2/3 text-[#23395d] text-lg font-semibold bg-white hover:bg-[#00646A] hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 text-[#23395d] group-hover:text-white transition" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
                         <polygon
                             points="12,17.27 18.18,21 16.54,13.97 22,9.24 14.81,8.63 12,2 9.19,8.63 2,9.24 7.46,13.97 5.82,21"
                             stroke="currentColor" stroke-width="2" fill="none" />
