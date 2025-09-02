@@ -29,7 +29,7 @@ if(isset($_POST["submit"])){
   <body class="bg-gray-900 min-h-screen flex items-center justify-center p-6">
     <div class="max-w-xl w-full bg-white shadow-lg">
       <!-- Header / Logo -->
-      <div class="bg-teal-700 h-16 flex items-center justify-center">
+      <div class="bg-[00646A] h-16 flex items-center justify-center">
         <img src="../img/logo2.png" alt="Logo Cari Kerja ID" class="h-12 w-auto object-contain mx-auto">
       </div>
       <!-- Register / Login card content -->
