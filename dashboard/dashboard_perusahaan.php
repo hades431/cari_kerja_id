@@ -83,7 +83,7 @@ $dashboardStats = [
     [
         "title" => "Total pelamar mendaftar",
         "value" => "-",
-        "subtitle" => "/ 90",
+        "subtitle" => "",
         "color" => "#00b6b9",
         "chart" => [100, 120, 90, 150, 110, 130, 120, 140],
         "key" => "pelamar"
@@ -91,7 +91,7 @@ $dashboardStats = [
     [
         "title" => "Total lowongan diberikan",
         "value" => "--",
-        "subtitle" => "/ 90",
+        "subtitle" => "",
         "color" => "#00b6b9",
         "chart" => [90, 100, 110, 120, 110, 100, 120, 109],
         "key" => "lowongan"
@@ -99,7 +99,7 @@ $dashboardStats = [
     [
         "title" => "Jumlah pelamar yang diterima",
         "value" => "--",
-        "subtitle" => "▲ 11364",
+        "subtitle" => "",
         "color" => "#f6a700",
         "chart" => [9000, 9500, 10000, 11000, 12000, 11500, 11460, 11364],
         "key" => "diterima"
@@ -202,33 +202,6 @@ $topDeals = [
                         <div class="text-base font-semibold mb-2 text-green-100"><?php echo $stat['title']; ?></div>
                         <div class="text-3xl font-bold mb-1 text-white"><?php echo $stat['value']; ?></div>
                         <div class="text-sm text-green-50 mb-2"><?php echo $stat['subtitle']; ?></div>
-                        <?php if (!empty($stat['gauge'])): ?>
-                            <div class="flex justify-center">
-                                <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center">
-                                    <div class="w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl text-orange-500" style="background:conic-gradient(#f36c21 0% 66%, #eee 66% 100%)">
-                                        <?php echo $stat['value']; ?>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php else: ?>
-                            <svg class="w-full h-9 mt-2" viewBox="0 0 100 36">
-                                <polyline
-                                    fill="none"
-                                    stroke="#fff"
-                                    stroke-width="2"
-                                    points="<?php
-                                        $points = [];
-                                        $max = max($stat['chart']);
-                                        foreach ($stat['chart'] as $i => $v) {
-                                            $x = 10 + $i * 12;
-                                            $y = 30 - ($v/$max)*24;
-                                            $points[] = "$x,$y";
-                                        }
-                                        echo implode(' ', $points);
-                                    ?>"
-                                />
-                            </svg>
-                        <?php endif; ?>
                     </div>
                 </a>
             <?php endforeach; ?>
