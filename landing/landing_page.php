@@ -24,9 +24,8 @@ include '../header.php'; ?>
         <div
             class="bg-[#00646A] rounded-[48px] px-8 py-12 flex flex-col items-center mb-8 w-full max-w-4xl shadow-lg z-10 relative">
             <form class="w-full flex flex-col gap-8">
-                <div class="flex flex-col md:flex-row gap-8 w-full justify-center items-center">
+                <div class="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
                     <input type="text" placeholder="Search..."
-                        class="bg-white rounded px-4 py-2 w-full md:w-[340px] text-gray-700" />
                     <select
                         class="bg-white rounded-xl px-4 py-3 w-full md:w-[340px] text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
                         <option value="">Lulusan</option>
@@ -168,7 +167,8 @@ include '../header.php'; ?>
                 placeholder="Searchbar..." />
             <div class="flex gap-3">
                 <select
-                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
+
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:border-[#00646A] transition">
                     <option>Lokasi</option>
                     <option value="bandung">Kab.Bandung</option>
                     <option value="baleendah">Kota Bandung</option>
@@ -178,13 +178,8 @@ include '../header.php'; ?>
                 </select>
                 <select
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
-
-                <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
-                    <option>Lokasi</option>
-                    <option value="bandung">Bandung</option>
-                    <option value="baleendah">Baleendah</option>
-                </select>
-                <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
+                <select
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:border-[#00646A] transition">
                     <option>Pendidikan</option>
                     <option value="sma">SMA/SMK</option>
                     <option value="d3">D3/D4</option>
@@ -204,8 +199,7 @@ include '../header.php'; ?>
             </button>
             <hr class="my-2" />
             <div class="flex justify-center">
-
-                <button type="button"
+                <button type="button" id="open-simpan-modal"
                     class="group flex items-center justify-center gap-2 border rounded-xl px-4 py-3 w-2/3 text-[#23395d] text-lg font-semibold bg-white hover:bg-[#00646A] hover:text-white transition">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         class="h-5 w-5 text-[#23395d] group-hover:text-white transition" fill="none" viewBox="0 0 24 24"
@@ -220,6 +214,35 @@ include '../header.php'; ?>
         </form>
     </aside>
 </section>
+
+<!-- Modal Lowongan Tersimpan -->
+<div id="simpan-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 hidden">
+    <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8 relative">
+        <button onclick="closeSimpanModal()"
+            class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-700 font-bold focus:outline-none">&times;</button>
+        <div class="text-2xl md:text-3xl font-semibold text-center text-[#23395d] mb-2">
+            <span class="font-bold">Lowongan</span> Tersimpan
+        </div>
+        <div class="text-center text-gray-500 text-lg mb-10">
+            <em>Belum ada lowongan yang disimpan</em>
+        </div>
+        <div class="flex justify-center">
+            <button
+                class="border border-[#b03a2e] text-[#b03a2e] px-6 py-2 rounded-lg hover:bg-[#f9ebea] transition font-medium">
+                Hapus Semua
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('open-simpan-modal').onclick = function() {
+        document.getElementById('simpan-modal').classList.remove('hidden');
+    };
+
+    function closeSimpanModal() {
+        document.getElementById('simpan-modal').classList.add('hidden');
+    }
+</script>
 
 
 <div class="inner">
@@ -252,7 +275,7 @@ include '../header.php'; ?>
                                 </path>
                             </svg>
                         </a>
-    <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook"
+               <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook"
                             href="https://fb.me/g/1PDZMh3OyT/dTSHxncH?ref=share" target="_blank"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-8">
                                 <path fill="currentColor"
