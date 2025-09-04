@@ -1,12 +1,9 @@
 <?php 
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "lowongan_kerja";
-$conn = mysqli_connect($server, $username, $password, $database);
+$conn = mysqli_connect("localhost","root","","lowongan_kerja");
 
-if (!$conn) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+if (mysqli_connect_errno()){
+    echo "Koneksi database gagal : " . mysqli_connect_error(); 
+    exit;
 }
 
 function profilPelamar($nik) {
@@ -19,17 +16,15 @@ function profilPelamar($nik) {
     $deskripsi = htmlspecialchars($_POST['deskripsi']);
     $cv = upload();
 
-
-    // masukkan data ke database dengan penanganan error
     $query = "INSERT INTO pengaduan VALUES ('','$nama_lengkap','$email','$no_hp','$alamat','$deskripsi','$cv','proses')";
     mysqli_query($conn, $query);
 
     return mysqli_affected_rows($conn);
 }
 
-function getTipsKerjaList() {
+function getArtikelList() {
     global $conn;
-    $sql = "SELECT id, judul, ringkasan, isi, gambar FROM tips_kerja ORDER BY id DESC";
+    $sql = "SELECT id, judul, isi, gambar, tanggal FROM artikel ORDER BY id DESC";
     $result = mysqli_query($conn, $sql);
 
     $data = [];
@@ -41,4 +36,64 @@ function getTipsKerjaList() {
     return $data;
 }
 
+function menu_aktif($page) {
+    $menuAktif = [
+        'dashboard' => false,
+        'lowongan' => false,
+        'perusahaan' => false,
+        'pelamar' => false,
+        'artikel' => false,
+        'logout' => false
+    ];
+
+    if (array_key_exists($page, $menuAktif)) {
+        $menuAktif[$page] = true;
+    }
+
+    return $menuAktif;
+}
+
+function searchArtikel($keyword) {
+    global $conn;
+    $sql = "SELECT * FROM artikel WHERE judul LIKE ?";
+    $stmt = $conn->prepare($sql);
+    $like = "%$keyword%";
+    $stmt->bind_param("s", $like);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+function tambahArtikel($data, $file) {
+    global $conn;
+
+    $judul = htmlspecialchars($data['judul']);
+    $isi = htmlspecialchars($data['isi']);
+    $ringkasan = substr($isi, 0, 150) . (strlen($isi) > 150 ? '...' : '');
+
+    $gambar = null;
+    if (isset($file['gambar']) && $file['gambar']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../uploads/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        $fileName = uniqid() . '_' . basename($file['gambar']['name']);
+        $targetFilePath = $uploadDir . $fileName;
+
+        if (move_uploaded_file($file['gambar']['tmp_name'], $targetFilePath)) {
+            $gambar = 'uploads/' . $fileName;
+        } else {
+            return false; 
+        }
+    }
+
+    $sql = "INSERT INTO artikel (judul, ringkasan, isi, gambar, tanggal) VALUES (?, ?, ?, ?, NOW())";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $judul, $ringkasan, $isi, $gambar);
+    
+    if ($stmt->execute()) {
+        return mysqli_affected_rows($conn);
+    } else {
+        return false; 
+    }
+}
 ?>
