@@ -214,7 +214,7 @@ include '../header.php'; ?>
     </aside>
 </section>
 
-<!-- Modal Lowongan Tersimpan -->
+
 <div id="simpan-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 hidden">
     <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8 relative">
         <button onclick="closeSimpanModal()"
