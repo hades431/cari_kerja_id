@@ -168,7 +168,7 @@ include '../header.php'; ?>
                 placeholder="Searchbar..." />
             <div class="flex gap-3">
                 <select
-                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:border-[#00646A] transition">
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:ring-2 focus:border-[#00646A] transition">
                     <option>Lokasi</option>
                     <option value="bandung">Kab.Bandung</option>
                     <option value="baleendah">Kota Bandung</option>
@@ -178,7 +178,7 @@ include '../header.php'; ?>
                 </select>
 
                 <select
-                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:border-[#00646A] transition">
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:ring-2 focus:border-[#00646A] transition">
                     <option>Pendidikan</option>
                     <option value="sma">SMA/SMK</option>
                     <option value="d3">D3/D4</option>
@@ -219,7 +219,7 @@ include '../header.php'; ?>
     <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8 relative">
         <button onclick="closeSimpanModal()"
             class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-700 font-bold focus:outline-none">&times;</button>
-        <div class="text-2xl md:text-3xl font-semibold text-center text-[#23395d] mb-2">
+        <div class="text-2xl md:text-3xl font-semibold text-center text-[#00646A] mb-2">
             <span class="font-bold">Lowongan</span> Tersimpan
         </div>
         <div class="text-center text-gray-500 text-lg mb-10">
