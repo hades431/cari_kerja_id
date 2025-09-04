@@ -26,7 +26,6 @@ include '../header.php'; ?>
             <form class="w-full flex flex-col gap-8">
                 <div class="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
                     <input type="text" placeholder="Search..."
-                        class="bg-white rounded-xl px-4 py-3 w-full md:w-[340px] text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition" />
                     <select
                         class="bg-white rounded-xl px-4 py-3 w-full md:w-[340px] text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
                         <option value="">Lulusan</option>
@@ -168,6 +167,7 @@ include '../header.php'; ?>
                 placeholder="Searchbar..." />
             <div class="flex gap-3">
                 <select
+
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:border-[#00646A] transition">
                     <option>Lokasi</option>
                     <option value="bandung">Kab.Bandung</option>
@@ -176,6 +176,8 @@ include '../header.php'; ?>
                     <option value="cileunyi">Bandung Barat</option>
                     <option value="cicalengka">Sumedang</option>
                 </select>
+                <select
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
                 <select
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:border-[#00646A] transition">
                     <option>Pendidikan</option>
@@ -273,7 +275,7 @@ include '../header.php'; ?>
                                 </path>
                             </svg>
                         </a>
-                        <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook"
+               <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook"
                             href="https://fb.me/g/1PDZMh3OyT/dTSHxncH?ref=share" target="_blank"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-8">
                                 <path fill="currentColor"
