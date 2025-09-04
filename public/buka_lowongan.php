@@ -33,9 +33,12 @@ include '../header.php';
                     <li>Notifikasi email untuk setiap lamaran yang masuk</li>
                 </ul>
                 <div class="text-lg font-semibold text-[#cd7f32] mb-2">Rp25.000</div>
-                <button class="mt-auto"
-                    style="background-color:#cd7f32;color:white;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
-                    Paket</button>
+                <a href="../public/form_buka_lowongan.php?paket=bronze" class="mt-auto"
+                    style="background-color:#cd7f32;color:white;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">
+                    Pilih Paket
+                </a>
+
+
             </div>
             <!-- Card 2: Silver -->
             <div class="bg-gradient-to-br from-[#C0C0C0]/40 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-auto min-h-[26rem] transition-transform hover:scale-105 hover:shadow-2xl border-2"
@@ -55,9 +58,11 @@ include '../header.php';
                     <li>Notifikasi via email & dashboard</li>
                 </ul>
                 <div class="text-lg font-semibold text-[#C0C0C0] mb-2">Rp50.000</div>
-                <button class="mt-auto"
-                    style="background-color:#C0C0C0;color:white;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
-                    Paket</button>
+                <a href="../public/form_buka_lowongan.php?paket=silver" class="mt-auto"
+                    style="background-color:#C0C0C0;color:white;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">
+                    Pilih Paket
+                </a>
+
             </div>
             <!-- Card 3: Gold -->
             <div class="bg-gradient-to-br from-[#FFD700]/40 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-auto min-h-[26rem] transition-transform hover:scale-105 hover:shadow-2xl border-2"
@@ -78,9 +83,11 @@ include '../header.php';
                     <li>Notifikasi via email & dashboard</li>
                 </ul>
                 <div class="text-lg font-semibold text-[#FFD700] mb-2">Rp75.000</div>
-                <button class="mt-auto"
-                    style="background-color:#FFD700;color:#333;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
-                    Paket</button>
+                <a href="../public/form_buka_lowongan.php?paket=gold" class="mt-auto"
+                    style="background-color:#FFD700;color:#333;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">
+                    Pilih Paket
+                </a>
+
             </div>
             <!-- Card 4: Diamond -->
             <div class="bg-gradient-to-br from-[#00BFFF]/60 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-auto min-h-[26rem] transition-transform hover:scale-105 hover:shadow-2xl border-2"
@@ -102,9 +109,11 @@ include '../header.php';
                     <li>Notifikasi via email & dashboard</li>
                 </ul>
                 <div class="text-lg font-semibold text-[#00BFFF] mb-2">Rp100.000</div>
-                <button class="mt-auto"
-                    style="background-color:#00BFFF;color:#fff;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
-                    Paket</button>
+                <a href="../public/form_buka_lowongan.php?paket=diamond" class="mt-auto"
+                    style="background-color:#00BFFF;color:#fff;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">
+                    Pilih Paket
+                </a>
+
             </div>
         </div>
     </div>
