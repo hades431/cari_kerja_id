@@ -69,10 +69,10 @@ $error2 = true;
         }
     </style>
 </head>
-<body class="bg-gray-900 min-h-screen flex items-center justify-center p-6">
-    
+<body class="bg-[#181f2a] min-h-screen flex items-center justify-center p-6">
+
     <div class="max-w-md w-full glass rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-[1.02] floating z-10">
-        <div class="bg-teal-700 h-16 flex items-center justify-center rounded-t-2xl">
+        <div class="bg-[#00646A] h-20 flex flex-col items-center justify-center rounded-t-2xl">
             <img src="../img/logo2.png" alt="Logo Cari Kerja ID" class="h-12 w-auto object-contain mx-auto">
         </div>
 
