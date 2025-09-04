@@ -177,19 +177,20 @@ $topDeals = [
 <body class="bg-white text-gray-900">
 <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <div id="sidebar" class="sidebar-transition group w-20 bg-[#00797a] text-white flex flex-col items-center p-7 shadow-lg overflow-x-hidden transition-all duration-300">
-        <img src="<?php echo $gambarAktif; ?>" alt="Logo " class="sidebar-img w-12 h-12 rounded-full object-cover mb-8 border-4 border-white/20 transition-all duration-300">
-        <a href="profil_pelamar.php" class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
-            <span class="sidebar-label hidden">profile</span>
-            <svg class="inline-block w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <div id="sidebar" class="sidebar-transition bg-[#00797a] text-white flex flex-col items-center p-7 shadow-lg overflow-x-hidden transition-all duration-300 w-56">
+        <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-white/20 shadow-lg">
+        <div class="text-lg font-bold text-white mb-6 text-center">Barberking hair</div>
+        <a href="../perusahaan/profile_perusahaan.php" class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
+            <span class="sidebar-label">Profile</span>
+            <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </a>
         <button class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
-            <span class="sidebar-label hidden">pengajuan</span>
-            <svg class="inline-block w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+            <span class="sidebar-label">pengajuan</span>
+            <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
         </button>
         <a href="daftar_pelamar.php" class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
-            <span class="sidebar-label hidden">Daftar Pelamar</span>
-            <svg class="inline-block w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87M16 3.13a4 4 0 0 1 0 7.75M8 3.13a4 4 0 0 0 0 7.75"/></svg>
+            <span class="sidebar-label">Daftar Pelamar</span>
+            <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87M16 3.13a4 4 0 0 1 0 7.75M8 3.13a4 4 0 0 0 0 7.75"/></svg>
         </a>
     </div>
     <!-- Main Content -->
@@ -212,31 +213,5 @@ $topDeals = [
         </div>
     </div>
 </div>
-<script>
-    // Sidebar expand/collapse on mouse enter/leave
-    const sidebar = document.getElementById('sidebar');
-    const img = sidebar.querySelector('.sidebar-img');
-    const labels = sidebar.querySelectorAll('.sidebar-label');
-    function expandSidebar() {
-        sidebar.classList.remove('w-20');
-        sidebar.classList.add('w-56');
-        img.classList.remove('w-12', 'h-12');
-        img.classList.add('w-24', 'h-24');
-        labels.forEach(label => label.classList.remove('hidden'));
-        sidebar.classList.add('items-center');
-    }
-    function collapseSidebar() {
-        sidebar.classList.remove('w-56');
-        sidebar.classList.add('w-20');
-        img.classList.remove('w-24', 'h-24');
-        img.classList.add('w-12', 'h-12');
-        labels.forEach(label => label.classList.add('hidden'));
-        sidebar.classList.add('items-center');
-    }
-    sidebar.addEventListener('mouseenter', expandSidebar);
-    sidebar.addEventListener('mouseleave', collapseSidebar);
-    // Start collapsed
-    collapseSidebar();
-</script>
 </body>
 </html>
