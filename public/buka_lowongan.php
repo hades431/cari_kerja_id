@@ -18,76 +18,90 @@ include '../header.php';
             Lowongan</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
             <!-- Card 1: Bronze -->
-            <div class="bg-gradient-to-br from-[#cd7f32]/30 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-64 transition-transform hover:scale-105 hover:shadow-2xl border-2"
+            <div class="bg-gradient-to-br from-[#cd7f32]/30 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-auto min-h-[26rem] transition-transform hover:scale-105 hover:shadow-2xl border-2"
                 style="border-color:#cd7f32;">
-                <div class="bg-[#cd7f32] text-white rounded-full p-3 mb-4">
-                    <!-- Bronze Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="#cd7f32" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" fill="#cd7f32" />
-                        <path stroke="#fff" stroke-width="2"
-                            d="M12 8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-2.21 0-4 1.79-4 4v2h8v-2c0-2.21-1.79-4-4-4z" />
-                    </svg>
+                <div class="mb-4">
+                    <!-- Bronze Icon Image -->
+                    <img src="../img/bronze.png" alt="Bronze" class="h-16 w-16 object-contain" />
                 </div>
                 <h2 class="text-xl font-bold mb-2" style="color:#cd7f32;">Paket Bronze</h2>
-                <p class="text-gray-600 text-center mb-4">Cocok untuk perusahaan kecil, posting 1 lowongan selama 30
-                    hari.</p>
+                <ul class="text-gray-600 text-left mb-4 list-disc list-inside">
+                    <li>Dapat memposting 1 lowongan kerja</li>
+                    <li>Durasi tayang 15 hari</li>
+                    <li>Posisi lowongan hanya tampil di halaman list (tidak di-highlight)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
+                    <li>Notifikasi email untuk setiap lamaran yang masuk</li>
+                </ul>
+                <div class="text-lg font-semibold text-[#cd7f32] mb-2">Rp25.000</div>
                 <button class="mt-auto"
                     style="background-color:#cd7f32;color:white;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
                     Paket</button>
             </div>
             <!-- Card 2: Silver -->
-            <div class="bg-gradient-to-br from-[#C0C0C0]/40 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-64 transition-transform hover:scale-105 hover:shadow-2xl border-2"
+            <div class="bg-gradient-to-br from-[#C0C0C0]/40 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-auto min-h-[26rem] transition-transform hover:scale-105 hover:shadow-2xl border-2"
                 style="border-color:#C0C0C0;">
-                <div class="bg-[#C0C0C0] text-white rounded-full p-3 mb-4">
-                    <!-- Silver Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="#C0C0C0" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" fill="#C0C0C0" />
-                        <path stroke="#fff" stroke-width="2"
-                            d="M17 9V7a5 5 0 00-10 0v2a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2z" />
-                    </svg>
+                <div class="mb-4">
+                    <!-- Silver Icon Image -->
+                    <img src="../img/silver.png" alt="Silver" class="h-16 w-16 object-contain" />
                 </div>
                 <h2 class="text-xl font-bold mb-2" style="color:#888;">Paket Silver</h2>
-                <p class="text-gray-600 text-center mb-4">Posting hingga 3 lowongan sekaligus, tampil lebih
-                    menonjol.</p>
+                <ul class="text-gray-600 text-left mb-4 list-disc list-inside">
+                    <li>Dapat memposting 3 lowongan kerja</li>
+                    <li>Durasi tayang 30 hari</li>
+                    <li>Highlight listing (lowongan lebih menonjol di daftar list)</li>
+                    <li>Logo perusahaan tampil di listing</li>
+                    <li>Fitur filter pelamar (misalnya berdasarkan pendidikan/skill dasar)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
+                    <li>Notifikasi via email & dashboard</li>
+                </ul>
+                <div class="text-lg font-semibold text-[#C0C0C0] mb-2">Rp50.000</div>
                 <button class="mt-auto"
                     style="background-color:#C0C0C0;color:white;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
                     Paket</button>
             </div>
             <!-- Card 3: Gold -->
-            <div class="bg-gradient-to-br from-[#FFD700]/40 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-64 transition-transform hover:scale-105 hover:shadow-2xl border-2"
+            <div class="bg-gradient-to-br from-[#FFD700]/40 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-auto min-h-[26rem] transition-transform hover:scale-105 hover:shadow-2xl border-2"
                 style="border-color:#FFD700;">
-                <div class="bg-[#FFD700] text-white rounded-full p-3 mb-4">
-                    <!-- Gold Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="#FFD700" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" fill="#FFD700" />
-                        <path stroke="#fff" stroke-width="2"
-                            d="M13 16h-1v-4h-1m4 0h-1v4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1" />
-                    </svg>
+                <div class="mb-4">
+                    <!-- Gold Icon Image -->
+                    <img src="../img/gold.png" alt="Gold" class="h-16 w-16 object-contain" />
                 </div>
                 <h2 class="text-xl font-bold mb-2" style="color:#FFD700;">Paket Gold</h2>
-                <p class="text-gray-600 text-center mb-4">Posting hingga 10 lowongan, prioritas pencarian &
-                    highlight.</p>
+                <ul class="text-gray-600 text-left mb-4 list-disc list-inside">
+                    <li>Dapat memposting 7 lowongan kerja</li>
+                    <li>Durasi tayang 45 hari</li>
+                    <li>Lowongan tampil di posisi atas (priority list)</li>
+                    <li>Logo dan profil perusahaan tampil di halaman khusus</li>
+                    <li>Fitur filter pelamar (misalnya berdasarkan pendidikan/skill dasar)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
+                    <li>Publikasi di semua platform media sosial (Story)</li>
+                    <li>Notifikasi via email & dashboard</li>
+                </ul>
+                <div class="text-lg font-semibold text-[#FFD700] mb-2">Rp75.000</div>
                 <button class="mt-auto"
                     style="background-color:#FFD700;color:#333;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
                     Paket</button>
             </div>
             <!-- Card 4: Diamond -->
-            <div class="bg-gradient-to-br from-[#00BFFF]/60 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-64 transition-transform hover:scale-105 hover:shadow-2xl border-2"
+            <div class="bg-gradient-to-br from-[#00BFFF]/60 to-white rounded-2xl shadow-lg p-8 flex flex-col items-center h-auto min-h-[26rem] transition-transform hover:scale-105 hover:shadow-2xl border-2"
                 style="border-color:#00BFFF;">
-                <div class="bg-[#00BFFF] text-white rounded-full p-3 mb-4">
-                    <!-- Diamond Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="#00BFFF" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <polygon points="12,2 22,9 17,22 7,22 2,9" fill="#00BFFF" />
-                        <path stroke="#fff" stroke-width="2" d="M12 2 L22 9 L17 22 L7 22 L2 9 Z" />
-                    </svg>
+                <div class="mb-4">
+                    <!-- Diamond Icon Image -->
+                    <img src="../img/diamond.png" alt="Diamond" class="h-16 w-16 object-contain" />
                 </div>
                 <h2 class="text-xl font-bold mb-2" style="color:#00BFFF;">Paket Diamond</h2>
-                <p class="text-gray-600 text-center mb-4">Posting tanpa batas, branding perusahaan, support premium
-                    & fitur eksklusif.</p>
+                <ul class="text-gray-600 text-left mb-4 list-disc list-inside">
+                    <li>unlimited posting lowongan kerja</li>
+                    <li>Durasi tayang 60 hari</li>
+                    <li>Lowongan tampil di top priority (paling atas di homepage)</li>
+                    <li>Logo dan profil perusahaan tampil di halaman khusus</li>
+                    <li>Fitur filter pelamar (misalnya berdasarkan pendidikan/skill dasar)</li>
+                    <li>Profil perusahaan premium (banner, link website, dll)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
+                    <li>Publikasi di semua platform media sosial (Story & Postingan)</li>
+                    <li>Notifikasi via email & dashboard</li>
+                </ul>
+                <div class="text-lg font-semibold text-[#00BFFF] mb-2">Rp100.000</div>
                 <button class="mt-auto"
                     style="background-color:#00BFFF;color:#fff;padding:0.5rem 1.5rem;border-radius:0.5rem;font-weight:600;">Pilih
                     Paket</button>
