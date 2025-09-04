@@ -51,18 +51,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <img src="../img/logo2.png" alt="Logo" class="w-60 h-18 object-contain mb-0" />
             </div>
             <nav class="flex-1 flex flex-col gap-1 px-2 py-2">
-                <!-- Menu contoh -->
                 <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all mb-1
                     <?php echo $menuAktif['dashboard'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
-                    Dashboard
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8v-10h-8v10zm0-18v6h8V3h-8z" stroke="currentColor"/></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
+                    <?php echo $menuAktif['lowongan'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87" /><path d="M16 3.13a4 4 0 010 7.75" /></svg>
+                    <span>Lowongan Kerja</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
+                    <?php echo $menuAktif['perusahaan'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 21v-4a4 4 0 014-4h10a4 4 0 014 4v4" /><circle cx="12" cy="7" r="4" /></svg>
+                    <span>Perusahaan</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
+                    <?php echo $menuAktif['pelamar'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path d="M5.5 21v-2a4.5 4.5 0 019 0v2" /></svg>
+                    <span>Pelamar</span>
                 </a>
                 <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
                     <?php echo $menuAktif['artikel'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
-                    Artikel & Tips
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+                    <span>Artikel & Tips</span>
                 </a>
                 <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all mt-auto
-                    text-teal-100 hover:bg-teal-900 hover:text-white">
-                    Logout
+                    <?php echo $menuAktif['logout'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7" /><rect x="3" y="4" width="4" height="16" rx="2" /></svg>
+                    <span>Logout</span>
                 </a>
             </nav>
         </aside>
