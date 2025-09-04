@@ -22,7 +22,7 @@ if(isset($_POST['submit'])){
   <body class="bg-[#181f2a] min-h-screen flex items-center justify-center p-6">
     <div class="max-w-md w-full bg-white rounded-2xl shadow-lg">
       <!-- Header / Logo -->
-      <div class="bg-[#14746f] h-20 flex flex-col items-center justify-center rounded-t-2xl">
+      <div class="bg-[#00646A] h-20 flex flex-col items-center justify-center rounded-t-2xl">
         <img src="../img/logo2.png" alt="Logo Cari Kerja ID" class="h-10 w-auto object-contain mb-2">
         <span class="text-white font-semibold text-lg tracking-wide"></span>
       </div>
@@ -48,10 +48,11 @@ if(isset($_POST['submit'])){
               placeholder="Password" required />
             <label class="text-gray-600">Konfirmasi password</label>
           </div>
-          <button name="submit" type="submit"
-            class="w-full bg-[#14746f] text-white py-3 rounded-xl font-semibold text-lg transition-all duration-300 hover:bg-[#0f5c57] active:scale-95">
-            Register
-          </button>
+          <button name="submit" type="submit" 
+                    class="w-full bg-teal-600 text-white py-3 rounded-xl font-medium
+                    transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95">
+                    <span class="relative z-10">Register</span>
+                </button>
         </form>
         <div class="w-full mt-4 text-center text-sm text-gray-600">
           Sudah punya akun? <a href="login.php" class="text-[#14746f] hover:underline font-semibold">Login sekarang</a>
