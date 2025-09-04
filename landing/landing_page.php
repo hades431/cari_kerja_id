@@ -178,6 +178,13 @@ include '../header.php'; ?>
                 </select>
                 <select
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
+
+                <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
+                    <option>Lokasi</option>
+                    <option value="bandung">Bandung</option>
+                    <option value="baleendah">Baleendah</option>
+                </select>
+                <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
                     <option>Pendidikan</option>
                     <option value="sma">SMA/SMK</option>
                     <option value="d3">D3/D4</option>
@@ -245,7 +252,7 @@ include '../header.php'; ?>
                                 </path>
                             </svg>
                         </a>
-                        <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook"
+    <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook"
                             href="https://fb.me/g/1PDZMh3OyT/dTSHxncH?ref=share" target="_blank"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-8">
                                 <path fill="currentColor"

@@ -22,43 +22,52 @@ if(isset($_POST['submit'])){
   <body class="bg-gray-900 min-h-screen flex items-center justify-center p-6">
     <div class="max-w-xl w-full bg-white shadow-lg">
       <!-- Header / Logo -->
-      <div class="bg-teal-700 text-white text-center py-6">
-        <h1 class="text-xl font-semibold">Cari Kerja ID</h1>
-      </div><!-- Register / Login card content -->
+      <div class="bg-teal-700 h-16 flex items-center justify-center ">
+        <img src="../img/logo2.png" alt="Logo Cari Kerja ID" class="h-12 w-auto object-contain mx-auto">
+      </div>
+<!-- Register / Login card content -->
   <div class="p-8">
     <div class="mb-6">
       <div class="bg-gray-200 text-center py-2 font-bold">Register</div>
     </div>
 
-    <form class="space-y-4" action="#" method="post">
-      <div class="flex items-center">
-        <label class="w-40 font-semibold">Username</label>
-        <span class="mr-2">:</span>
-        <input type="text" name="username" class="flex-1 bg-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Masukkan username" />
-      </div>
+   <form class="space-y-6" method="post">
+                <div class="input-container">
+                    <input type="username" name="username" 
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 transition-all duration-300 bg-transparent placeholder-transparent"
+                        placeholder="Username" required />
+                    <label class="text-gray-600">Username</label>
+                </div>
 
-      <div class="flex items-center">
-        <label class="w-40 font-semibold">Email / No telp</label>
-        <span class="mr-2">:</span>
-        <input type="email" name="email" class="flex-1 bg-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="contoh@gmail.com / 0812xxxx" />
-      </div>
+                <div class="input-container">
+                    <input type="email" name="email" 
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 transition-all duration-300 bg-transparent placeholder-transparent"
+                        placeholder="Email" required />
+                    <label class="text-gray-600">Email</label>
+                </div>
 
-      <div class="flex items-center">
-        <label class="w-40 font-semibold">Password</label>
-        <span class="mr-2">:</span>
-        <input type="password" name="password" class="flex-1 bg-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Masukkan password" />
-      </div>
+                <div class="input-container">
+                    <input type="password" name="password" 
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 transition-all duration-300 bg-transparent placeholder-transparent"
+                        placeholder="Password" required />
+                    <label class="text-gray-600">Password</label>
+                </div>
 
-      <div class="flex items-center">
-        <label class="w-40 font-semibold">Confirm Password</label>
-        <span class="mr-2">:</span>
-        <input type="password" name="confirm_password" class="flex-1 bg-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Konfirmasi password" />
-      </div>
+                <div class="input-container">
+                    <input type="password" name="konfirmasi_password" 
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 transition-all duration-300 bg-transparent placeholder-transparent"
+                        placeholder="Password" required />
+                    <label class="text-gray-600">Konfirmasi password</label>
+                </div>
 
-      <div class="flex justify-center">
-        <button type="submit" class="bg-gray-300 px-6 py-2 rounded font-semibold hover:opacity-90">Register</button>
-      </div>
-    </form>
+                <button name="submit" type="submit" 
+                    class="w-full bg-gradient-to-r from-[#166534] via-[#103d22] to-[#166534] bg-size-200 text-white py-3 rounded-xl font-medium
+                    transition-all duration-500 transform hover:scale-[1.02] hover:bg-pos-100 hover:shadow-xl active:scale-95
+                    relative overflow-hidden group">
+                    <span class="relative z-10">Login</span>
+                    <div class="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-gradient-to-r from-[#103d22] via-[#166534] to-[#103d22]"></div>
+                </button>
+            </form>
 
     <div class="w-full mt-4 text-center text-sm text-gray-600">
                 Sudah punya akun? <a href="login.php" class="text-indigo-600 hover:underline font-semibold">Login sekarang</a>
