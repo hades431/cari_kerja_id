@@ -29,8 +29,10 @@ session_start();
                     </a>
                 <?php endif; ?>
                 <div class="flex gap-3 mt-2">
-                    <button class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
-                      text-white px-6 py-2 rounded-full font-bold shadow transition">Info & Tips Kerja</button>
+                    <a href="../tips kerja/info_tips_kerja.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
+                      text-white px-6 py-2 rounded-full font-bold shadow transition">
+                        Info & Tips Kerja
+                    </a>
                     <a href="../public/buka_lowongan.php" class="bg-yellow-500 max-w-max hover:bg-yellow-600 active:bg-yellow-700 
                       text-black px-6 py-2 rounded-full font-bold shadow transition">
                         Buka Lowongan
