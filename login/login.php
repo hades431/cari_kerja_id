@@ -107,11 +107,7 @@ $error2 = true;
                 </button>
             </form>
 
-            <div class="mt-6 text-center">
-                <a href="#" class="text-sm text-teal-600 hover:text-teal-800 transition-colors duration-300 hover:underline">
-                    Lupa password?
-                </a>
-            </div>
+           
 
             <div class="mt-6 text-center text-gray-600">
                 Belum punya akun? 
