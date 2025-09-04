@@ -27,7 +27,8 @@ include '../header.php'; ?>
                 <div class="flex flex-col md:flex-row gap-8 w-full justify-center items-center">
                     <input type="text" placeholder="Search..."
                         class="bg-white rounded px-4 py-2 w-full md:w-[340px] text-gray-700" />
-                    <select class="bg-white rounded px-4 py-2 w-full md:w-[340px] text-gray-700">
+                    <select
+                        class="bg-white rounded-xl px-4 py-3 w-full md:w-[340px] text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
                         <option value="">Lulusan</option>
                         <option value="sma">SMA/SMK</option>
                         <option value="d3">D3/D4</option>
@@ -166,11 +167,22 @@ include '../header.php'; ?>
                 class="border rounded-xl px-4 py-3 w-full text-lg font-semibold placeholder-gray-400 shadow-sm focus:outline-none"
                 placeholder="Searchbar..." />
             <div class="flex gap-3">
+                <select
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
+                    <option>Lokasi</option>
+                    <option value="bandung">Kab.Bandung</option>
+                    <option value="baleendah">Kota Bandung</option>
+                    <option value="cimahi">Cimahi</option>
+                    <option value="cileunyi">Bandung Barat</option>
+                    <option value="cicalengka">Sumedang</option>
+                </select>
+                <select
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
+
                 <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
                     <option>Lokasi</option>
                     <option value="bandung">Bandung</option>
                     <option value="baleendah">Baleendah</option>
-
                 </select>
                 <select class="border rounded-xl px-4 py-3 w-1/2 font-semibold shadow-sm focus:outline-none">
                     <option>Pendidikan</option>
@@ -178,7 +190,6 @@ include '../header.php'; ?>
                     <option value="d3">D3/D4</option>
                     <option value="s1">S1</option>
                     <option value="s2">S2</option>
-
                 </select>
             </div>
             <button type="submit"
@@ -241,8 +252,9 @@ include '../header.php'; ?>
                                 </path>
                             </svg>
                         </a>
-                        <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook" href=""
-                            target="_blank"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-8">
+    <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Facebook"
+                            href="https://fb.me/g/1PDZMh3OyT/dTSHxncH?ref=share" target="_blank"><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-8">
                                 <path fill="currentColor"
                                     d="m279.14 288 14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z">
                                 </path>
