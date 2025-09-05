@@ -13,6 +13,8 @@ if ($keyword) {
 } else {
     $tipsList = getArtikelList();
 }
+
+    
 ?>
 
 <!DOCTYPE html>
@@ -101,6 +103,7 @@ if ($keyword) {
                 <th class="font-semibold text-sm px-4 py-3">Tanggal Posting</th>
                 <th class="font-semibold text-sm px-4 py-3">Aksi</th>
                 <th class="font-semibold text-sm px-4 py-3">Edit</th>
+                <th class="font-semibold text-sm px-4 py-3">Hapus</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -121,10 +124,10 @@ if ($keyword) {
                             <?= htmlspecialchars($row['judul']); ?>
                         </td>
                         <td class="px-4 py-3 text-gray-600">
-                            <?= date('j F Y', strtotime($row['tanggal'])); ?>
+                            <?= date('d-m-Y', strtotime($row['tanggal'])); ?>
                         </td>
                         <td class="px-4 py-3">
-                            <a href="detail_artikel.php?id=<?= $row['id']; ?>" 
+                            <a href="lihat_artikel.php?id=<?= $row['id']; ?>" 
                                class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm shadow">
                                Lihat Artikel
                             </a>
@@ -133,6 +136,11 @@ if ($keyword) {
                             <a href="edit_artikel.php?id=<?= $row['id'] ?>" 
                                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm ml-2">Edit</a>
                         </td>
+                        <td class="px-4 py-2 text-center">
+                            <a href="hapus_artikel.php?id=<?= $row['id'] ?>"onclick="return confirm('Yakin ingin menghapus artikel ini?')"
+                                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm ml-2">Hapus</a>
+                        </td>
+
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -140,6 +148,8 @@ if ($keyword) {
                     <td colspan="5" class="px-4 py-6 text-center text-gray-500 italic">
                         Artikel tidak ditemukan.
                     </td>
+                    
+
                 </tr>
             <?php endif; ?>
         </tbody>

@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $gambar = '';
     if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
-        $targetDir = "../img/"; // folder tujuan simpan gambar
+        $targetDir = "../img/"; 
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $targetFile = $targetDir . $fileName;
 
         if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $targetFile)) {
-            $gambar = $fileName; // simpan hanya nama file
+            $gambar = $fileName; 
         }
     }
 
@@ -83,8 +83,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </a>
             </nav>
         </aside>
-
-        <!-- Main content -->
         <div id="main-content" class="flex-1 flex flex-col bg-white min-h-screen" style="border-left:1px solid #0b5f39ff;">
             <header class="bg-teal-800 flex items-center justify-between px-12 py-4" style="border-bottom:1px solid #ffffff;">
                 <div class="text-xl font-medium ml-10 text-white">Tambah Artikel</div>

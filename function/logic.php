@@ -96,4 +96,46 @@ function tambahArtikel($data, $file) {
         return false; 
     }
 }
+
+function update_artikel($data, $file) {
+    global $conn;
+
+    $id = $data['id'];
+    $judul = htmlspecialchars($data['judul']);
+    $isi = htmlspecialchars($data['isi']);
+    $ringkasan = substr($isi, 0, 150) . (strlen($isi) > 150 ? '...' : '');
+
+    $gambar = null;
+    if (isset($file['gambar']) && $file['gambar']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../uploads/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        $fileName = uniqid() . '_' . basename($file['gambar']['name']);
+        $targetFilePath = $uploadDir . $fileName;
+
+        if (move_uploaded_file($file['gambar']['tmp_name'], $targetFilePath)) {
+            $gambar = 'uploads/' . $fileName;
+        } else {
+            return false; 
+        }
+    }
+
+    if ($gambar) {
+        $sql = "UPDATE artikel SET judul=?, ringkasan=?, isi=?, gambar=? WHERE id=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssssi", $judul, $ringkasan, $isi, $gambar, $id);
+    } else {
+        $sql = "UPDATE artikel SET judul=?, ringkasan=?, isi=? WHERE id=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssi", $judul, $ringkasan, $isi, $id);
+    }
+
+    if ($stmt->execute()) {
+        return mysqli_affected_rows($conn);
+    } else {
+        return false; 
+    }
+}
+
 ?>
