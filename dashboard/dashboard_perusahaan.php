@@ -188,10 +188,10 @@ $topDeals = [
             <span class="sidebar-label">pengajuan</span>
             <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
         </button>
-        <a href="daftar_pelamar.php" class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
+        <button onclick="window.location.href='../perusahaan/daftar_pelamar.php'" class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
             <span class="sidebar-label">Daftar Pelamar</span>
             <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87M16 3.13a4 4 0 0 1 0 7.75M8 3.13a4 4 0 0 0 0 7.75"/></svg>
-        </a>
+        </button>
     </div>
     <!-- Main Content -->
     <div class="flex-1 flex flex-col gap-6 px-9 pt-9 bg-white">
