@@ -16,7 +16,7 @@ $harga_paket = [
 $harga = isset($harga_paket[$paket]) ? $harga_paket[$paket] : 0;
 ?>
 
-<div class="max-w-screen-2xl mx-auto mt-10 bg-white p-8 rounded-lg border border-gray-200 shadow-lg">
+<div class="max-w-screen-2xl mx-auto mt-10 mb-6 bg-white p-8 rounded-lg border border-gray-200 shadow-lg">
     <h2 class="text-2xl font-bold mb-6 text-center">Form Pendaftaran Perusahaan</h2>
     <form action="proses_buka_lowongan.php" method="POST" enctype="multipart/form-data">
 
@@ -182,5 +182,8 @@ $harga = isset($harga_paket[$paket]) ? $harga_paket[$paket] : 0;
     });
 </script>
 </body>
+<?php
+include '../footer.php';
+?>
 
 </html>
