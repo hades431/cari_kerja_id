@@ -18,9 +18,41 @@ if(isset($_POST['submit'])){
     <title>Register</title>
     <!-- Tailwind Play CDN (untuk demo cepat). Untuk produksi gunakan build Tailwind yang sebenarnya. -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass {
+            background: #fff; /* putih solid */
+            /* backdrop-filter: blur(10px); */
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .floating { animation: float 6s ease-in-out infinite; }
+        .input-container {
+            position: relative;
+            margin: 1rem 0;
+        }
+        .input-container label {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.3s;
+            pointer-events: none;
+            color: #6b7280; /* abu-abu elegan */
+        }
+        .input-container input:focus ~ label,
+        .input-container input:not(:placeholder-shown) ~ label {
+            top: 0;
+            font-size: 0.75rem;
+            background: #fff; /* putih solid */
+            padding: 0 0.5rem;
+        }
+    </style>
+    </style>
   </head>
   <body class="bg-[#181f2a] min-h-screen flex items-center justify-center p-6">
-    <div class="max-w-md w-full bg-white rounded-2xl shadow-lg">
+    <div class="max-w-md w-full glass rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-[1.02] floating z-10">
       <!-- Header / Logo -->
       <div class="bg-[#00646A] h-20 flex flex-col items-center justify-center rounded-t-2xl">
         <img src="../img/logo2.png" alt="Logo Cari Kerja ID" class="h-10 w-auto object-contain mb-2">
@@ -82,4 +114,3 @@ if(isset($_POST['submit'])){
     </style>
   </body>
 </html>
-
