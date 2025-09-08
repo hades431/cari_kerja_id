@@ -5,7 +5,7 @@
         <div class="text-center md:text-left">
             <img src="../img/logo2.png" class="bg-[#00646A] px-6 py-2 rounded w-64 h-20 object-contain">
             <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-4 text-gray-500 text-sm">
-                <a href="#" class="hover:text-blue-600">About Us</a>
+                <a href="../about/about_us.php" class="hover:text-[#00646A]">About Us</a>
             </div>
             <p class="mt-4 text-gray-400 text-xs">
                 © 2025 CariKerjaID. All Rights Reserved.
@@ -14,7 +14,7 @@
 
 
         <div class="flex justify-center md:justify-end gap-4 text-gray-500 text-2xl flex-col items-center">
-            <p class="text-gray-500 mb-2 font-medium">Our Social Media</p>
+            <p class="text-[#00646A] mb-2 font-medium">Our Social Media</p>
             <div class="flex gap-8">
                 <a class="text-gray-700 hover:text-orange-600" aria-label="Visit TrendyMinds Instagram"
                     href="https://www.instagram.com/carikerjabandung.id/" target="_blank">
