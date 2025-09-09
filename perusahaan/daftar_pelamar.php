@@ -35,37 +35,22 @@ if ($result && $result->num_rows > 0) {
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-[#00797a] text-white p-6 flex flex-col">
-        <div class="flex flex-col items-center mb-10">
-            <div class="w-20 h-20 bg-white rounded-full mb-3"></div>
-            <h1 class="text-lg font-bold">Perusahaan</h1>
-        </div>
-
-        <nav class="flex flex-col space-y-3">
-    <!-- Dashboard -->
-    <a href="../dashboard/dashboard_perusahaan.php" 
-       class="px-4 py-2 rounded-lg bg-white text-[#00646A] hover:bg-[#00949A] hover:text-white flex items-center">
-         <span class="ml-2">Dashboard</span>
-    </a>
-
-    <!-- Daftar Pelamar -->
-    <a href="daftar_pelamar.php" 
-       class="px-4 py-2 rounded-lg bg-white text-[#00646A] hover:bg-[#00949A] hover:text-white flex items-center">
-         <span class="ml-2">Daftar Pelamar</span>
-    </a>
-
-    <!-- Pasang Lowongan -->
-    <a href="../perusahaan/form_pasang_lowongan.php" 
-       class="px-4 py-2 rounded-lg bg-white text-[#00646A] hover:bg-[#00949A] hover:text-white flex items-center">
-         <span class="ml-2">Pasang Lowongan</span>
-    </a>
-</nav>
+   <div id="sidebar" class="bg-[#00888a] text-white flex flex-col items-center py-10 px-0 shadow-lg w-64 min-h-screen relative">
+        <div class="flex flex-col items-center w-full flex-1">
+            <div class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg">
+                <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-20 h-20 rounded-full object-cover">
+            </div>
+            <div class="text-lg font-bold text-white mb-8 text-center">Perusahaan</div>
+            <div class="flex flex-col gap-4 w-full px-6">
+                <a href="../dashboard/dashboard_perusahaan.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Dashboard</a>
+                <a href="../perusahaan/daftar_pelamar.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Daftar Pelamar</a>
+                <a href="../perusahaan/form_pasang_lowongan.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Pasang Lowongan</a>
+            </div>
+        </div>  
+        <div class="absolute bottom-6 left-0 w-full px-6 text-base text-white/70 text-center font-semibold">© 2025 Carikerja.id</div>
+    </div>
 
 
-        <div class="mt-auto pt-6 text-center text-sm opacity-75">
-            © 2025 Carikerja.id
-        </div>
-    </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-8">
