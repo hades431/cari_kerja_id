@@ -8,6 +8,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Pasang Lowongan</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Script untuk toggle field gaji
+    function toggleGaji() {
+      const checkbox = document.getElementById('show_gaji');
+      const gajiField = document.getElementById('gaji_field');
+      if (checkbox.checked) {
+        gajiField.classList.remove('hidden');
+      } else {
+        gajiField.classList.add('hidden');
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -27,8 +39,16 @@
                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
       </div>
 
-      <!-- Kisaran gaji -->
+      <!-- Checkbox untuk kisaran gaji -->
       <div>
+        <label class="flex items-center gap-2">
+          <input type="checkbox" id="show_gaji" onclick="toggleGaji()" class="w-4 h-4 text-teal-600 focus:ring-teal-500">
+          <span class="text-gray-700 font-semibold">Tampilkan Kisaran Gaji</span>
+        </label>
+      </div>
+
+      <!-- Kisaran gaji (hidden by default) -->
+      <div id="gaji_field" class="hidden">
         <label for="gaji" class="block text-gray-700 font-semibold mb-2">Kisaran gaji</label>
         <input type="text" id="gaji" name="gaji" placeholder="Contoh: Rp3.000.000 - Rp5.000.000"
                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
@@ -67,11 +87,8 @@
 
   <!-- Footer -->
   <footer class="mt-10 bg-[#00797a] py-6 text-center text-white">
-    <div class="flex flex-col items-center space-y-2">
-      <img src="../assets/logo.png" alt="Logo" class="w-16 h-16 rounded-full">
       <div class="font-bold text-lg">CariKerja.id</div>
       <p class="text-sm">© 2025 CariKerja.id | All Rights Reserved</p>
-    </div>
   </footer>
 
 </body>

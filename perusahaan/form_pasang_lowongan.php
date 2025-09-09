@@ -27,11 +27,56 @@
                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
       </div>
 
-      <!-- Deskripsi Perusahaan -->
+      <!-- Deskripsi Lowongan -->
       <div>
-        <label for="deskripsi" class="block text-gray-700 font-semibold mb-2">Deskripsi Perusahaan</label>
+        <label for="deskripsi" class="block text-gray-700 font-semibold mb-2">Deskripsi Lowongan</label>
         <textarea id="deskripsi" name="deskripsi" rows="5" required
                   class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+      </div>
+
+      <!-- Kriteria -->
+      <div class="space-y-6">
+        <h3 class="text-lg font-bold text-gray-700">Kriteria</h3>
+
+        <!-- Batas Usia -->
+        <div>
+          <label for="usia" class="block text-gray-700 font-semibold mb-2">Batas Usia</label>
+          <select id="usia" name="usia" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Pilih batas usia</option>
+            <option value="maks_25">Maksimal 25 tahun</option>
+            <option value="maks_30">Maksimal 30 tahun</option>
+            <option value="maks_35">Maksimal 35 tahun</option>
+            <option value="maks_40">Maksimal 40 tahun</option>
+          </select>
+        </div>
+
+        <!-- Pendidikan -->
+        <div>
+          <label for="pendidikan" class="block text-gray-700 font-semibold mb-2">Pendidikan Minimal</label>
+          <select id="pendidikan" name="pendidikan" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Pilih pendidikan</option>
+            <option value="sma">SMA/SMK</option>
+            <option value="d3">Diploma (D3)</option>
+            <option value="s1">Sarjana (S1)</option>
+            <option value="s2">Magister (S2)</option>
+          </select>
+        </div>
+
+       
+        <!-- Jenis Kelamin -->
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Jenis Kelamin</label>
+          <div class="flex items-center gap-6">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="gender" value="pria" class="text-teal-600 focus:ring-teal-500">
+              Pria
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="gender" value="wanita" class="text-teal-600 focus:ring-teal-500">
+              Wanita
+            </label>
+          </div>
+        </div>
       </div>
 
       <!-- Media Sosial & Website -->
@@ -50,7 +95,7 @@
 
       <!-- Logo -->
       <div>
-        <label for="logo" class="block text-gray-700 font-semibold mb-2">Logo Perusahaan</label>
+        <label for="logo" class="block text-gray-700 font-semibold mb-2">Banner Perusahaan</label>
         <input type="file" id="logo" name="logo" accept="image/*"
                class="w-full border p-3 rounded-lg bg-gray-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500">
       </div>
@@ -71,11 +116,8 @@
 
   <!-- Footer -->
   <footer class="mt-10 bg-[#00797a] py-6 text-center text-white">
-    <div class="flex flex-col items-center space-y-2">
-      <img src="../assets/logo.png" alt="Logo" class="w-16 h-16 rounded-full">
-      <div class="font-bold text-lg">CariKerja.id</div>
-      <p class="text-sm">© 2025 CariKerja.id | All Rights Reserved</p>
-    </div>
+    <div class="font-bold text-lg">CariKerja.id</div>
+    <p class="text-sm">© 2025 CariKerja.id | All Rights Reserved</p>
   </footer>
 
 </body>
