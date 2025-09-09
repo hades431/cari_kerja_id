@@ -177,34 +177,30 @@ $topDeals = [
 <body class="bg-white text-gray-900">
 <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <div id="sidebar" class="sidebar-transition bg-[#00797a] text-white flex flex-col items-center p-7 shadow-lg overflow-x-hidden transition-all duration-300 w-56">
-        <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-white/20 shadow-lg">
-        <div class="text-lg font-bold text-white mb-6 text-center">Barberking hair</div>
-        <a href="../perusahaan/profile_perusahaan.php" class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
-            <span class="sidebar-label">Profile</span>
-            <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        </a>
-        <button class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
-            <span class="sidebar-label">pengajuan</span>
-            <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
-        </button>
-        <button onclick="window.location.href='../perusahaan/daftar_pelamar.php'" class="sidebar-btn w-full py-3 mb-2 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-[#009fa3] hover:text-white transition flex items-center justify-center">
-            <span class="sidebar-label">Daftar Pelamar</span>
-            <svg class="inline-block w-6 h-6 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87M16 3.13a4 4 0 0 1 0 7.75M8 3.13a4 4 0 0 0 0 7.75"/></svg>
-        </button>
+    <div id="sidebar" class="bg-[#00888a] text-white flex flex-col items-center py-10 px-0 shadow-lg w-64 min-h-screen relative">
+        <div class="flex flex-col items-center w-full flex-1">
+            <div class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg">
+                <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-20 h-20 rounded-full object-cover">
+            </div>
+            <div class="text-lg font-bold text-white mb-8 text-center">Perusahaan</div>
+            <div class="flex flex-col gap-4 w-full px-6">
+                <a href="../dashboard/dashboard_perusahaan.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Dashboard</a>
+                <a href="../perusahaan/daftar_pelamar.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Daftar Pelamar</a>
+                <a href="#" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Pasang Lowongan</a>
+            </div>
+        </div>  
+        <div class="absolute bottom-6 left-0 w-full px-6 text-base text-white/70 text-center font-semibold">© 2025 Carikerja.id</div>
     </div>
     <!-- Main Content -->
     <div class="flex-1 flex flex-col gap-6 px-9 pt-9 bg-white">
-        <!-- Stat Row -->
+        <!-- Statistik Card utama (pindah ke atas) -->
         <div class="flex gap-4 mb-4">
             <?php foreach ($dashboardStats as $stat): ?>
-                <a href="stat_detail.php?stat=<?php echo urlencode($stat['key']); ?>" class="flex-1 rounded-xl bg-[#00797a] text-white px-0 py-0 min-w-0 relative shadow transition transform hover:scale-105 hover:shadow-lg focus:outline-none" style="text-decoration:none;">
-                    <div class="px-6 py-5 flex flex-col justify-between h-full">
-                        <div class="text-base font-semibold mb-2 text-green-100"><?php echo $stat['title']; ?></div>
-                        <div class="text-3xl font-bold mb-1 text-white"><?php echo $stat['value']; ?></div>
-                        <div class="text-sm text-green-50 mb-2"><?php echo $stat['subtitle']; ?></div>
-                    </div>
-                </a>
+                <div class="flex-1 bg-[#009fa3] rounded-lg shadow px-6 py-4 flex flex-col justify-center items-start">
+                    <div class="text-base font-semibold mb-1 text-white"><?php echo $stat['title']; ?></div>
+                    <div class="text-3xl font-bold mb-1 text-white"><?php echo $stat['value']; ?></div>
+                    <div class="text-sm text-white mb-1"><?php echo $stat['subtitle']; ?></div>
+                </div>
             <?php endforeach; ?>
         </div>
         <!-- Footer -->
