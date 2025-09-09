@@ -15,7 +15,7 @@ if(isset($_POST['submit'])){
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Register</title>
+    <title>Daftar</title>
     <!-- Tailwind Play CDN (untuk demo cepat). Untuk produksi gunakan build Tailwind yang sebenarnya. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -60,7 +60,7 @@ if(isset($_POST['submit'])){
       </div>
       <!-- Register / Login card content -->
       <div class="p-8">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Register</h2>
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Daftar</h2>
         <form class="space-y-6" method="post">
           <div class="input-container">
             <input type="email" name="email"
@@ -83,7 +83,7 @@ if(isset($_POST['submit'])){
           <button name="submit" type="submit" 
                     class="w-full bg-teal-600 text-white py-3 rounded-xl font-medium
                     transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95">
-                    <span class="relative z-10">Register</span>
+                    <span class="relative z-10">Daftar</span>
                 </button>
         </form>
         <div class="w-full mt-4 text-center text-sm text-gray-600">
