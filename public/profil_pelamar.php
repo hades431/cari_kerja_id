@@ -1,8 +1,38 @@
 <?php
-
 $judul_halaman = "Profil Pelamar";
 $hide_header_profile = true; // tambahkan ini
 include '../header.php';
+
+// Koneksi ke database dan logic function
+if (file_exists(__DIR__ . '/../function/logic.php')) {
+    include __DIR__ . '/../function/logic.php';
+} else {
+    die('File logic.php tidak ditemukan.');
+}
+
+// Tidak perlu session_start() lagi karena sudah di header.php
+if (!isset($_SESSION['user']['id'])) {
+    header('Location: ../login/login.php');
+    exit;
+}
+
+$id_user = $_SESSION['user']['id'];
+
+// Ambil data profil pelamar dari function logic
+$pelamar = getProfilPelamarByUserId($id_user);
+
+// Data default jika belum ada
+$nama = $pelamar['nama'] ?? $_SESSION['user']['nama'] ?? 'Nama Pelamar';
+$email = $pelamar['email'] ?? $_SESSION['user']['email'] ?? 'email@pelamar.com';
+$telepon = $pelamar['telepon'] ?? '-';
+$alamat = $pelamar['alamat'] ?? '-';
+$deskripsi = $pelamar['deskripsi'] ?? 'Belum ada deskripsi.';
+$jabatan = $pelamar['jabatan'] ?? '-';
+$cv = $pelamar['cv'] ?? '';
+$foto = $pelamar['foto'] ?? '';
+if (!$foto) {
+    $foto = "https://ui-avatars.com/api/?name=" . urlencode($nama) . "&background=2563eb&color=fff&size=128";
+}
 ?>
 <!-- Button Kembali -->
 <div class="max-w-4xl mt-4 px-4 flex justify-start">
@@ -15,26 +45,25 @@ include '../header.php';
 <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-start gap-8 px-4">
     <!-- Foto profil kiri -->
     <div class="flex-shrink-0 flex flex-col items-center w-full md:w-56">
-        <img src="https://ui-avatars.com/api/?name=Nama+Pelamar&background=2563eb&color=fff&size=128"
+        <img src="<?= htmlspecialchars($foto) ?>"
             class="w-36 h-36 rounded-full border-4 border-white shadow-lg object-cover bg-white" alt="Foto Profil">
     </div>
     <!-- Card utama kanan -->
     <div class="flex-1 bg-white rounded-xl shadow-lg p-8 md:mt-0">
         <div class="flex flex-col items-start">
-            <h2 class="text-2xl font-bold text-gray-800">Nama Pelamar</h2>
-            <div class="text-[#00646A] font-medium mt-1">UI/UX Designer</div>
+            <h2 class="text-2xl font-bold text-gray-800"><?= htmlspecialchars($nama) ?></h2>
+            <div class="text-[#00646A] font-medium mt-1"><?= htmlspecialchars($jabatan) ?></div>
             <div class="flex flex-col sm:flex-row gap-3 mt-3 text-gray-500 text-sm">
-                <span><i class="fas fa-envelope mr-1"></i> email@pelamar.com</span>
-                <span><i class="fas fa-phone mr-1"></i> 0812-3456-7890</span>
-                <span><i class="fas fa-map-marker-alt mr-1"></i> Bandung, Indonesia</span>
+                <span><i class="fas fa-envelope mr-1"></i> <?= htmlspecialchars($email) ?></span>
+                <span><i class="fas fa-phone mr-1"></i> <?= htmlspecialchars($telepon) ?></span>
+                <span><i class="fas fa-map-marker-alt mr-1"></i> <?= htmlspecialchars($alamat) ?></span>
             </div>
         </div>
         <!-- Section Ringkasan -->
         <div class="mt-10">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Deskripsi</h3>
             <div class="bg-gray-100 rounded p-4 text-gray-700">
-                Seorang UI/UX Designer dengan pengalaman lebih dari 3 tahun di industri teknologi. Memiliki keahlian
-                dalam desain antarmuka, prototyping, dan kolaborasi tim lintas fungsi.
+                <?= nl2br(htmlspecialchars($deskripsi)) ?>
             </div>
         </div>
         <!-- Section Pengalaman -->
@@ -79,16 +108,18 @@ include '../header.php';
             <div class="bg-gray-100 rounded p-4 flex flex-col sm:flex-row items-center gap-4">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-file-pdf text-red-500 text-2xl"></i>
-                    <span class="text-gray-700 text-sm">cv_namapelamar.pdf</span>
+                    <span class="text-gray-700 text-sm"><?= $cv ? htmlspecialchars($cv) : 'Belum upload CV' ?></span>
                 </div>
+                <?php if ($cv): ?>
                 <div class="flex gap-2 mt-2 sm:mt-0">
-                    <a href="#" class="text-[#00646A] hover:underline flex items-center gap-1">
+                    <a href="../uploads/<?= htmlspecialchars($cv) ?>" class="text-[#00646A] hover:underline flex items-center gap-1" download>
                         <i class="fas fa-download"></i> Download
                     </a>
-                    <a href="#" class="text-blue-600 hover:underline flex items-center gap-1">
+                    <a href="../uploads/<?= htmlspecialchars($cv) ?>" class="text-blue-600 hover:underline flex items-center gap-1" target="_blank">
                         <i class="fas fa-eye"></i> Lihat
                     </a>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
