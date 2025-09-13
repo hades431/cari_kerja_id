@@ -186,6 +186,13 @@ include '../header.php'; ?>
                     <option value="s2">S2</option>
                 </select>
             </div>
+            <select
+                class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
+                <option>Pengalaman</option>
+                <option value="tanpa">Tanpa Pengalaman</option>
+                <option value="1-5">1-5 Tahun</option>
+                <option value=">5">5 Tahun Lebih</option>
+            </select>
             <button type="submit"
                 class="flex items-center justify-center gap-2 bg-[#00646A] text-white rounded-xl px-4 py-3 w-full text-lg font-semibold shadow">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"
