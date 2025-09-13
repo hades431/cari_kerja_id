@@ -30,7 +30,7 @@ if ($keyword) {
                 <img src="../../img/logo2.png" alt="Logo" class="w-60 h-18 object-contain mb-0" />
             </div>
             <nav class="flex-1 flex flex-col gap-1 px-2 py-2">
-                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all mb-1
+                <a href="../dasboard.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all mb-1
                     <?php echo $menuAktif['dashboard'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
                     <span>Dashboard</span>
                 </a>
@@ -60,7 +60,6 @@ if ($keyword) {
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <div id="main-content" class="flex-1 flex flex-col bg-white min-h-screen" style="border-left:1px solid #0b5f39ff;">
             <header class="bg-teal-800 flex items-center justify-between px-12 py-4 relative" style="border-bottom:1px solid #ffffff;">
                 <div class="text-xl font-medium ml-10 text-white">Info, Tips & Artikel</div>
