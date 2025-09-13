@@ -3,8 +3,9 @@ session_start();
 require_once '../function/logic.php';
 
 if (isset($_POST['submit'])) {
+    $id_user = $_SESSION['user']['id'];
     // Insert data
-    if (profilPelamar($_POST) > 0) {
+    if (updateProfilPelamar($id_user, $_POST, $_FILES) > 0) {
         echo "<script>
                 alert('Berhasil edit profil');
                 document.location.href = 'profil_pelamar.php';

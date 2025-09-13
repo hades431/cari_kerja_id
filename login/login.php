@@ -4,30 +4,37 @@ session_start();
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
   $email = $_POST['email'];
   $password = $_POST['password'];
-  $stmt = $conn->prepare('SELECT*FROM user WHERE email = ?');
+  $stmt = $conn->prepare('SELECT * FROM user WHERE email = ?');
   $stmt->bind_param('s',$email);
   $stmt->execute();
-  $stmt->store_result();
-  if($stmt->num_rows > 0){
-    $stmt->bind_result($id_user,$email,$password_hash,$role,$status_akun);
-    $stmt->fetch();
-    if($password == $password_hash){
+  $result = $stmt->get_result();
+  if($result && $result->num_rows > 0){
+    $user = $result->fetch_assoc();
+    // Ganti pengecekan password sesuai kebutuhan (hash atau plain)
+    if($password == $user['password']){
       $_SESSION['login'] = true;
-      $_SESSION['id_user'] = $id_user;
-      $_SESSION['email'] = $email;
-      $_SESSION['role'] = $role;
-      $_SESSION['status_akun'] = $status_akun;
-      if($role == 'admin'){
+      $_SESSION['id_user'] = $user['id_user'];
+      $_SESSION['email'] = $user['email'];
+      $_SESSION['role'] = $user['role'];
+      $_SESSION['status_akun'] = $user['status_akun'];
+      // Simpan data user lengkap ke session['user']
+      $_SESSION['user'] = [
+        'id' => $user['id_user'],
+        'email' => $user['email'],
+        'nama' => $user['nama'] ?? '',
+        'role' => $user['role'],
+        'status_akun' => $user['status_akun']
+      ];
+      if($user['role'] == 'admin'){
         header('Location: ../admin/dashboard.php');
-      }elseif($role == 'pelamar'){
+      }elseif($user['role'] == 'pelamar'){
         header('Location: ../landing/landing_page.php');
       }else{
         header('Location: ../dashboard/dashboard_perusahaan.php');
       }
+    }
   }
-}
-$error2 = true;
-
+  $error2 = true;
 }
 ?>
 <!doctype html>
