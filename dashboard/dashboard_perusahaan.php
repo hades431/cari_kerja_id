@@ -193,6 +193,7 @@ $topDeals = [
     </div>
     <!-- Main Content -->
     <div class="flex-1 flex flex-col gap-6 px-9 pt-9 bg-white">
+        <h1 class="text-2xl font-bold text-[#009fa3] mb-2">Dashboard</h1>
         <!-- Statistik Card utama (pindah ke atas) -->
         <div class="flex gap-4 mb-4">
             <?php foreach ($dashboardStats as $stat): ?>
@@ -202,6 +203,84 @@ $topDeals = [
                     <div class="text-sm text-white mb-1"><?php echo $stat['subtitle']; ?></div>
                 </div>
             <?php endforeach; ?>
+        </div>
+        <!-- Tabel Daftar Pelamar -->
+        <div class="w-full mb-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full rounded-lg shadow bg-white">
+                    <thead>
+                        <tr class="bg-[#009fa3] text-white">
+                            <th class="py-3 px-4 text-left font-bold">Nama</th>
+                            <th class="py-3 px-4 text-left font-bold">Email</th>
+                            <th class="py-3 px-4 text-left font-bold">Posisi</th>
+                            <th class="py-3 px-4 text-left font-bold">No HP</th>
+                            <th class="py-3 px-4 text-left font-bold">CV</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="py-6 px-4 text-center text-gray-400">Tidak ada data pelamar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Tabel Lowongan -->
+        <div class="w-full mb-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full rounded-lg shadow bg-white">
+                    <thead>
+                        <tr class="bg-[#009fa3] text-white">
+                            <th class="py-3 px-4 text-left font-bold">Judul Lowongan</th>
+                            <th class="py-3 px-4 text-left font-bold">Departemen</th>
+                            <th class="py-3 px-4 text-left font-bold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3" class="py-6 px-4 text-center text-gray-400">Tidak ada data lowongan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Tabel Wawancara -->
+        <div class="w-full mb-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full rounded-lg shadow bg-white">
+                    <thead>
+                        <tr class="bg-[#009fa3] text-white">
+                            <th class="py-3 px-4 text-left font-bold">Nama Pelamar</th>
+                            <th class="py-3 px-4 text-left font-bold">Posisi</th>
+                            <th class="py-3 px-4 text-left font-bold">Tanggal Wawancara</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3" class="py-6 px-4 text-center text-gray-400">Tidak ada data wawancara</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Tabel Karyawan -->
+        <div class="w-full mb-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full rounded-lg shadow bg-white">
+                    <thead>
+                        <tr class="bg-[#009fa3] text-white">
+                            <th class="py-3 px-4 text-left font-bold">Nama Karyawan</th>
+                            <th class="py-3 px-4 text-left font-bold">Jabatan</th>
+                            <th class="py-3 px-4 text-left font-bold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3" class="py-6 px-4 text-center text-gray-400">Tidak ada data karyawan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <!-- Footer -->
         <div class="text-right text-[#a0a0ff] text-base mt-4 pb-2">
