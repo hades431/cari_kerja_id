@@ -24,41 +24,37 @@ if ($keyword) {
 </head>
 <body class="bg-[#222] min-h-screen">
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="bg-teal-800 w-64 flex flex-col min-h-screen shadow-lg relative" style="border-right:1px solid #79797aff;">
-            <div class="px-4 py-6 flex flex-col items-center gap-2">
-                <img src="../../img/logo2.png" alt="Logo" class="w-60 h-18 object-contain mb-0" />
-            </div>
-            <nav class="flex-1 flex flex-col gap-1 px-2 py-2">
-                <a href="../dasboard.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all mb-1
-                    <?php echo $menuAktif['dashboard'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
-                    <?php echo $menuAktif['lowongan'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
-                    <span>Lowongan Kerja</span>
-                </a>
-                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
-                    <?php echo $menuAktif['perusahaan'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
-                    <span>Perusahaan</span>
-                </a>
-                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
-                    <?php echo $menuAktif['pelamar'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
-                    <span>Pelamar</span>
-                </a>
-                <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all
-                    <?php echo $menuAktif['artikel'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>">
-                    <span>Artikel & Tips</span>
-                </a>
-                <!-- Logout -->
-                <a href="../logout.php" 
-                   class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all mt-auto
-                   <?php echo $menuAktif['logout'] ? 'bg-teal-900 text-white shadow' : 'text-teal-100 hover:bg-teal-900 hover:text-white'; ?>"
-                   onclick="return confirm('Yakin mau logout?')">
-                    <span>Logout</span>
-                </a>
-            </nav>
-        </aside>
+<aside class="bg-teal-800 w-64 flex flex-col min-h-screen shadow-lg">
+  <div class="px-4 py-6 flex flex-col items-center gap-2">
+    <img src="../../img/logo2.png" alt="Logo" class="w-48 object-contain" />
+  </div>
+  <nav class="flex-1 flex flex-col gap-1 px-2">
+    <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition text-teal-100 hover:bg-teal-900 hover:text-white">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3" /></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition text-teal-100 hover:bg-teal-900 hover:text-white">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+      <span>Lowongan Kerja</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition text-teal-100 hover:bg-teal-900 hover:text-white">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 21v-4a4 4 0 014-4h10a4 4 0 014 4v4" /><circle cx="12" cy="7" r="4" /></svg>
+      <span>Perusahaan</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition text-teal-100 hover:bg-teal-900 hover:text-white">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path d="M5.5 21v-2a4.5 4.5 0 019 0v2" /></svg>
+      <span>Pelamar</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition text-teal-100 hover:bg-teal-900 hover:text-white">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+      <span>Artikel & Tips</span>
+    </a>
+    <a href="../logout.php" onclick="return confirm('Yakin mau logout?')" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition text-teal-100 hover:bg-red-700 hover:text-white mt-auto">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7" /><rect x="3" y="4" width="4" height="16" rx="2" /></svg>
+      <span>Logout</span>
+    </a>
+  </nav>
+</aside>
 
         <div id="main-content" class="flex-1 flex flex-col bg-white min-h-screen" style="border-left:1px solid #0b5f39ff;">
             <header class="bg-teal-800 flex items-center justify-between px-12 py-4 relative" style="border-bottom:1px solid #ffffff;">
