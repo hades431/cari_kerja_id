@@ -95,10 +95,13 @@ if (!$foto) {
                 <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Prototyping</span>
                 <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Teamwork</span>
             </div>
-            <div class="flex justify-end mt-8 w-full">
+            <div class="flex justify-end mt-8 w-full gap-2">
                 <a href="edit_profil.php"
                     class="px-6 py-2 bg-[#00646A] text-white rounded-full shadow hover:bg-teal-800 transition">
                     Edit
+                </a>
+                <a href="logout.php" class="px-6 py-2 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition flex items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </div>
         </div>

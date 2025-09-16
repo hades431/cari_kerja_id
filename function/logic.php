@@ -159,7 +159,7 @@ function updateProfilPelamar($id_user, $data, $file) {
     $jabatan = htmlspecialchars($data['jabatan']);
     $alamat = htmlspecialchars($data['alamat']);
     $deskripsi = htmlspecialchars($data['deskripsi']);
-    // Pengalaman dan keahlian bisa diolah jadi string json/serialize jika ingin
+    // Pengalaman dan keahlian
     $pengalaman = isset($data['pengalaman_jabatan']) ? json_encode([
         'jabatan' => $data['pengalaman_jabatan'],
         'perusahaan' => $data['pengalaman_perusahaan'],
