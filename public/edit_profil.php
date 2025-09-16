@@ -2,9 +2,11 @@
 session_start();
 require_once '../function/logic.php';
 
+$id_user = $_SESSION['user']['id'];
+// Ambil data profil user dari database
+$pelamar = getProfilPelamarByUserId($id_user);
+
 if (isset($_POST['submit'])) {
-    $id_user = $_SESSION['user']['id'];
-    // Insert data
     if (updateProfilPelamar($id_user, $_POST, $_FILES) > 0) {
         echo "<script>
                 alert('Berhasil edit profil');
@@ -31,7 +33,7 @@ if (isset($_POST['submit'])) {
         <form action="#" method="post" enctype="multipart/form-data" class="space-y-5">
             <!-- Foto Profil -->
             <div class="flex flex-col items-center">
-                <img src="https://ui-avatars.com/api/?name=Nama+Pelamar&background=2563eb&color=fff&size=128"
+                <img src="<?= isset($pelamar['foto']) && $pelamar['foto'] ? '../' . htmlspecialchars($pelamar['foto']) : 'https://ui-avatars.com/api/?name=' . urlencode($pelamar['nama'] ?? 'Nama Pelamar') . '&background=2563eb&color=fff&size=128' ?>"
                      class="w-24 h-24 rounded-full border-2 border-gray-200 object-cover mb-2" alt="Foto Profil">
                 <label class="block">
                     <span class="sr-only">Pilih Foto Profil</span>
@@ -47,32 +49,32 @@ if (isset($_POST['submit'])) {
             <!-- Nama -->
             <div>
                 <label for="nama_lengkap" class="block text-gray-700 mb-1">Nama Lengkap</label>
-                <input type="text" name="nama" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nama Lengkap">
+                <input type="text" name="nama" value="<?= htmlspecialchars($pelamar['nama'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nama Lengkap">
             </div>
             <!-- Email -->
             <div>
                 <label for="email" class="block text-gray-700 mb-1">Email</label>
-                <input type="email" name="email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Email">
+                <input type="email" name="email" value="<?= htmlspecialchars($pelamar['email'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Email">
             </div>
             <!-- Telepon -->
             <div>
                 <label for="telepon" class="block text-gray-700 mb-1">Telepon</label>
-                <input type="text" name="telepon" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nomor Telepon">
+                <input type="text" name="telepon" value="<?= htmlspecialchars($pelamar['telepon'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nomor Telepon">
             </div>
             <!-- Jabatan -->
             <div>
                 <label for="jabatan" class="block text-gray-700 mb-1">Jabatan/Posisi</label>
-                <input type="text" name="jabatan" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: UI/UX Designer">
+                <input type="text" name="jabatan" value="<?= htmlspecialchars($pelamar['jabatan'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: UI/UX Designer">
             </div>
             <!-- Lokasi -->
             <div>
                 <label for="alamat" class="block text-gray-700 mb-1">Alamat</label>
-                <input type="text" name="alamat" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: Bandung, Indonesia">
+                <input type="text" name="alamat" value="<?= htmlspecialchars($pelamar['alamat'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: Bandung, Indonesia">
             </div>
             <!-- Deskripsi Profil -->
             <div>
                 <label for="deskripsi" class="block text-gray-700 mb-1">Deskripsi Profil</label>
-                <textarea name="deskripsi" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Ceritakan tentang diri Anda..."></textarea>
+                <textarea name="deskripsi" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Ceritakan tentang diri Anda..."><?= htmlspecialchars($pelamar['deskripsi'] ?? '') ?></textarea>
             </div>
             <!-- Pengalaman Kerja -->
             <div>
@@ -147,8 +149,9 @@ if (isset($_POST['submit'])) {
                 "/>
                 <p class="text-xs text-gray-400 mt-1">* Format file PDF. Maksimal ukuran 2MB.</p>
             </div>
-            <!-- Tombol Simpan -->
-            <div class="flex justify-end">
+            <!-- Tombol Simpan dan Kembali -->
+            <div class="flex justify-end gap-2">
+                <a href="profil_pelamar.php" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-full shadow hover:bg-gray-400 transition">Kembali</a>
                 <button type="submit" class="bg-[#00646A] text-white px-6 py-2 rounded-full shadow hover:bg-teal-800 transition">Simpan Perubahan</button>
             </div>
         </form>
