@@ -160,6 +160,36 @@ $topDeals = [
     ["label" => "Deal 2", "value" => 2.5],
     ["label" => "Deal 3", "value" => 1.5]
 ];
+
+// Tambah: data lowongan
+$lowonganList = [
+    // ...existing code...
+];
+
+// Jika ada data POST dari form tambah lowongan
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['judul_lowongan'])) {
+    $lowonganBaru = [
+        "judul" => $_POST['judul_lowongan'],
+        "departemen" => isset($_POST['departemen']) ? $_POST['departemen'] : '',
+        "status" => isset($_POST['status']) ? $_POST['status'] : 'Aktif',
+        "nama_perusahaan" => isset($_POST['nama_perusahaan']) ? $_POST['nama_perusahaan'] : '',
+        "deskripsi" => isset($_POST['deskripsi']) ? $_POST['deskripsi'] : '',
+        "usia" => isset($_POST['usia']) ? $_POST['usia'] : '',
+        "pendidikan" => isset($_POST['pendidikan']) ? $_POST['pendidikan'] : '',
+        "gender" => isset($_POST['gender']) ? $_POST['gender'] : '',
+        "media_sosial" => isset($_POST['media_sosial']) ? $_POST['media_sosial'] : '',
+        "website" => isset($_POST['website']) ? $_POST['website'] : ''
+        // Logo tidak diproses di dashboard
+    ];
+    $lowonganList[] = $lowonganBaru;
+    // Redirect agar tidak submit ulang jika refresh
+    header("Location: dashboard_perusahaan.php?success=1");
+    exit;
+}
+
+// Update dashboardStats untuk menampilkan jumlah dan jenis lowongan
+$dashboardStats[1]['value'] = count($lowonganList);
+$dashboardStats[1]['subtitle'] = count($lowonganList) > 0 ? implode(', ', array_column($lowonganList, 'judul')) : '-';
 ?>
 <!DOCTYPE html>
 <html>
@@ -186,15 +216,29 @@ $topDeals = [
             <div class="flex flex-col gap-4 w-full px-6">
                 <a href="../dashboard/dashboard_perusahaan.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Dashboard</a>
                 <a href="../perusahaan/daftar_pelamar.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Daftar Pelamar</a>
-                <a href="#" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Pasang Lowongan</a>
+                <button onclick="window.location.href='../perusahaan/form_pasang_lowongan.php'" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">
+                    Pasang Lowongan
+                </button>
             </div>
         </div>  
         <div class="absolute bottom-6 left-0 w-full px-6 text-base text-white/70 text-center font-semibold">© 2025 Carikerja.id</div>
     </div>
     <!-- Main Content -->
     <div class="flex-1 flex flex-col gap-6 px-9 pt-9 bg-white">
+        <!-- Notifikasi sukses -->
+        <?php if (isset($_GET['success'])): ?>
+            <div id="notif-success" class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg font-semibold">
+                Lowongan berhasil ditambahkan!
+            </div>
+            <script>
+                setTimeout(function() {
+                    var notif = document.getElementById('notif-success');
+                    if (notif) notif.style.display = 'none';
+                }, 2000);
+            </script>
+        <?php endif; ?>
         <h1 class="text-2xl font-bold text-[#009fa3] mb-2">Dashboard</h1>
-        <!-- Statistik Card utama (pindah ke atas) -->
+        <!-- Statistik Card utama -->
         <div class="flex gap-4 mb-4">
             <?php foreach ($dashboardStats as $stat): ?>
                 <div class="flex-1 bg-[#009fa3] rounded-lg shadow px-6 py-4 flex flex-col justify-center items-start">
@@ -231,15 +275,39 @@ $topDeals = [
                 <table class="min-w-full rounded-lg shadow bg-white">
                     <thead>
                         <tr class="bg-[#009fa3] text-white">
+                            <th class="py-3 px-4 text-left font-bold">Nama Perusahaan</th>
                             <th class="py-3 px-4 text-left font-bold">Judul Lowongan</th>
                             <th class="py-3 px-4 text-left font-bold">Departemen</th>
                             <th class="py-3 px-4 text-left font-bold">Status</th>
+                            <th class="py-3 px-4 text-left font-bold">Deskripsi</th>
+                            <th class="py-3 px-4 text-left font-bold">Usia</th>
+                            <th class="py-3 px-4 text-left font-bold">Pendidikan</th>
+                            <th class="py-3 px-4 text-left font-bold">Gender</th>
+                            <th class="py-3 px-4 text-left font-bold">Media Sosial</th>
+                            <th class="py-3 px-4 text-left font-bold">Website</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="3" class="py-6 px-4 text-center text-gray-400">Tidak ada data lowongan</td>
-                        </tr>
+                        <?php if (count($lowonganList) > 0): ?>
+                            <?php foreach ($lowonganList as $lowongan): ?>
+                                <tr>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['nama_perusahaan']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['judul']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['departemen']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['status']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['deskripsi']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['usia']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['pendidikan']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['gender']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['media_sosial']); ?></td>
+                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['website']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="10" class="py-6 px-4 text-center text-gray-400">Tidak ada data lowongan</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
