@@ -63,6 +63,12 @@ if(isset($_POST['submit'])){
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Daftar</h2>
         <form class="space-y-6" method="post">
           <div class="input-container">
+            <input type="username" name="username"
+              class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#14746f] transition-all duration-300 bg-transparent placeholder-transparent"
+              placeholder="Email" required />
+            <label class="text-gray-600">Username</label>
+          </div>
+          <div class="input-container">
             <input type="email" name="email"
               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#14746f] transition-all duration-300 bg-transparent placeholder-transparent"
               placeholder="Email" required />
