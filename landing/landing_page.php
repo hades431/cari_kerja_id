@@ -105,7 +105,7 @@ include '../header.php'; ?>
                     setTimeout(() => {
                         card.classList.add('hidden');
                     }, 300);
-                    btn.textContent = 'Selengkapnya';
+                    btn.textContent = 'Selengkapnya';gi
                 }
             }
         </script>
@@ -115,30 +115,30 @@ include '../header.php'; ?>
 
 <section class="py-6 px-4">
     <div class="flex flex-wrap gap-4 justify-center">
-        <div class="bg-white rounded shadow p-4 w-64">
+        <a href="card.php" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/images.jpg'); background-size: cover; background-position: center;">
             </div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
             <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
             <div class="h-3 bg-gray-100 rounded w-1/3"></div>
-        </div>
-        <div class="bg-white rounded shadow p-4 w-64">
+        </a>
+        <a href="detail_artikel.php?id=2" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/montir.jpg'); background-size: cover; background-position: center;">
             </div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
             <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
             <div class="h-3 bg-gray-100 rounded w-1/3"></div>
-        </div>
-        <div class="bg-white rounded shadow p-4 w-64">
+        </a>
+        <a href="detail_artikel.php?id=3" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/barber.jpg'); background-size: cover; background-position: center;">
             </div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
             <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
             <div class="h-3 bg-gray-100 rounded w-1/3"></div>
-        </div>
+        </a>
     </div>
 </section>
 
