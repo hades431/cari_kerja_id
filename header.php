@@ -1,5 +1,7 @@
 <?php
 session_start();
+$nama_lengkap = $_SESSION['pelamar_kerja']['nama_lengkap'] ?? 'Nama Pengguna';
+$foto_profil = $_SESSION['pelamar_kerja']['foto'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,13 +24,13 @@ session_start();
             <div class="flex flex-col items-end gap-1">
                 <!-- Profil -->
                 <?php if (isset($_SESSION['user'])): ?>
-                    <a href="../public/profil_pelamar.php" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
-                        <img src="../img/avatar.png" alt="Profil"
-                            class="w-10 h-10 rounded-full border-2 border-white shadow">
-                        <span class="text-white font-semibold">
-                            <?= htmlspecialchars($_SESSION['user']['nama'] ?? 'Nama Pengguna') ?>
-                        </span>
-                    </a>
+<a href="../public/profil_pelamar.php" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
+    <img src="<?= htmlspecialchars($foto_profil) ?>" alt="Profil"
+        class="w-10 h-10 rounded-full border-2 border-white shadow">
+    <span class="text-white font-semibold">
+        <?= htmlspecialchars($nama_lengkap) ?>
+    </span>
+</a>
                 <?php endif; ?>
                 <div class="flex gap-3 mt-2">
                     <a href="../tips kerja/info_tips_kerja.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
