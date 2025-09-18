@@ -153,16 +153,80 @@ function getProfilPelamarByUserId($id_user) {
 
 function updateProfilPelamar($id_user, $data, $file) {
     global $conn;
+    $nama = htmlspecialchars($data['nama']);
+    $email = htmlspecialchars($data['email']);
+    $telepon = htmlspecialchars($data['telepon']);
+    $jabatan = htmlspecialchars($data['jabatan']);
+    $alamat = htmlspecialchars($data['alamat']);
+    $deskripsi = htmlspecialchars($data['deskripsi']);
+    $pengalaman = isset($data['pengalaman_jabatan']) ? json_encode([
+        'jabatan' => $data['pengalaman_jabatan'],
+        'perusahaan' => $data['pengalaman_perusahaan'],
+        'tahun' => $data['pengalaman_tahun']
+    ]) : null;
+    $keahlian = isset($data['keahlian']) ? implode(',', $data['keahlian']) : '';
+    $foto = null;
+    if (isset($file['foto']) && $file['foto']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../uploads/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        $fileName = uniqid() . '_' . basename($file['foto']['name']);
+        $targetFilePath = $uploadDir . $fileName;
+        if (move_uploaded_file($file['foto']['tmp_name'], $targetFilePath)) {
+            $foto = 'uploads/' . $fileName;
+        }
+    }
+    $cv = null;
+    if (isset($file['cv']) && $file['cv']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../uploads/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        $fileName = uniqid() . '_' . basename($file['cv']['name']);
+        $targetFilePath = $uploadDir . $fileName;
+        if (move_uploaded_file($file['cv']['tmp_name'], $targetFilePath)) {
+            $cv = 'uploads/' . $fileName;
+        }
+    }
+    $sql = "UPDATE pelamar_kerja SET nama=?, email=?, telepon=?, jabatan=?, alamat=?, deskripsi=?, pengalaman=?, keahlian=?";
+    $params = [$nama, $email, $telepon, $jabatan, $alamat, $deskripsi, $pengalaman, $keahlian];
+    $types = "ssssssss";
+    if ($foto) {
+        $sql .= ", foto=?";
+        $params[] = $foto;
+        $types .= "s";
+    }
+    if ($cv) {
+        $sql .= ", cv=?";
+        $params[] = $cv;
+        $types .= "s";
+    }
+    $sql .= " WHERE id_user=?";
+    $params[] = $id_user;
+    $types .= "i";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+    return $stmt->affected_rows;
+}
+function getProfilPelamarByUserId($id_user) {
+    global $conn;
+    $sql = "SELECT * FROM pelamar_kerja WHERE id_user = ? LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die('Query prepare gagal: ' . $conn->error . ' | SQL: ' . $sql);
+    }
+    $stmt->bind_param('i', $id_user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result ? $result->fetch_assoc() : null;
+}
 
-    // Ambil data lama
+function updateProfilPelamar($id_user, $data, $file) {
+    global $conn;
     $lama = getProfilPelamarByUserId($id_user);
     if (!$lama) return 0;
 
     $fields = [];
     $params = [];
     $types = '';
-
-    // Ganti 'telepon' menjadi 'no_hp'
     $map = [
         'nama' => 'nama_lengkap',
         'email' => 'email',
@@ -179,7 +243,6 @@ function updateProfilPelamar($id_user, $data, $file) {
         }
     }
 
-    // Pengalaman
     if (isset($data['pengalaman_jabatan']) && !empty(array_filter($data['pengalaman_jabatan']))) {
         $pengalaman = json_encode([
             'jabatan' => $data['pengalaman_jabatan'],
@@ -191,7 +254,6 @@ function updateProfilPelamar($id_user, $data, $file) {
         $types .= 's';
     }
 
-    // Keahlian
     if (isset($data['keahlian']) && !empty($data['keahlian'])) {
         $keahlian = implode(',', $data['keahlian']);
         $fields[] = "keahlian=?";
@@ -199,7 +261,6 @@ function updateProfilPelamar($id_user, $data, $file) {
         $types .= 's';
     }
 
-    // Foto
     if (isset($file['foto']) && $file['foto']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
@@ -212,7 +273,6 @@ function updateProfilPelamar($id_user, $data, $file) {
         }
     }
 
-    // CV
     if (isset($file['cv']) && $file['cv']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
@@ -225,7 +285,7 @@ function updateProfilPelamar($id_user, $data, $file) {
         }
     }
 
-    if (empty($fields)) return 0; // Tidak ada perubahan
+    if (empty($fields)) return 0; 
 
     $sql = "UPDATE pelamar_kerja SET " . implode(', ', $fields) . " WHERE id_user=?";
     $params[] = $id_user;
