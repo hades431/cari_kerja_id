@@ -16,8 +16,8 @@ session_start();
     <!-- Header -->
     <header class="bg-[#00646A] px-4 py-3 flex flex-col gap-1">
         <div class="flex flex-row items-center justify-between">
-            <a href="../landing/landing_page.php"><img src="../img/logo2.png" alt="Logo"
-                    class="px-2 py-0 rounded w-64 h-30 object-contain"></a>
+            <a href="../landing/landing_page.php"><img src="../img/carikerja.png" alt="Logo"
+                    class="px-2 py-0 rounded w-48 h-20 object-contain"></a>
 
             <div class="flex flex-col items-end gap-1">
                 <!-- Profil -->

@@ -63,10 +63,8 @@ include '../header.php'; ?>
             <i class="fa fa-paper-plane"></i> Lamar
         </button>
         <button class="flex items-center gap-2 border-2 border-[#d1d5db] text-[#23395d] font-semibold px-8 py-3 rounded-lg bg-white hover:bg-gray-100 transition">
-            <i class="fa fa-star"></i> Simpan
-        </button>
-        <button class="flex items-center gap-2 border-2 border-[#d1d5db] text-[#23395d] font-semibold px-8 py-3 rounded-lg bg-white hover:bg-gray-100 transition">
-            <i class="fa fa-share-alt"></i> Bagikan
+            <span class="text-yellow-400"><i class="fa fa-star"></i></span>
+            Simpan
         </button>
     </div>
 </section>
