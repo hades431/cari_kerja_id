@@ -153,57 +153,88 @@ function getProfilPelamarByUserId($id_user) {
 
 function updateProfilPelamar($id_user, $data, $file) {
     global $conn;
-    $nama = htmlspecialchars($data['nama']);
-    $email = htmlspecialchars($data['email']);
-    $telepon = htmlspecialchars($data['telepon']);
-    $jabatan = htmlspecialchars($data['jabatan']);
-    $alamat = htmlspecialchars($data['alamat']);
-    $deskripsi = htmlspecialchars($data['deskripsi']);
-    // Pengalaman dan keahlian
-    $pengalaman = isset($data['pengalaman_jabatan']) ? json_encode([
-        'jabatan' => $data['pengalaman_jabatan'],
-        'perusahaan' => $data['pengalaman_perusahaan'],
-        'tahun' => $data['pengalaman_tahun']
-    ]) : null;
-    $keahlian = isset($data['keahlian']) ? implode(',', $data['keahlian']) : '';
-    // Upload foto dan CV jika ada
-    $foto = null;
+
+    // Ambil data lama
+    $lama = getProfilPelamarByUserId($id_user);
+    if (!$lama) return 0;
+
+    $fields = [];
+    $params = [];
+    $types = '';
+
+    // Ganti 'telepon' menjadi 'no_hp'
+    $map = [
+        'nama' => 'nama_lengkap',
+        'email' => 'email',
+        'telepon' => 'no_hp',
+        'jabatan' => 'jabatan',
+        'alamat' => 'alamat',
+        'deskripsi' => 'deskripsi'
+    ];
+    foreach ($map as $formKey => $dbKey) {
+        if (isset($data[$formKey]) && trim($data[$formKey]) !== '') {
+            $fields[] = "$dbKey=?";
+            $params[] = htmlspecialchars($data[$formKey]);
+            $types .= 's';
+        }
+    }
+
+    // Pengalaman
+    if (isset($data['pengalaman_jabatan']) && !empty(array_filter($data['pengalaman_jabatan']))) {
+        $pengalaman = json_encode([
+            'jabatan' => $data['pengalaman_jabatan'],
+            'perusahaan' => $data['pengalaman_perusahaan'],
+            'tahun' => $data['pengalaman_tahun']
+        ]);
+        $fields[] = "pengalaman=?";
+        $params[] = $pengalaman;
+        $types .= 's';
+    }
+
+    // Keahlian
+    if (isset($data['keahlian']) && !empty($data['keahlian'])) {
+        $keahlian = implode(',', $data['keahlian']);
+        $fields[] = "keahlian=?";
+        $params[] = $keahlian;
+        $types .= 's';
+    }
+
+    // Foto
     if (isset($file['foto']) && $file['foto']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
         $fileName = uniqid() . '_' . basename($file['foto']['name']);
         $targetFilePath = $uploadDir . $fileName;
         if (move_uploaded_file($file['foto']['tmp_name'], $targetFilePath)) {
-            $foto = 'uploads/' . $fileName;
+            $fields[] = "foto=?";
+            $params[] = 'uploads/' . $fileName;
+            $types .= 's';
         }
     }
-    $cv = null;
+
+    // CV
     if (isset($file['cv']) && $file['cv']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
         $fileName = uniqid() . '_' . basename($file['cv']['name']);
         $targetFilePath = $uploadDir . $fileName;
         if (move_uploaded_file($file['cv']['tmp_name'], $targetFilePath)) {
-            $cv = 'uploads/' . $fileName;
+            $fields[] = "cv=?";
+            $params[] = 'uploads/' . $fileName;
+            $types .= 's';
         }
     }
-    $sql = "UPDATE pelamar_kerja SET nama=?, email=?, telepon=?, jabatan=?, alamat=?, deskripsi=?, pengalaman=?, keahlian=?";
-    $params = [$nama, $email, $telepon, $jabatan, $alamat, $deskripsi, $pengalaman, $keahlian];
-    $types = "ssssssss";
-    if ($foto) {
-        $sql .= ", foto=?";
-        $params[] = $foto;
-        $types .= "s";
-    }
-    if ($cv) {
-        $sql .= ", cv=?";
-        $params[] = $cv;
-        $types .= "s";
-    }
-    $sql .= " WHERE id_user=?";
+
+    if (empty($fields)) return 0; // Tidak ada perubahan
+
+    $sql = "UPDATE pelamar_kerja SET " . implode(', ', $fields) . " WHERE id_user=?";
     $params[] = $id_user;
-    $types .= "i";
+    $types .= 'i';
+
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die('Prepare failed: ' . $conn->error . ' | SQL: ' . $sql);
+    }
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
     return $stmt->affected_rows;
