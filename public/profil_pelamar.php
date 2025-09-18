@@ -22,9 +22,9 @@ $id_user = $_SESSION['user']['id'];
 $pelamar = getProfilPelamarByUserId($id_user);
 
 // Data default jika belum ada
-$nama = $pelamar['nama'] ?? $_SESSION['user']['nama'] ?? 'Nama Pelamar';
+$nama = $pelamar['nama_lengkap'] ?? $_SESSION['user']['nama'] ?? 'Nama Pelamar';
 $email = $pelamar['email'] ?? $_SESSION['user']['email'] ?? 'email@pelamar.com';
-$telepon = $pelamar['telepon'] ?? '-';
+$telepon = $pelamar['no_hp'] ?? '-';
 $alamat = $pelamar['alamat'] ?? '-';
 $deskripsi = $pelamar['deskripsi'] ?? 'Belum ada deskripsi.';
 $jabatan = $pelamar['jabatan'] ?? '-';
