@@ -208,5 +208,4 @@ function updateProfilPelamar($id_user, $data, $file) {
     $stmt->execute();
     return $stmt->affected_rows;
 }
-
 ?>
