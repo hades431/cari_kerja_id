@@ -145,21 +145,47 @@ include '../header.php'; ?>
 
 <section class="flex flex-col md:flex-row gap-6 px-4">
     <div class="flex-1 flex flex-col gap-4">
-        <?php for ($i = 0; $i < 3; $i++): ?>
-            <div class="bg-white rounded shadow flex p-4 gap-4 items-center">
-                <div class="bg-gray-300 h-20 w-24 rounded"></div>
-                <div class="flex-1">
-                    <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                    <div class="h-3 bg-gray-100 rounded w-1/3 mb-1"></div>
-                    <div class="h-3 bg-gray-100 rounded w-1/4 mb-1"></div>
-                    <div class="flex gap-2 mt-2">
-                        <div class="h-3 bg-gray-200 rounded w-12"></div>
-                        <div class="h-3 bg-gray-200 rounded w-12"></div>
-                    </div>
+        <a href="card.php" class="flex bg-white rounded-2xl shadow p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer items-center max-w-2xl">
+            <div class="relative flex-shrink-0">
+                <img src="../img/montir.jpg" alt="Arka Corp" class="w-20 h-20 object-contain rounded-lg bg-white border" />
+                <span class="absolute -top-2 -left-2 text-white text-lg rounded-tr-lg rounded-bl-lg px-2 py-1 flex items-center">
+                    <i class="fa fa-thumbs-up"></i>
+                </span>
+            </div>
+            <div class="flex-1 ml-6">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-base font-medium">Dibutuhkan</span>
+                    <span class="flex items-center gap-1 text-gray-400 text-sm">
+                        <i class="fa fa-clock"></i>
+                        2 hari lalu
+                    </span>
+                </div>
+                <div class="text-2xl font-bold text-[#23395d] leading-tight mb-1">Montir</div>
+                <div class="flex items-center gap-2 text-[#23395d] mb-1">
+                    <i class="fa fa-building"></i>
+                    <span class="font-medium">PT. Arka Mega Nusantara</span>
+                    <i class="fa fa-money-bill text-gray-400 ml-3"></i>
+                    <span class="text-gray-600">Kompetitif</span>
+                </div>
+                <div class="border-b my-2"></div>
+                <div class="flex flex-wrap gap-4 text-gray-600 text-base items-center">
+                    <span class="flex items-center gap-1">
+                        <i class="fa fa-graduation-cap"></i>
+                        SMA/K - S1/D4
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <i class="fa fa-briefcase"></i>
+                        1 - 2 Tahun
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <i class="fa fa-map-marker-alt"></i>
+                        Kota Bandung
+                    </span>
                 </div>
             </div>
-        <?php endfor; ?>
+        </a>
     </div>
+            
 
     <aside class="bg-white rounded shadow p-4 w-full md:w-80">
         <form class="flex flex-col gap-4">

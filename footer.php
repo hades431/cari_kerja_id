@@ -3,7 +3,7 @@
 
 
         <div class="text-center md:text-left">
-            <img src="../img/logo2.png" class="bg-[#00646A] px-6 py-2 rounded w-64 h-20 object-contain">
+            <img src="../img/carikerja.png" class="bg-[#00646A] px-6 py-2 rounded w-64 h-20 object-contain">
             <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-4 text-gray-500 text-sm">
                 <a href="../about/about_us.php" class="hover:text-[#00646A]">About Us</a>
             </div>
