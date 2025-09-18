@@ -32,6 +32,22 @@ $cv = $pelamar['cv'] ?? '';
 $foto = $pelamar['foto'] ?? '';
 if (!$foto) {
     $foto = "https://ui-avatars.com/api/?name=" . urlencode($nama) . "&background=2563eb&color=fff&size=128";
+    $foto_link = $foto;
+} else {
+    $foto_link = "../" . htmlspecialchars($foto);
+    $foto = $foto_link;
+}
+
+// Pengalaman Kerja (dari JSON)
+$pengalaman = [];
+if (!empty($pelamar['pengalaman'])) {
+    $pengalaman = json_decode($pelamar['pengalaman'], true);
+}
+
+// Keahlian (dari string ke array)
+$keahlian = [];
+if (!empty($pelamar['keahlian'])) {
+    $keahlian = array_map('trim', explode(',', $pelamar['keahlian']));
 }
 ?>
 <!-- Button Kembali -->
@@ -45,8 +61,10 @@ if (!$foto) {
 <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-start gap-8 px-4">
     <!-- Foto profil kiri -->
     <div class="flex-shrink-0 flex flex-col items-center w-full md:w-56">
-        <img src="<?= htmlspecialchars($foto) ?>"
-            class="w-36 h-36 rounded-full border-4 border-white shadow-lg object-cover bg-white" alt="Foto Profil">
+        <a href="<?= htmlspecialchars($foto_link) ?>" target="_blank" title="Lihat Foto Profil">
+            <img src="<?= htmlspecialchars($foto) ?>"
+                class="w-36 h-36 rounded-full border-4 border-white shadow-lg object-cover bg-white hover:opacity-80 transition" alt="Foto Profil">
+        </a>
     </div>
     <!-- Card utama kanan -->
     <div class="flex-1 bg-white rounded-xl shadow-lg p-8 md:mt-0">
@@ -70,30 +88,43 @@ if (!$foto) {
         <div class="mt-8">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Pengalaman Kerja</h3>
             <div class="space-y-4">
-                <div>
-                    <div class="font-medium text-gray-800"> <span class="text-gray-400 font-normal"></span></div>
-                    <div class="text-xs text-gray-500 mb-1"></div>
-                    <div class="text-gray-600 text-sm"></div>
-                </div>
-                <div>
-                    <div class="font-medium text-gray-800">Graphic Designer <span class="text-gray-400 font-normal">@ CV
-                            Kreatif Studio</span></div>
-                    <div class="text-xs text-gray-500 mb-1">Jul 2019 - Des 2020</div>
-                    <div class="text-gray-600 text-sm">Membuat materi promosi digital dan cetak untuk berbagai klien.
+                <?php if (!empty($pengalaman['jabatan'])): ?>
+                    <?php
+                    $count = count($pengalaman['jabatan']);
+                    for ($i = 0; $i < $count; $i++):
+                        $jab = $pengalaman['jabatan'][$i] ?? '';
+                        $perusahaan = $pengalaman['perusahaan'][$i] ?? '';
+                        $tahun = $pengalaman['tahun'][$i] ?? '';
+                        if (trim($jab) === '' && trim($perusahaan) === '' && trim($tahun) === '') continue;
+                    ?>
+                    <div>
+                        <div class="font-medium text-gray-800">
+                            <?= htmlspecialchars($jab) ?>
+                            <?php if ($perusahaan): ?>
+                                <span class="text-gray-400 font-normal">@ <?= htmlspecialchars($perusahaan) ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ($tahun): ?>
+                            <div class="text-xs text-gray-500 mb-1"><?= htmlspecialchars($tahun) ?></div>
+                        <?php endif; ?>
                     </div>
-                </div>
+                    <?php endfor; ?>
+                <?php else: ?>
+                    <div class="text-gray-500 text-sm">Belum ada pengalaman kerja.</div>
+                <?php endif; ?>
             </div>
         </div>
         <!-- Section Keahlian -->
         <div class="mt-8">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Keahlian</h3>
             <div class="flex flex-wrap gap-3">
-                <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">UI Design</span>
-                <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">UX Research</span>
-                <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Figma</span>
-                <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Adobe XD</span>
-                <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Prototyping</span>
-                <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm">Teamwork</span>
+                <?php if (!empty($keahlian)): ?>
+                    <?php foreach ($keahlian as $k): ?>
+                        <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm"><?= htmlspecialchars($k) ?></span>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <span class="text-gray-500 text-sm">Belum ada keahlian.</span>
+                <?php endif; ?>
             </div>
             <div class="flex justify-end mt-8 w-full gap-2">
                 <a href="edit_profil.php"
@@ -130,5 +161,4 @@ if (!$foto) {
 <!-- Font Awesome CDN for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </body>
-
 </html>
