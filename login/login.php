@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($result && $result->num_rows > 0){
     $user = $result->fetch_assoc();
     // Ganti pengecekan password sesuai kebutuhan (hash atau plain)
-    if($password == $user['password']){
+    if(password_verify($password,$user['password'])){
       $_SESSION['login'] = true;
       $_SESSION['id_user'] = $user['id_user'];
       $_SESSION['email'] = $user['email'];
