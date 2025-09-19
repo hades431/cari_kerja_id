@@ -121,7 +121,7 @@ if(isset($_POST['submit'])){
     </style>
     <script>
       <?php
-      if(!isset($status)):
+      if(isset($status)):
       ?>Swal.fire({
   title: "Good job!",
   text: "You clicked the button!",
