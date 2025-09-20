@@ -14,6 +14,8 @@ function getFotoProfil($foto_profil, $foto_default) {
 }
 
 // Gabungan logika session
+$is_logged_in = isset($_SESSION['pelamar_kerja']) || isset($_SESSION['user']);
+
 if (isset($_SESSION['pelamar_kerja'])) {
     $nama_lengkap = $_SESSION['pelamar_kerja']['nama_lengkap'] ?? ($_SESSION['user']['email'] ?? 'Nama Pengguna');
     $foto_profil = $_SESSION['pelamar_kerja']['foto'] ?? '';
@@ -61,7 +63,7 @@ $is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
 
             <div class="flex flex-col items-end gap-1">
                 <!-- Profil -->
-                <?php if (!$is_profil_pelamar): ?>
+                <?php if ($is_logged_in && !$is_profil_pelamar): ?>
                 <a href="<?= $profil_link ?>" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
                     <img src="<?= htmlspecialchars($foto_profil_src) ?>" alt="Profil"
                         class="w-10 h-10 rounded-full border-2 border-white shadow object-cover"
