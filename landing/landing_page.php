@@ -13,7 +13,7 @@ include '../header.php'; ?>
         </h1>
 
         <div class="text-xl md:text-2xl text-center text-[#23395d] mb-6 font-normal">
-            Temukan loker Bandung terbaru bulan Agustus 2025 dengan mudah di CariKerjaID.
+            Temukan loker Bandung terbaru bulan September 2025 dengan mudah di CariKerjaID.
             <button type="button" id="toggle-info-btn"
                 class="ml-2 text-[#23395d] text-xl md:text-2xl font-normal hover:underline transition bg-transparent p-0 border-0 align-baseline"
                 onclick="toggleInfoCard()">
@@ -120,24 +120,17 @@ include '../header.php'; ?>
                 style="background-image: url('../img/images.jpg'); background-size: cover; background-position: center;">
             </div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
-            <div class="h-3 bg-gray-100 rounded w-1/3"></div>
         </a>
         <a href="detail_artikel.php?id=2" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/montir.jpg'); background-size: cover; background-position: center;">
             </div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
-            <div class="h-3 bg-gray-100 rounded w-1/3"></div>
         </a>
         <a href="detail_artikel.php?id=3" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/barber.jpg'); background-size: cover; background-position: center;">
             </div>
-            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div class="h-3 bg-gray-100 rounded w-1/2 mb-1"></div>
-            <div class="h-3 bg-gray-100 rounded w-1/3"></div>
         </a>
     </div>
 </section>
