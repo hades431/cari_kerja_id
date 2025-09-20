@@ -5,7 +5,7 @@ if(isset($_POST['submit'])){
         echo "<script>alert('User baru berhasil ditambahkan!');window.location='login.php';</script>";
         exit;
     } else {
-        $status = false;
+        echo "<script>alert('User baru gagal ditambahkan!');</script>";
     }
 }
 ?>
@@ -18,7 +18,6 @@ if(isset($_POST['submit'])){
     <title>Daftar</title>
     <!-- Tailwind Play CDN (untuk demo cepat). Untuk produksi gunakan build Tailwind yang sebenarnya. -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
     <style>
         .glass {
             background: #fff; /* putih solid */
@@ -119,17 +118,5 @@ if(isset($_POST['submit'])){
         padding: 0 0.5rem;
       }
     </style>
-    <script>
-      <?php
-      if(isset($status)):
-      ?>Swal.fire({
-  title: "Good job!",
-  text: "You clicked the button!",
-  icon: "success"
-});
-      <?php
-      endif;
-      ?>
-    </script>
   </body>
 </html>
