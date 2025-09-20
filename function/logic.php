@@ -39,7 +39,8 @@ if (!function_exists('menu_aktif')) {
             $menuAktif[$page] = true;
         }
 
-        return $menuAktif;
+            return $menuAktif;
+        }
     }
     
 
