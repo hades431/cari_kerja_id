@@ -1,5 +1,6 @@
 <?php
 session_start();
+<<<<<<< HEAD
 
 
 $foto_default = '../img/default_profile.png'; // pastikan file ini ada
@@ -43,6 +44,10 @@ $foto_profil_src = getFotoProfil($foto_profil, $foto_default);
 
 // Cek apakah sedang di halaman profil pelamar
 $is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
+=======
+$nama_lengkap = $_SESSION['pelamar_kerja']['nama_lengkap'] ?? 'Nama Pengguna';
+$foto_profil = $_SESSION['pelamar_kerja']['foto'] ?? '';
+>>>>>>> 3ea7fe6 (progress lokal)
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,6 +69,7 @@ $is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
 
             <div class="flex flex-col items-end gap-1">
                 <!-- Profil -->
+<<<<<<< HEAD
 
                 <?php if ($is_logged_in && !$is_profil_pelamar): ?>
 
@@ -77,6 +83,16 @@ $is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
                     </span>
                 </a>
 
+=======
+                <?php if (isset($_SESSION['user'])): ?>
+<a href="../public/profil_pelamar.php" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
+    <img src="<?= htmlspecialchars($foto_profil) ?>" alt="Profil"
+        class="w-10 h-10 rounded-full border-2 border-white shadow">
+    <span class="text-white font-semibold">
+        <?= htmlspecialchars($nama_lengkap) ?>
+    </span>
+</a>
+>>>>>>> 3ea7fe6 (progress lokal)
                 <?php endif; ?>
                 <div class="flex gap-3 mt-2">
                     <a href="../tips kerja/info_tips_kerja.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
