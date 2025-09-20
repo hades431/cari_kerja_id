@@ -88,7 +88,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             
             <?php if(isset($error2)): ?>
             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r">
-                <p class="font-medium">Password atau email salah</p>
+                <p class="font-medium">Password atau email salah!</p>
             </div>
             <?php endif; ?>
 
