@@ -6,7 +6,7 @@ function register($data){
 $username = $_POST['username'];
 $email = $_POST['email'];
 $password = $_POST['password'];
-$result = mysqli_query($conn,"SELECT*FROM user WHERE email = '$email' or username = '$username'");
+$result = mysqli_query($conn,"SELECT*FROM user WHERE email = '$email' ");
 $konfirm = $_POST['konfirmasi_password'];
 if($password != $konfirm){
             echo "<script>alert('Password dan Confirm Password tidak sama!');</script>";

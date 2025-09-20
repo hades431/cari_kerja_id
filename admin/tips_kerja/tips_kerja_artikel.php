@@ -171,4 +171,3 @@ if ($keyword) {
   </div>
 </body>
 </html>
-

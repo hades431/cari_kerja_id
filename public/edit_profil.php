@@ -107,7 +107,7 @@ if (isset($_POST['submit'])) {
             </div>
             <!-- Jabatan -->
             <div>
-                <label for="jabatan" class="block text-gray-700 mb-1">Jabatan/Posisi</label>
+                <label for="jabatan" class="block text-gray-700 mb-1">Kemampuan Bidang</label>
                 <input type="text" name="jabatan" value="<?= htmlspecialchars($pelamar['jabatan'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: UI/UX Designer">
             </div>
             <!-- Lokasi -->
