@@ -13,6 +13,7 @@ function getFotoProfil($foto_profil, $foto_default) {
     return $foto_profil;
 }
 
+// Gabungan logika session
 if (isset($_SESSION['pelamar_kerja'])) {
     $nama_lengkap = $_SESSION['pelamar_kerja']['nama_lengkap'] ?? ($_SESSION['user']['email'] ?? 'Nama Pengguna');
     $foto_profil = $_SESSION['pelamar_kerja']['foto'] ?? '';
