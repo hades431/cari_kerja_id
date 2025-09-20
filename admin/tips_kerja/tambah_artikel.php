@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="flex min-h-screen">
         <aside id="sidebar" class="bg-teal-800 w-64 flex flex-col min-h-screen shadow-lg relative" style="border-right:1px solid #79797aff;">
             <div class="px-4 py-6 flex flex-col items-center gap-2">
-                <img src="../../img/Logo Caker transparan.svg" alt="Logo" class="w-60 h-18 object-contain mb-0" />
+                <img src="../../img/carikerja.png" alt="Logo" class="w-60 h-18 object-contain mb-0" />
             </div>
             <nav class="flex-1 flex flex-col gap-1 px-2 py-2">
                 <a href="#" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all mb-1
@@ -132,10 +132,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
             </div>
 
-            <footer class="bg-teal-800 flex items-center justify-between px-12 py-4" style="border-top:1px solid #e5e7eb;">
-                <div class="text-sm text-center w-full text-white">&copy; <?= date('Y') ?> CariKerja.ID - All rights reserved.</div>
-            </footer>
-        </div>
+            <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
+        <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
+      </footer>
     </div>
+  </div>
 </body>
 </html>
+
