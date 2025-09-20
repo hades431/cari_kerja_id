@@ -80,10 +80,9 @@ if (!empty($pelamar['keahlian'])) {
         <!-- Section Ringkasan -->
         <div class="mt-10">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Deskripsi</h3>
-<div class="bg-gray-100 rounded p-4 text-gray-700"
-     style="white-space: pre-line; word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;">
-    <?= nl2br(htmlspecialchars($deskripsi)) ?>
-</div>
+            <div class="bg-gray-100 rounded p-4 text-gray-700">
+                <?= nl2br(htmlspecialchars($deskripsi)) ?>
+            </div>
         </div>
         <!-- Section Pengalaman -->
         <div class="mt-8">

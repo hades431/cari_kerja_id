@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 $foto_default = '../img/default_profile.png'; // pastikan file ini ada
 
 function getFotoProfil($foto_profil, $foto_default) {
@@ -63,7 +64,10 @@ $is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
 
             <div class="flex flex-col items-end gap-1">
                 <!-- Profil -->
+
                 <?php if ($is_logged_in && !$is_profil_pelamar): ?>
+
+                <?php if (!$is_profil_pelamar): ?>
                 <a href="<?= $profil_link ?>" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
                     <img src="<?= htmlspecialchars($foto_profil_src) ?>" alt="Profil"
                         class="w-10 h-10 rounded-full border-2 border-white shadow object-cover"
@@ -72,6 +76,7 @@ $is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
                         <?= htmlspecialchars($nama_lengkap) ?>
                     </span>
                 </a>
+
                 <?php endif; ?>
                 <div class="flex gap-3 mt-2">
                     <a href="../tips kerja/info_tips_kerja.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
