@@ -23,24 +23,25 @@ if (!function_exists('getArtikelList')) {
 }
 
 
-function menu_aktif($page) {
-    $menuAktif = [
-        'dashboard' => false,
-        'lowongan' => false,
-        'perusahaan' => false,
-        'riwayat_transaksi' => false,
-        'user' => false,
-        'artikel' => false,
-        'logout' => false
-    ];
+if (!function_exists('menu_aktif')) {
+    function menu_aktif($page) {
+        $menuAktif = [
+            'dashboard' => false,
+            'lowongan' => false,
+            'perusahaan' => false,
+            'riwayat_transaksi' => false,
+            'user' => false,
+            'artikel' => false,
+            'logout' => false
+        ];
 
-    if (array_key_exists($page, $menuAktif)) {
-        $menuAktif[$page] = true;
-    }
-
+        if (array_key_exists($page, $menuAktif)) {
+            $menuAktif[$page] = true;
+        }
 
         return $menuAktif;
     }
+}
 
 if (!function_exists('searchArtikel')) {
     function searchArtikel($keyword) {
@@ -230,132 +231,152 @@ if (!function_exists('updateProfilPelamar')) {
         return $stmt->affected_rows;
     }
 }
-function getJumlahLoker() {
-    global $conn;
-    $sql = "SELECT COUNT(*) as total FROM lowongan";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'] ?? 0;
-}
 
-function getJumlahPerusahaan() {
-    global $conn;
-    $sql = "SELECT COUNT(*) as total FROM perusahaan";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'] ?? 0;
-}
-
-function getJumlahUser() {
-    global $conn;
-    $sql = "SELECT COUNT(*) as total FROM user"; 
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'] ?? 0;
-}
-
-function getJumlahArtikel() {
-    global $conn;
-    $sql = "SELECT COUNT(*) as total FROM artikel";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'] ?? 0;
-}
-
-function getAktivitasTerbaru() {
-    global $conn;
-    $aktivitas = [];
-
-    $sql1 = "SELECT id_user, created_at FROM user ORDER BY created_at DESC LIMIT 3";
-    $res1 = mysqli_query($conn, $sql1);
-    while ($row = mysqli_fetch_assoc($res1)) {
-        $aktivitas[] = [
-            "icon" => "👤",
-            "pesan" => "User baru mendaftar: <span class='font-medium'>".$row['id_user']."</span>",
-            "tanggal" => $row['created_at']
-        ];
+if (!function_exists('getJumlahLoker')) {
+    function getJumlahLoker() {
+        global $conn;
+        $sql = "SELECT COUNT(*) as total FROM lowongan";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        return $row['total'] ?? 0;
     }
+}
 
-    $sql2 = "SELECT id_perusahaan, created_at FROM lowongan ORDER BY created_at DESC LIMIT 3";
-    $res2 = mysqli_query($conn, $sql2);
-    while ($row = mysqli_fetch_assoc($res2)) {
-        $aktivitas[] = [
-            "icon" => "🏢",
-            "pesan" => $row['id_perusahaan']." menambahkan lowongan",
-            "tanggal" => $row['created_at']
-        ];
+if (!function_exists('getJumlahPerusahaan')) {
+    function getJumlahPerusahaan() {
+        global $conn;
+        $sql = "SELECT COUNT(*) as total FROM perusahaan";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        return $row['total'] ?? 0;
     }
+}
 
-    $sql3 = "SELECT judul, created_at FROM artikel ORDER BY created_at DESC LIMIT 3";
-    $res3 = mysqli_query($conn, $sql3);
-    while ($row = mysqli_fetch_assoc($res3)) {
-        $aktivitas[] = [
-            "icon" => "📝",
-            "pesan" => "Artikel baru dipublikasikan: <span class='font-medium'>".$row['judul']."</span>",
-            "tanggal" => $row['created_at']
-        ];
+if (!function_exists('getJumlahUser')) {
+    function getJumlahUser() {
+        global $conn;
+        $sql = "SELECT COUNT(*) as total FROM user"; 
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        return $row['total'] ?? 0;
     }
-
-    usort($aktivitas, function($a, $b) {
-        return strtotime($b['tanggal']) - strtotime($a['tanggal']);
-    });
-
-    return array_slice($aktivitas, 0, 5);
 }
 
-function getStatistikBulanan() {
-    global $conn;
-
-    $bulanIni = date("Y-m");
-    $stat = [];
-
-    $sql1 = "SELECT COUNT(*) as total FROM user WHERE DATE_FORMAT(created_at, '%Y-%m') = '$bulanIni'";
-    $res1 = mysqli_query($conn, $sql1);
-    $stat['user'] = mysqli_fetch_assoc($res1)['total'] ?? 0;
-
-    $sql2 = "SELECT COUNT(*) as total FROM lowongan WHERE DATE_FORMAT(created_at, '%Y-%m') = '$bulanIni'";
-    $res2 = mysqli_query($conn, $sql2);
-    $stat['lowongan'] = mysqli_fetch_assoc($res2)['total'] ?? 0;
-
-    return $stat;
-}
-
-function getPerusahaanBaru() {
-    global $conn;
-    $data = [];
-    $sql = "SELECT nama_perusahaan, created_at FROM perusahaan ORDER BY created_at DESC LIMIT 5";
-    $res = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_assoc($res)) {
-        $data[] = $row;
+if (!function_exists('getJumlahArtikel')) {
+    function getJumlahArtikel() {
+        global $conn;
+        $sql = "SELECT COUNT(*) as total FROM artikel";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        return $row['total'] ?? 0;
     }
-    return $data;
 }
 
-function getArtikelTerbaru() {
-    global $conn;
-    $data = [];
-    $sql = "SELECT id, judul, created_at FROM artikel ORDER BY created_at DESC LIMIT 5";
-    $res = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_assoc($res)) {
-        $data[] = $row;
+if (!function_exists('getAktivitasTerbaru')) {
+    function getAktivitasTerbaru() {
+        global $conn;
+        $aktivitas = [];
+
+        $sql1 = "SELECT id_user, created_at FROM user ORDER BY created_at DESC LIMIT 3";
+        $res1 = mysqli_query($conn, $sql1);
+        while ($row = mysqli_fetch_assoc($res1)) {
+            $aktivitas[] = [
+                "icon" => "👤",
+                "pesan" => "User baru mendaftar: <span class='font-medium'>".$row['id_user']."</span>",
+                "tanggal" => $row['created_at']
+            ];
+        }
+
+        $sql2 = "SELECT id_perusahaan, created_at FROM lowongan ORDER BY created_at DESC LIMIT 3";
+        $res2 = mysqli_query($conn, $sql2);
+        while ($row = mysqli_fetch_assoc($res2)) {
+            $aktivitas[] = [
+                "icon" => "🏢",
+                "pesan" => $row['id_perusahaan']." menambahkan lowongan",
+                "tanggal" => $row['created_at']
+            ];
+        }
+
+        $sql3 = "SELECT judul, created_at FROM artikel ORDER BY created_at DESC LIMIT 3";
+        $res3 = mysqli_query($conn, $sql3);
+        while ($row = mysqli_fetch_assoc($res3)) {
+            $aktivitas[] = [
+                "icon" => "📝",
+                "pesan" => "Artikel baru dipublikasikan: <span class='font-medium'>".$row['judul']."</span>",
+                "tanggal" => $row['created_at']
+            ];
+        }
+
+        usort($aktivitas, function($a, $b) {
+            return strtotime($b['tanggal']) - strtotime($a['tanggal']);
+        });
+
+        return array_slice($aktivitas, 0, 5);
     }
-    return $data;
 }
 
-function getNotifikasi() {
-    global $conn;
-    $notifikasi = [];
+if (!function_exists('getStatistikBulanan')) {
+    function getStatistikBulanan() {
+        global $conn;
 
-$sql2 = "SELECT COUNT(*) as total FROM user WHERE created_at >= NOW() - INTERVAL 7 DAY";
-$res2 = mysqli_query($conn, $sql2);
-$row2 = mysqli_fetch_assoc($res2);
-if (($row2['total'] ?? 0) > 0) {
-    $notifikasi[] = [
-        "icon" => "🆕",
-        "pesan" => $row2['total']." user baru mendaftar",
-        "aksi" => "Lihat",
-        "link" => "../user/user.php"
-    ];
+        $bulanIni = date("Y-m");
+        $stat = [];
+
+        $sql1 = "SELECT COUNT(*) as total FROM user WHERE DATE_FORMAT(created_at, '%Y-%m') = '$bulanIni'";
+        $res1 = mysqli_query($conn, $sql1);
+        $stat['user'] = mysqli_fetch_assoc($res1)['total'] ?? 0;
+
+        $sql2 = "SELECT COUNT(*) as total FROM lowongan WHERE DATE_FORMAT(created_at, '%Y-%m') = '$bulanIni'";
+        $res2 = mysqli_query($conn, $sql2);
+        $stat['lowongan'] = mysqli_fetch_assoc($res2)['total'] ?? 0;
+
+        return $stat;
+    }
 }
+
+if (!function_exists('getPerusahaanBaru')) {
+    function getPerusahaanBaru() {
+        global $conn;
+        $data = [];
+        $sql = "SELECT nama_perusahaan, created_at FROM perusahaan ORDER BY created_at DESC LIMIT 5";
+        $res = mysqli_query($conn, $sql);
+        while ($row = mysqli_fetch_assoc($res)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+}
+
+if (!function_exists('getArtikelTerbaru')) {
+    function getArtikelTerbaru() {
+        global $conn;
+        $data = [];
+        $sql = "SELECT id, judul, created_at FROM artikel ORDER BY created_at DESC LIMIT 5";
+        $res = mysqli_query($conn, $sql);
+        while ($row = mysqli_fetch_assoc($res)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+}
+
+if (!function_exists('getNotifikasi')) {
+    function getNotifikasi() {
+        global $conn;
+        $notifikasi = [];
+
+        $sql2 = "SELECT COUNT(*) as total FROM user WHERE created_at >= NOW() - INTERVAL 7 DAY";
+        $res2 = mysqli_query($conn, $sql2);
+        $row2 = mysqli_fetch_assoc($res2);
+        if (($row2['total'] ?? 0) > 0) {
+            $notifikasi[] = [
+                "icon" => "🆕",
+                "pesan" => $row2['total']." user baru mendaftar",
+                "aksi" => "Lihat",
+                "link" => "../user/user.php"
+            ];
+        }
+        return $notifikasi;
+    }
 }
 ?>
