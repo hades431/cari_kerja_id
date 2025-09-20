@@ -46,7 +46,7 @@ function getTipsKerjaList() {
         while ($row = $result->fetch_assoc()) {
             $data[] = $row;
         }
-        return $data;
+        return $data; 
     }
 }
 
