@@ -5,7 +5,7 @@ $menuAktif = menu_aktif('perusahaan');
 
 <!DOCTYPE html>
 <html lang="id">
-<head>
+<head> 
   <meta charset="UTF-8">
   <title>Perusahaan</title>
   <script src="https://cdn.tailwindcss.com"></script>

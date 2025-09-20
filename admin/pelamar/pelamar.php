@@ -3,9 +3,9 @@ session_start();
 include '../../function/logic.php';
 $menuAktif = menu_aktif('pelamar');
 ?>
-
+ 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id">  
 <head>
   <meta charset="UTF-8">
   <title>Daftar user</title>

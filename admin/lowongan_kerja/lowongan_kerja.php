@@ -5,7 +5,7 @@ $menuAktif = menu_aktif('lowongan');
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id"> 
 <head>
   <meta charset="UTF-8">
   <title>Lowongan kerja</title>
