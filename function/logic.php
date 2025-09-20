@@ -1,9 +1,12 @@
 <?php 
-$conn = mysqli_connect("localhost","root","","lowongan_kerja");
+$server = "localhost";
+$username = "root";
+$password = "";
+$database = "lowongan_kerja";
+$conn = mysqli_connect($server, $username, $password, $database);
 
-if (mysqli_connect_errno()){
-    echo "Koneksi database gagal : " . mysqli_connect_error(); 
-    exit;
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
 }
 
 if (!function_exists('getArtikelList')) {
@@ -14,9 +17,34 @@ if (!function_exists('getArtikelList')) {
 
         $data = [];
         if ($result && mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
+            while ($row = mysqli_fetch_assoc($result))} {    
                 $data[] = $row;
             }
+    $nama_lengkap = htmlspecialchars($_POST['nama_lengkap']);
+    $email = htmlspecialchars($_POST['email']);
+    $no_hp = htmlspecialchars($_POST['no_hp']);
+    $alamat = htmlspecialchars($_POST['alamat']);
+    $deskripsi = htmlspecialchars($_POST['deskripsi']);
+    $cv = upload();
+
+
+    // masukkan data ke database dengan penanganan error
+    $query = "INSERT INTO pengaduan VALUES ('','$nama_lengkap','$email','$no_hp','$alamat','$deskripsi','$cv','proses')";
+    mysqli_query($conn, $query);
+
+    return mysqli_affected_rows($conn);
+}
+
+function getTipsKerjaList() {
+    $conn = new mysqli("localhost", "root", "", "lowongan_kerja");
+    if ($conn->connect_error) {
+        return [];
+    }
+    $sql = "SELECT id, judul, tanggal FROM tips_kerja ORDER BY tanggal DESC";
+    $data = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
         }
         return $data;
     }
@@ -379,5 +407,8 @@ if (!function_exists('getNotifikasi')) {
         }
         return $notifikasi;
     }
+}
+    $conn->close();
+    return $data;
 }
 ?>
