@@ -53,62 +53,93 @@
                   class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
       </div>
 
-      <!-- Kriteria -->
+      <!-- Ringkasan -->
       <div class="space-y-6">
-        <h3 class="text-lg font-bold text-gray-700">Kriteria</h3>
+        <h3 class="text-lg font-bold text-gray-700">Ringkasan</h3>
 
-        <!-- Batas Usia -->
+        <!-- Batas Pengalaman -->
         <div>
-          <label for="usia" class="block text-gray-700 font-semibold mb-2">Batas Usia</label>
-          <select id="usia" name="usia" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Pilih batas usia</option>
-            <option value="maks_25">Maksimal 25 tahun</option>
-            <option value="maks_30">Maksimal 30 tahun</option>
-            <option value="maks_35">Maksimal 35 tahun</option>
-            <option value="maks_40">Maksimal 40 tahun</option>
-          </select>
+          <label class="block text-gray-700 font-semibold mb-2">Batas Pengalaman (tahun)</label>
+          <div id="pengalaman-options" class="flex gap-4">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pengalaman[]" value="0" class="pengalaman-checkbox text-teal-600 focus:ring-teal-500">
+              0 Tahun
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pengalaman[]" value="1" class="pengalaman-checkbox text-teal-600 focus:ring-teal-500">
+              1 Tahun
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pengalaman[]" value="2" class="pengalaman-checkbox text-teal-600 focus:ring-teal-500">
+              2 Tahun
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pengalaman[]" value="3" class="pengalaman-checkbox text-teal-600 focus:ring-teal-500">
+              3 Tahun
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pengalaman[]" value="4" class="pengalaman-checkbox text-teal-600 focus:ring-teal-500">
+              4 Tahun
+            </label>
+          </div>
+          <div id="pengalaman-warning" class="text-red-600 text-sm mt-1 hidden">Pilih 2 pengalaman!</div>
         </div>
 
+       
         <!-- Pendidikan -->
         <div>
           <label for="pendidikan" class="block text-gray-700 font-semibold mb-2">Pendidikan Minimal</label>
-          <select id="pendidikan" name="pendidikan" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Pilih pendidikan</option>
-            <option value="sma">SMA/SMK</option>
-            <option value="d3">Diploma (D3)</option>
-            <option value="s1">Sarjana (S1)</option>
-            <option value="s2">Magister (S2)</option>
-          </select>
+          <div id="pendidikan-options" class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pendidikan[]" value="sma" class="pendidikan-checkbox text-teal-600 focus:ring-teal-500">
+              SMA/SMK
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pendidikan[]" value="d3" class="pendidikan-checkbox text-teal-600 focus:ring-teal-500">
+              Diploma (D3)
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pendidikan[]" value="s1" class="pendidikan-checkbox text-teal-600 focus:ring-teal-500">
+              Sarjana (S1)
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" name="pendidikan[]" value="s2" class="pendidikan-checkbox text-teal-600 focus:ring-teal-500">
+              Magister (S2)
+            </label>
+          </div>
+          <div id="pendidikan-warning" class="text-red-600 text-sm mt-1 hidden">Masukkan pendidikan!</div>
         </div>
 
        
         <!-- Jenis Kelamin -->
         <div>
           <label class="block text-gray-700 font-semibold mb-2">Jenis Kelamin</label>
-          <div class="flex items-center gap-6">
+          <div id="gender-options" class="flex items-center gap-6">
             <label class="flex items-center gap-2">
-              <input type="radio" name="gender" value="pria" class="text-teal-600 focus:ring-teal-500">
+              <input type="checkbox" name="gender[]" value="pria" class="gender-checkbox text-teal-600 focus:ring-teal-500">
               Pria
             </label>
             <label class="flex items-center gap-2">
-              <input type="radio" name="gender" value="wanita" class="text-teal-600 focus:ring-teal-500">
+              <input type="checkbox" name="gender[]" value="wanita" class="gender-checkbox text-teal-600 focus:ring-teal-500">
               Wanita
             </label>
           </div>
+          <div id="gender-warning" class="text-red-600 text-sm mt-1 hidden">Pilih minimal 1 jenis kelamin!</div>
         </div>
       </div>
 
-      <!-- Media Sosial & Website -->
+      <!-- Lokasi Kerja & Besaran Gaji -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label for="media_sosial" class="block text-gray-700 font-semibold mb-2">Media Sosial</label>
-          <input type="url" id="media_sosial" name="media_sosial" placeholder="https://"
+          <label for="lokasi_kerja" class="block text-gray-700 font-semibold mb-2">Lokasi Kerja</label>
+          <input type="text" id="lokasi_kerja" name="lokasi_kerja" placeholder="Contoh: Bandung, Jakarta, dll"
                  class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
         </div>
         <div>
-          <label for="website" class="block text-gray-700 font-semibold mb-2">Website</label>
-          <input type="url" id="website" name="website" placeholder="https://"
+          <label for="besaran_gaji" class="block text-gray-700 font-semibold mb-2">Besaran Gaji</label>
+          <input type="text" id="besaran_gaji" name="besaran_gaji" placeholder="Contoh: 5.000.000 atau Kompetitif"
                  class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+          <div id="gaji-warning" class="text-red-600 text-sm mt-1 hidden">Masukkan besaran gaji!</div>
         </div>
       </div>
 
@@ -127,8 +158,10 @@
         </a>
         <button type="button" 
                 id="btn-selanjutnya"
+                <a href
                 class="px-6 py-3 bg-[#00797a] text-white rounded-lg font-bold shadow hover:bg-[#00646A] transition">
           Selanjutnya
+      </a>
         </button>
       </div>
     </form>
@@ -141,9 +174,7 @@
   </footer>
 
   <script>
-    // Validasi sebelum redirect
     document.getElementById('btn-selanjutnya')?.addEventListener('click', function (e) {
-      // Ambil form dan field wajib
       const form = document.querySelector('form');
       let valid = true;
 
@@ -201,41 +232,42 @@
         }
       }
 
-      // Usia
-      const usia = document.getElementById('usia');
-      if (!usia.value) {
-        usia.classList.add('border-red-500');
-        if (!usia.nextElementSibling || !usia.nextElementSibling.classList.contains('text-red-600')) {
-          const warn = document.createElement('div');
-          warn.className = 'text-red-600 text-sm mt-1';
-          warn.innerText = 'Harap isi bagian ini';
-          usia.parentNode.appendChild(warn);
-        }
-        valid = false;
-      } else {
-        usia.classList.remove('border-red-500');
-        if (usia.nextElementSibling && usia.nextElementSibling.classList.contains('text-red-600')) {
-          usia.nextElementSibling.remove();
-        }
-      }
+      // Hapus validasi usia dan pendidikan yang pakai id (karena sudah pakai checkbox)
+      // --- Hapus blok berikut ---
+      // const usia = document.getElementById('usia');
+      // if (!usia.value) {
+      //   usia.classList.add('border-red-500');
+      //   if (!usia.nextElementSibling || !usia.nextElementSibling.classList.contains('text-red-600')) {
+      //     const warn = document.createElement('div');
+      //     warn.className = 'text-red-600 text-sm mt-1';
+      //     warn.innerText = 'Harap isi bagian ini';
+      //     usia.parentNode.appendChild(warn);
+      //   }
+      //   valid = false;
+      // } else {
+      //   usia.classList.remove('border-red-500');
+      //   if (usia.nextElementSibling && usia.nextElementSibling.classList.contains('text-red-600')) {
+      //     usia.nextElementSibling.remove();
+      //   }
+      // }
 
-      // Pendidikan
-      const pendidikan = document.getElementById('pendidikan');
-      if (!pendidikan.value) {
-        pendidikan.classList.add('border-red-500');
-        if (!pendidikan.nextElementSibling || !pendidikan.nextElementSibling.classList.contains('text-red-600')) {
-          const warn = document.createElement('div');
-          warn.className = 'text-red-600 text-sm mt-1';
-          warn.innerText = 'Harap isi bagian ini';
-          pendidikan.parentNode.appendChild(warn);
-        }
-        valid = false;
-      } else {
-        pendidikan.classList.remove('border-red-500');
-        if (pendidikan.nextElementSibling && pendidikan.nextElementSibling.classList.contains('text-red-600')) {
-          pendidikan.nextElementSibling.remove();
-        }
-      }
+      // const pendidikan = document.getElementById('pendidikan');
+      // if (!pendidikan.value) {
+      //   pendidikan.classList.add('border-red-500');
+      //   if (!pendidikan.nextElementSibling || !pendidikan.nextElementSibling.classList.contains('text-red-600')) {
+      //     const warn = document.createElement('div');
+      //     warn.className = 'text-red-600 text-sm mt-1';
+      //     warn.innerText = 'Harap isi bagian ini';
+      //     pendidikan.parentNode.appendChild(warn);
+      //   }
+      //   valid = false;
+      // } else {
+      //   pendidikan.classList.remove('border-red-500');
+      //   if (pendidikan.nextElementSibling && pendidikan.nextElementSibling.classList.contains('text-red-600')) {
+      //     pendidikan.nextElementSibling.remove();
+      //   }
+      // }
+      // --- End hapus ---
 
       // Gender
       const genderRadios = form.querySelectorAll('input[name="gender"]');
@@ -254,10 +286,73 @@
         genderDiv.nextElementSibling.remove();
       }
 
-      // Jika valid, redirect
-      if (valid) {
-        window.location.href = '../public/buka_lowongan.php';
+      // Validasi pengalaman (harus pilih 2)
+      const pengalamanChecked = Array.from(document.querySelectorAll('.pengalaman-checkbox')).filter(x => x.checked);
+      const pengalamanWarning = document.getElementById('pengalaman-warning');
+      if (pengalamanChecked.length !== 2) {
+        pengalamanWarning.classList.remove('hidden');
+        valid = false;
+      } else {
+        pengalamanWarning.classList.add('hidden');
       }
+
+      // Validasi pendidikan (harus ada yang dipilih)
+      const pendidikanChecked = Array.from(document.querySelectorAll('.pendidikan-checkbox')).filter(x => x.checked);
+      const pendidikanWarning = document.getElementById('pendidikan-warning');
+      if (pendidikanChecked.length === 0) {
+        pendidikanWarning.classList.remove('hidden');
+        valid = false;
+      } else {
+        pendidikanWarning.classList.add('hidden');
+      }
+
+      // Validasi gender (minimal 1 dipilih)
+      const genderChecked = Array.from(document.querySelectorAll('.gender-checkbox')).filter(x => x.checked);
+      const genderWarning = document.getElementById('gender-warning');
+      if (genderChecked.length === 0) {
+        genderWarning.classList.remove('hidden');
+        valid = false;
+      } else {
+        genderWarning.classList.add('hidden');
+      }
+
+      // Validasi besaran gaji (harus diisi)
+      const besaranGaji = document.getElementById('besaran_gaji');
+      const gajiWarning = document.getElementById('gaji-warning');
+      if (!besaranGaji.value.trim()) {
+        gajiWarning.classList.remove('hidden');
+        valid = false;
+      } else {
+        gajiWarning.classList.add('hidden');
+      }
+
+      // Jika valid, submit form (otomatis pindah ke dashboard perusahaan)
+      if (valid) {
+        document.querySelector('form').submit();
+      } else {
+        // Scroll ke field error pertama (cari field dengan border-red-500 atau warning yang tidak hidden)
+        const firstError = document.querySelector('.border-red-500, .text-red-600:not(.hidden)');
+        if (firstError) {
+          // Jika warning, scroll ke parent (agar tidak scroll ke text kecil)
+          if (firstError.classList.contains('text-red-600')) {
+            firstError.parentNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }
+    });
+
+    // Pengalaman checkbox logic
+    const pengalamanCheckboxes = document.querySelectorAll('.pengalaman-checkbox');
+    pengalamanCheckboxes.forEach(cb => {
+      cb.addEventListener('change', function() {
+        let checked = Array.from(pengalamanCheckboxes).filter(x => x.checked);
+        // Batasi maksimal 2
+        if (checked.length > 2) { 
+          this.checked = false;
+        }
+      });
     });
   </script>
 </body>
