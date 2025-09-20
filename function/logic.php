@@ -41,7 +41,7 @@ function menu_aktif($page) {
 
         return $menuAktif;
     }
-}
+    
 
 if (!function_exists('searchArtikel')) {
     function searchArtikel($keyword) {
