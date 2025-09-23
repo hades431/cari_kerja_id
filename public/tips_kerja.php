@@ -49,8 +49,7 @@ if (!$result) {
             <p class="text-gray-600 mb-3">
               <?php echo htmlspecialchars(mb_substr($row['ringkasan'], 0, 100)) . '...'; ?>
             </p>
-            <a href="detail_tips.php?id=<?php echo $row['id']; ?>" 
-               class="text-blue-600 font-semibold hover:underline">Baca Selengkapnya</a>
+            <a href="detail_tips.php?id=<?php echo $row['id']; ?>">Baca Selengkapnya</a>
           </div>
         <?php endwhile; ?>
       <?php else: ?>

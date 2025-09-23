@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($result && $result->num_rows > 0){
     $user = $result->fetch_assoc();
     // Ganti pengecekan password sesuai kebutuhan (hash atau plain)
-    if(password_verify($password,$user['password'])){
+    if($password == $user['password']){
       $_SESSION['login'] = true;
       $_SESSION['id_user'] = $user['id_user'];
       $_SESSION['email'] = $user['email'];
@@ -88,7 +88,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             
             <?php if(isset($error2)): ?>
             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r">
-                <p class="font-medium">Password atau email salah</p>
+                <p class="font-medium">Password atau email salah!</p>
             </div>
             <?php endif; ?>
 
@@ -118,7 +118,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
             <div class="mt-6 text-center text-gray-600">
                 Belum punya akun? 
-                <a href="register.php" class="text-teal-600 hover:text-teal-800 transition-colors duration-300 font-medium hover:underline">
+                <a href="register.php " class="text-teal-600 hover:text-teal-800 transition-colors duration-300 font-medium hover:underline">
                     Daftar sekarang
                 </a>
             </div>
@@ -139,5 +139,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             button.disabled = true;
         });
     </script>
-</body>
+</body>  
 </html>

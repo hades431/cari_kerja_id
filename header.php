@@ -1,5 +1,38 @@
 <?php
 session_start();
+
+$is_logged_in = isset($_SESSION['pelamar_kerja']) || isset($_SESSION['user']);
+$is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
+
+$foto_default = '../img/default_profile.png'; // pastikan file ini ada
+
+$nama_lengkap = 'Nama Pengguna';
+$foto_profil = $foto_default;
+
+if ($is_logged_in) {
+    // Ambil data dari session pelamar_kerja jika ada
+    if (isset($_SESSION['pelamar_kerja'])) {
+        $nama_lengkap = $_SESSION['pelamar_kerja']['nama_lengkap'] ?: ($_SESSION['user']['email'] ?? 'Nama Pengguna');
+        $foto_profil = $_SESSION['pelamar_kerja']['foto'] ?: $foto_default;
+        // Jika path sudah mengandung 'uploads/', tambahkan '../' di depannya
+        if (strpos($foto_profil, 'uploads/') === 0) {
+            $foto_profil = '../' . $foto_profil;
+        }
+    }
+    // Jika hanya user, ambil data dari database pelamar_kerja
+    elseif (isset($_SESSION['user'])) {
+        require_once '../function/logic.php';
+        $user_id = $_SESSION['user']['id'] ?? null;
+        $nama_lengkap = $_SESSION['user']['email'] ?? 'Nama Pengguna';
+        if ($user_id) {
+            $query = mysqli_query($conn, "SELECT nama_lengkap, foto FROM pelamar_kerja WHERE id_user='$user_id' LIMIT 1");
+            if ($row = mysqli_fetch_assoc($query)) {
+                $nama_lengkap = $row['nama_lengkap'] ?: $nama_lengkap;
+                $foto_profil = $row['foto'] ? (strpos($row['foto'], 'uploads/') === 0 ? '../'.$row['foto'] : $row['foto']) : $foto_default;
+            }
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,12 +54,13 @@ session_start();
 
             <div class="flex flex-col items-end gap-1">
                 <!-- Profil -->
-                <?php if (isset($_SESSION['user'])): ?>
+                <?php if ($is_logged_in && !$is_profil_pelamar && $nama_lengkap !== 'Nama Pengguna'): ?>
                     <a href="../public/profil_pelamar.php" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
-                        <img src="../img/avatar.png" alt="Profil"
-                            class="w-10 h-10 rounded-full border-2 border-white shadow">
+                        <img src="<?= htmlspecialchars($foto_profil) ?>" alt="Profil"
+                            class="w-10 h-10 rounded-full border-2 border-white shadow object-cover"
+                            onerror="this.onerror=null;this.src='<?= $foto_default ?>';">
                         <span class="text-white font-semibold">
-                            <?= htmlspecialchars($_SESSION['user']['nama'] ?? 'Nama Pengguna') ?>
+                            <?= htmlspecialchars($nama_lengkap) ?>
                         </span>
                     </a>
                 <?php endif; ?>

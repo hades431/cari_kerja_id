@@ -1,24 +1,24 @@
 <?php
 session_start();
 include '../../function/logic.php';
+$menuAktif = menu_aktif('perusahaan');
 
-$menuAktif = menu_aktif('artikel');
-$keyword = $_GET['search'] ?? '';
-
-$tipsList = []; 
-if ($keyword) {
-    $tipsList = searchArtikel($keyword);
-} else {
-    $tipsList = getArtikelList();
+if (isset($_POST['verifikasi']) && isset($_POST['id'])) {
+    $id = $_POST['id'];
+    $aksi = $_POST['verifikasi'];
+    verifikasiPerusahaan($id, $aksi);
+    header("Location: perusahaan_menunggu.php");
+    exit;
 }
+
+$perusahaanList = getPerusahaanPending();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="id">
+<head> 
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tips Kerja Artikel</title>
+  <title>Perusahaan Menunggu Verifikasi</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#222] min-h-screen">
@@ -44,7 +44,7 @@ if ($keyword) {
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="7" r="4" />
             <path d="M6 21v-2a6 6 0 1112 0v2" />
-          </svg>
+          </svg> 
           <span>User</span>
         </a>
 
@@ -96,72 +96,61 @@ if ($keyword) {
 
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
-        <h2 class="text-2xl font-bold tracking-wide">Artikel Tips kerja</h2>
-        <div class="flex items-center gap-4">
+        <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
+        <div class="flex items-center gap-3">
           <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
           <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
         </div>
       </header>
 
-      <div class="flex-1 p-8 bg-gray-100">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-700">Daftar Artikel & Tips</h2>
-          <a href="tambah_artikel.php" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-semibold text-base shadow-md transition-all duration-200">+ Tambah Artikel</a>
-        </div>
+      <main class="p-8 flex-1 space-y-10">
+      <h3 class="text-xl font-bold mb-6 text-gray-700">Daftar Perusahaan Menunggu Verifikasi</h3>
 
-        <form method="get" class="flex items-center gap-3 mb-6">
-          <div class="relative w-72">
-            <input type="text" name="search" value="<?= htmlspecialchars($keyword) ?>" class="bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-teal-500 focus:outline-none shadow-sm" placeholder="Cari artikel...">
+
+      <div class="p-8">
+        <?php if (empty($perusahaanList)): ?>
+          <div class="bg-gray-50 rounded-xl shadow p-8 text-center text-gray-500">
+            Belum ada perusahaan yang menunggu verifikasi.
           </div>
-          <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg">Cari</button>
-        </form>
-
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-teal-600 text-white">
-              <tr>
-                <th class="px-4 py-3">No</th>
-                <th class="px-4 py-3">Foto</th>
-                <th class="px-4 py-3">Judul Artikel</th>
-                <th class="px-4 py-3">Tanggal Posting</th>
-                <th class="px-4 py-3">Aksi</th>
-                <th class="px-4 py-3">Edit</th>
-                <th class="px-4 py-3">Hapus</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <?php if (count($tipsList) > 0): ?>
-                <?php foreach ($tipsList as $i => $row): ?>
-                  <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3"><?= $i+1 ?>.</td>
+        <?php else: ?>
+          <div class="overflow-x-auto bg-white shadow rounded-xl">
+            <table class="w-full border-collapse">
+              <thead class="bg-teal-600 text-white">
+                <tr>
+                  <th class="px-4 py-3 text-left">No</th>
+                  <th class="px-4 py-3 text-left">Nama Perusahaan</th>
+                  <th class="px-4 py-3 text-left">Email</th>
+                  <th class="px-4 py-3 text-left">Tanggal Daftar</th>
+                  <th class="px-4 py-3 text-left">Bukti Pembayaran</th>
+                  <th class="px-4 py-3 text-left">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($perusahaanList as $index => $row): ?>
+                  <tr class="border-t hover:bg-gray-50">
+                    <td class="px-4 py-3"><?= $index+1 ?></td>
+                    <td class="px-4 py-3 font-medium text-gray-800"><?= htmlspecialchars($row['nama_perusahaan']) ?></td>
+                    <td class="px-4 py-3"><?= htmlspecialchars($row['email_perusahaan']) ?></td>
+                    <td class="px-4 py-3"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
                     <td class="px-4 py-3">
-                      <?php if (!empty($row['gambar'])): ?>
-                        <img src="../../uploads/<?= htmlspecialchars($row['gambar']); ?>" alt="Gambar Artikel" class="w-16 h-16 object-cover rounded-lg border">
-                      <?php else: ?>
-                        <span class="text-gray-400 italic">Tidak ada</span>
-                      <?php endif; ?>
+                      <a href="../transaksi/transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
                     </td>
-                    <td class="px-4 py-3"><?= htmlspecialchars($row['judul']); ?></td>
-                    <td class="px-4 py-3"><?= date('d-m-Y', strtotime($row['tanggal'])); ?></td>
-                    <td class="px-4 py-3">
-                      <a href="lihat_artikel.php?id=<?= $row['id']; ?>" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm">Lihat</a>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                      <a href="edit_artikel.php?id=<?= $row['id'] ?>" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</a>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                      <a href="hapus_artikel.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin menghapus artikel ini?')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">Hapus</a>
+                    <td class="px-4 py-3 flex gap-2">
+                      <form method="POST">
+                        <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
+                        <button type="submit" name="verifikasi" value="setujui" class="px-3 py-1 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Setujui</button>
+                      </form>
+                      <form method="POST">
+                        <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
+                        <button type="submit" name="verifikasi" value="tolak" class="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Tolak</button>
+                      </form>
                     </td>
                   </tr>
                 <?php endforeach; ?>
-              <?php else: ?>
-                <tr>
-                  <td colspan="7" class="px-4 py-6 text-center text-gray-500 italic">Artikel tidak ditemukan.</td>
-                </tr>
-              <?php endif; ?>
-            </tbody>
-          </table>
-        </div>
+              </tbody>
+            </table>
+          </div>
+        <?php endif; ?>
       </div>
 
       <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">

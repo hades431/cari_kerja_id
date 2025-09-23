@@ -209,7 +209,9 @@ $dashboardStats[1]['subtitle'] = count($lowonganList) > 0 ? implode(', ', array_
     <!-- Sidebar -->
     <div id="sidebar" class="bg-[#00888a] text-white flex flex-col items-center py-10 px-0 shadow-lg w-64 min-h-screen relative">
         <div class="flex flex-col items-center w-full flex-1">
-            <div class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg">
+            <div
+                class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg cursor-pointer"
+                onclick="window.location.href='../perusahaan/profile_perusahaan.php'">
                 <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-20 h-20 rounded-full object-cover">
             </div>
             <div class="text-lg font-bold text-white mb-8 text-center">Perusahaan</div>
@@ -269,50 +271,7 @@ $dashboardStats[1]['subtitle'] = count($lowonganList) > 0 ? implode(', ', array_
                 </table>
             </div>
         </div>
-        <!-- Tabel Lowongan -->
-        <div class="w-full mb-6">
-            <div class="overflow-x-auto">
-                <table class="min-w-full rounded-lg shadow bg-white">
-                    <thead>
-                        <tr class="bg-[#009fa3] text-white">
-                            <th class="py-3 px-4 text-left font-bold">Nama Perusahaan</th>
-                            <th class="py-3 px-4 text-left font-bold">Judul Lowongan</th>
-                            <th class="py-3 px-4 text-left font-bold">Departemen</th>
-                            <th class="py-3 px-4 text-left font-bold">Status</th>
-                            <th class="py-3 px-4 text-left font-bold">Deskripsi</th>
-                            <th class="py-3 px-4 text-left font-bold">Usia</th>
-                            <th class="py-3 px-4 text-left font-bold">Pendidikan</th>
-                            <th class="py-3 px-4 text-left font-bold">Gender</th>
-                            <th class="py-3 px-4 text-left font-bold">Media Sosial</th>
-                            <th class="py-3 px-4 text-left font-bold">Website</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (count($lowonganList) > 0): ?>
-                            <?php foreach ($lowonganList as $lowongan): ?>
-                                <tr>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['nama_perusahaan']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['judul']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['departemen']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['status']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['deskripsi']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['usia']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['pendidikan']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['gender']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['media_sosial']); ?></td>
-                                    <td class="py-2 px-4"><?php echo htmlspecialchars($lowongan['website']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="10" class="py-6 px-4 text-center text-gray-400">Tidak ada data lowongan</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- Tabel Wawancara -->
+        <!-- Tabel Jumlah Pelamar Diterima (warna sama seperti tabel pertama) -->
         <div class="w-full mb-6">
             <div class="overflow-x-auto">
                 <table class="min-w-full rounded-lg shadow bg-white">
@@ -320,31 +279,12 @@ $dashboardStats[1]['subtitle'] = count($lowonganList) > 0 ? implode(', ', array_
                         <tr class="bg-[#009fa3] text-white">
                             <th class="py-3 px-4 text-left font-bold">Nama Pelamar</th>
                             <th class="py-3 px-4 text-left font-bold">Posisi</th>
-                            <th class="py-3 px-4 text-left font-bold">Tanggal Wawancara</th>
+                            <th class="py-3 px-4 text-left font-bold">Tanggal Diterima</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="3" class="py-6 px-4 text-center text-gray-400">Tidak ada data wawancara</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- Tabel Karyawan -->
-        <div class="w-full mb-6">
-            <div class="overflow-x-auto">
-                <table class="min-w-full rounded-lg shadow bg-white">
-                    <thead>
-                        <tr class="bg-[#009fa3] text-white">
-                            <th class="py-3 px-4 text-left font-bold">Nama Karyawan</th>
-                            <th class="py-3 px-4 text-left font-bold">Jabatan</th>
-                            <th class="py-3 px-4 text-left font-bold">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="3" class="py-6 px-4 text-center text-gray-400">Tidak ada data karyawan</td>
+                            <td colspan="3" class="py-6 px-4 text-center text-gray-400">Belum ada pelamar yang diterima</td>
                         </tr>
                     </tbody>
                 </table>

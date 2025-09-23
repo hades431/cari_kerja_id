@@ -1,24 +1,21 @@
 <?php
-session_start();
 include '../../function/logic.php';
+$menuAktif = menu_aktif('perusahaan');
 
-$menuAktif = menu_aktif('artikel');
-$keyword = $_GET['search'] ?? '';
+$qAcc = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE verifikasi='sudah'") or die(mysqli_error($conn));
+$rowAcc = mysqli_fetch_assoc($qAcc);
+$acc = $rowAcc['total'] ?? 0;
 
-$tipsList = []; 
-if ($keyword) {
-    $tipsList = searchArtikel($keyword);
-} else {
-    $tipsList = getArtikelList();
-}
+$qBelum = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE verifikasi='belum'") or die(mysqli_error($conn));
+$rowBelum = mysqli_fetch_assoc($qBelum);
+$belum = $rowBelum['total'] ?? 0;
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="id">
+<head> 
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tips Kerja Artikel</title>
+  <title>Perusahaan</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#222] min-h-screen">
@@ -44,7 +41,7 @@ if ($keyword) {
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="7" r="4" />
             <path d="M6 21v-2a6 6 0 1112 0v2" />
-          </svg>
+          </svg> 
           <span>User</span>
         </a>
 
@@ -96,73 +93,64 @@ if ($keyword) {
 
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
-        <h2 class="text-2xl font-bold tracking-wide">Artikel Tips kerja</h2>
-        <div class="flex items-center gap-4">
+        <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
+        <div class="flex items-center gap-3">
           <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
           <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
         </div>
       </header>
 
-      <div class="flex-1 p-8 bg-gray-100">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-700">Daftar Artikel & Tips</h2>
-          <a href="tambah_artikel.php" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-semibold text-base shadow-md transition-all duration-200">+ Tambah Artikel</a>
-        </div>
-
-        <form method="get" class="flex items-center gap-3 mb-6">
-          <div class="relative w-72">
-            <input type="text" name="search" value="<?= htmlspecialchars($keyword) ?>" class="bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-teal-500 focus:outline-none shadow-sm" placeholder="Cari artikel...">
+      <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="acc.php" class="block">
+          <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl shadow-lg p-8 text-white border-2 border-transparent hover:border-white/40 transform hover:-translate-y-1 active:scale-95 transition duration-200 text-center">
+            <h3 class="text-xl font-semibold">Perusahaan ACC</h3>
+            <p class="text-5xl font-extrabold mt-3"><?= $acc ?></p>
+            <p class="text-sm opacity-90">Sudah disetujui</p>
           </div>
-          <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg">Cari</button>
-        </form>
+        </a>
 
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-teal-600 text-white">
-              <tr>
-                <th class="px-4 py-3">No</th>
-                <th class="px-4 py-3">Foto</th>
-                <th class="px-4 py-3">Judul Artikel</th>
-                <th class="px-4 py-3">Tanggal Posting</th>
-                <th class="px-4 py-3">Aksi</th>
-                <th class="px-4 py-3">Edit</th>
-                <th class="px-4 py-3">Hapus</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <?php if (count($tipsList) > 0): ?>
-                <?php foreach ($tipsList as $i => $row): ?>
-                  <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3"><?= $i+1 ?>.</td>
-                    <td class="px-4 py-3">
-                      <?php if (!empty($row['gambar'])): ?>
-                        <img src="../../uploads/<?= htmlspecialchars($row['gambar']); ?>" alt="Gambar Artikel" class="w-16 h-16 object-cover rounded-lg border">
-                      <?php else: ?>
-                        <span class="text-gray-400 italic">Tidak ada</span>
-                      <?php endif; ?>
-                    </td>
-                    <td class="px-4 py-3"><?= htmlspecialchars($row['judul']); ?></td>
-                    <td class="px-4 py-3"><?= date('d-m-Y', strtotime($row['tanggal'])); ?></td>
-                    <td class="px-4 py-3">
-                      <a href="lihat_artikel.php?id=<?= $row['id']; ?>" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm">Lihat</a>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                      <a href="edit_artikel.php?id=<?= $row['id'] ?>" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</a>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                      <a href="hapus_artikel.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin menghapus artikel ini?')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">Hapus</a>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              <?php else: ?>
-                <tr>
-                  <td colspan="7" class="px-4 py-6 text-center text-gray-500 italic">Artikel tidak ditemukan.</td>
-                </tr>
-              <?php endif; ?>
-            </tbody>
-          </table>
-        </div>
+        <a href="menunggu.php" class="block">
+          <div class="bg-gradient-to-br from-red-500 to-red-700 rounded-2xl shadow-lg p-8 text-white border-2 border-transparent hover:border-white/40 transform hover:-translate-y-1 active:scale-95 transition duration-200 text-center">
+            <h3 class="text-xl font-semibold">Menunggu ACC</h3>
+            <p class="text-5xl font-extrabold mt-3"><?= $belum ?></p>
+            <p class="text-sm opacity-90">Belum disetujui</p>
+          </div>
+        </a>
       </div>
+
+      <div class="px-8 pb-8">
+          <h3 class="text-xl font-bold mb-4">Aktivitas Terbaru</h3>
+          <div class="space-y-3">
+            <?php
+            $qNotif = mysqli_query($conn, "SELECT nama_perusahaan, created_at 
+                                          FROM perusahaan 
+                                          WHERE verifikasi='belum' 
+                                          ORDER BY created_at DESC LIMIT 5");
+            if (mysqli_num_rows($qNotif) > 0) {
+                while ($n = mysqli_fetch_assoc($qNotif)) {
+                    echo '
+                    <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 shadow-sm">
+                      <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-yellow-100 text-yellow-600 rounded-full">
+                        ⏳
+                      </div>
+                      <div>
+                        <p class="text-sm">
+                          Perusahaan <span class="font-semibold text-gray-800">'.htmlspecialchars($n['nama_perusahaan']).'</span> 
+                          menunggu ACC
+                        </p>
+                        <span class="text-xs text-gray-500">'.date("d/m/Y", strtotime($n['created_at'])).'</span>
+                      </div>
+                    </div>';
+                }
+            } else {
+                echo '
+                <div class="bg-gray-50 rounded-xl p-4 text-center text-gray-500 shadow-sm">
+                  Belum ada pembaruan
+                </div>';
+            }
+            ?>
+          </div>
+        </div>
 
       <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
         <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
