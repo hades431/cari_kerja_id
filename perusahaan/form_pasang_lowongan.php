@@ -156,13 +156,13 @@
            class="px-6 py-3 bg-gray-300 text-gray-800 rounded-lg font-semibold shadow hover:bg-gray-400 transition">
           Kembali
         </a>
-        <button type="button" 
-                id="btn-selanjutnya"
-                <a href
-                class="px-6 py-3 bg-[#00797a] text-white rounded-lg font-bold shadow hover:bg-[#00646A] transition">
+        <a 
+          id="btn-selanjutnya"
+          href="../dashboard/dashboard_perusahaan.php"
+          class="px-6 py-3 bg-[#00797a] text-white rounded-lg font-bold shadow hover:bg-[#00646A] transition text-center cursor-pointer"
+        >
           Selanjutnya
-      </a>
-        </button>
+        </a>
       </div>
     </form>
   </div>
@@ -177,6 +177,7 @@
     document.getElementById('btn-selanjutnya')?.addEventListener('click', function (e) {
       const form = document.querySelector('form');
       let valid = true;
+      let missingFields = [];
 
       // Nama Perusahaan
       const namaPerusahaan = document.getElementById('nama_perusahaan');
@@ -189,6 +190,7 @@
           namaPerusahaan.parentNode.appendChild(warn);
         }
         valid = false;
+        missingFields.push('Nama Perusahaan');
       } else {
         namaPerusahaan.classList.remove('border-red-500');
         if (namaPerusahaan.nextElementSibling && namaPerusahaan.nextElementSibling.classList.contains('text-red-600')) {
@@ -207,6 +209,7 @@
           judulLowongan.parentNode.appendChild(warn);
         }
         valid = false;
+        missingFields.push('Judul Lowongan');
       } else {
         judulLowongan.classList.remove('border-red-500');
         if (judulLowongan.nextElementSibling && judulLowongan.nextElementSibling.classList.contains('text-red-600')) {
@@ -225,65 +228,12 @@
           deskripsi.parentNode.appendChild(warn);
         }
         valid = false;
+        missingFields.push('Deskripsi Lowongan');
       } else {
         deskripsi.classList.remove('border-red-500');
         if (deskripsi.nextElementSibling && deskripsi.nextElementSibling.classList.contains('text-red-600')) {
           deskripsi.nextElementSibling.remove();
         }
-      }
-
-      // Hapus validasi usia dan pendidikan yang pakai id (karena sudah pakai checkbox)
-      // --- Hapus blok berikut ---
-      // const usia = document.getElementById('usia');
-      // if (!usia.value) {
-      //   usia.classList.add('border-red-500');
-      //   if (!usia.nextElementSibling || !usia.nextElementSibling.classList.contains('text-red-600')) {
-      //     const warn = document.createElement('div');
-      //     warn.className = 'text-red-600 text-sm mt-1';
-      //     warn.innerText = 'Harap isi bagian ini';
-      //     usia.parentNode.appendChild(warn);
-      //   }
-      //   valid = false;
-      // } else {
-      //   usia.classList.remove('border-red-500');
-      //   if (usia.nextElementSibling && usia.nextElementSibling.classList.contains('text-red-600')) {
-      //     usia.nextElementSibling.remove();
-      //   }
-      // }
-
-      // const pendidikan = document.getElementById('pendidikan');
-      // if (!pendidikan.value) {
-      //   pendidikan.classList.add('border-red-500');
-      //   if (!pendidikan.nextElementSibling || !pendidikan.nextElementSibling.classList.contains('text-red-600')) {
-      //     const warn = document.createElement('div');
-      //     warn.className = 'text-red-600 text-sm mt-1';
-      //     warn.innerText = 'Harap isi bagian ini';
-      //     pendidikan.parentNode.appendChild(warn);
-      //   }
-      //   valid = false;
-      // } else {
-      //   pendidikan.classList.remove('border-red-500');
-      //   if (pendidikan.nextElementSibling && pendidikan.nextElementSibling.classList.contains('text-red-600')) {
-      //     pendidikan.nextElementSibling.remove();
-      //   }
-      // }
-      // --- End hapus ---
-
-      // Gender
-      const genderRadios = form.querySelectorAll('input[name="gender"]');
-      let genderChecked = false;
-      genderRadios.forEach(radio => { if (radio.checked) genderChecked = true; });
-      const genderDiv = genderRadios[0]?.closest('.flex');
-      if (!genderChecked && genderDiv) {
-        if (!genderDiv.nextElementSibling || !genderDiv.nextElementSibling.classList.contains('text-red-600')) {
-          const warn = document.createElement('div');
-          warn.className = 'text-red-600 text-sm mt-1';
-          warn.innerText = 'Harap isi bagian ini';
-          genderDiv.parentNode.appendChild(warn);
-        }
-        valid = false;
-      } else if (genderDiv && genderDiv.nextElementSibling && genderDiv.nextElementSibling.classList.contains('text-red-600')) {
-        genderDiv.nextElementSibling.remove();
       }
 
       // Validasi pengalaman (harus pilih 2)
@@ -292,6 +242,7 @@
       if (pengalamanChecked.length !== 2) {
         pengalamanWarning.classList.remove('hidden');
         valid = false;
+        missingFields.push('Batas Pengalaman (pilih 2)');
       } else {
         pengalamanWarning.classList.add('hidden');
       }
@@ -302,6 +253,7 @@
       if (pendidikanChecked.length === 0) {
         pendidikanWarning.classList.remove('hidden');
         valid = false;
+        missingFields.push('Pendidikan Minimal');
       } else {
         pendidikanWarning.classList.add('hidden');
       }
@@ -312,8 +264,28 @@
       if (genderChecked.length === 0) {
         genderWarning.classList.remove('hidden');
         valid = false;
+        missingFields.push('Jenis Kelamin');
       } else {
         genderWarning.classList.add('hidden');
+      }
+
+      // Validasi lokasi kerja
+      const lokasiKerja = document.getElementById('lokasi_kerja');
+      if (!lokasiKerja.value.trim()) {
+        lokasiKerja.classList.add('border-red-500');
+        if (!lokasiKerja.nextElementSibling || !lokasiKerja.nextElementSibling.classList.contains('text-red-600')) {
+          const warn = document.createElement('div');
+          warn.className = 'text-red-600 text-sm mt-1';
+          warn.innerText = 'Harap isi bagian ini';
+          lokasiKerja.parentNode.appendChild(warn);
+        }
+        valid = false;
+        missingFields.push('Lokasi Kerja');
+      } else {
+        lokasiKerja.classList.remove('border-red-500');
+        if (lokasiKerja.nextElementSibling && lokasiKerja.nextElementSibling.classList.contains('text-red-600')) {
+          lokasiKerja.nextElementSibling.remove();
+        }
       }
 
       // Validasi besaran gaji (harus diisi)
@@ -322,17 +294,44 @@
       if (!besaranGaji.value.trim()) {
         gajiWarning.classList.remove('hidden');
         valid = false;
+        missingFields.push('Besaran Gaji');
       } else {
         gajiWarning.classList.add('hidden');
       }
 
-      // Jika valid, submit form (otomatis pindah ke dashboard perusahaan)
-      if (valid) {
-        document.querySelector('form').submit();
-      } else {
+      // Jika valid, biarkan <a> melakukan href ke dashboard
+      if (!valid) {
+        e.preventDefault();
         // Scroll ke field error pertama (cari field dengan border-red-500 atau warning yang tidak hidden)
         const firstError = document.querySelector('.border-red-500, .text-red-600:not(.hidden)');
         if (firstError) {
+          if (firstError.classList.contains('text-red-600')) {
+            firstError.parentNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+        // Tampilkan alert berisi field yang belum diisi
+        if (missingFields.length > 0) {
+          alert('Harap lengkapi bagian berikut:\n- ' + missingFields.join('\n- '));
+        }
+      }
+    });
+
+    // Pengalaman checkbox logic
+    const pengalamanCheckboxes = document.querySelectorAll('.pengalaman-checkbox');
+    pengalamanCheckboxes.forEach(cb => {
+      cb.addEventListener('change', function() {
+        let checked = Array.from(pengalamanCheckboxes).filter(x => x.checked);
+        // Batasi maksimal 2
+        if (checked.length > 2) { 
+          this.checked = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
           // Jika warning, scroll ke parent (agar tidak scroll ke text kecil)
           if (firstError.classList.contains('text-red-600')) {
             firstError.parentNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -356,4 +355,5 @@
     });
   </script>
 </body>
+</html>
 </html>
