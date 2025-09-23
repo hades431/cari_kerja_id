@@ -29,8 +29,8 @@ if (!function_exists('menu_aktif')) {
             'dashboard' => false,
             'lowongan' => false,
             'perusahaan' => false,
-            'riwayat transaksi' => false,
-            'pelamar' => false,
+            'riwayat_transaksi' => false,
+            'user' => false,
             'artikel' => false,
             'logout' => false
         ];
