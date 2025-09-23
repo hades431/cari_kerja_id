@@ -18,7 +18,7 @@ if (!function_exists('getArtikelList')) {
                 $data[] = $row;
             }
         }
-        return $data; 
+        return $data;
     }
 }
 
