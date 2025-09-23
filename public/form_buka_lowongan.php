@@ -2,6 +2,13 @@
 $judul_halaman = "Form Buka Lowongan";
 include '../header.php';
 
+// Koneksi database
+$conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
+if (mysqli_connect_errno()) {
+    echo "Koneksi database gagal : " . mysqli_connect_error();
+    exit;
+}
+
 // Tangkap paket dari query string
 $paket = isset($_GET['paket']) ? $_GET['paket'] : '';
 
@@ -14,11 +21,46 @@ $harga_paket = [
 ];
 
 $harga = isset($harga_paket[$paket]) ? $harga_paket[$paket] : 0;
+
+// Proses form jika disubmit
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nama_perusahaan = $_POST['nama_perusahaan'] ?? '';
+    $alamat_perusahaan = $_POST['alamat_perusahaan'] ?? '';
+    $email_perusahaan = $_POST['email_perusahaan'] ?? '';
+    $telepon_perusahaan = $_POST['telepon_perusahaan'] ?? '';
+    $website_perusahaan = $_POST['website_perusahaan'] ?? '';
+    $paket = $_POST['paket'] ?? '';
+    $harga = $_POST['harga'] ?? 0;
+    $metode_pembayaran = $_POST['metode_pembayaran'] ?? '';
+    $bukti_pembayaran = '';
+
+    // Upload bukti pembayaran jika ada
+    if (isset($_FILES['bukti_pembayaran']) && $_FILES['bukti_pembayaran']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../uploads/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        $fileName = uniqid() . '_' . basename($_FILES['bukti_pembayaran']['name']);
+        $targetFilePath = $uploadDir . $fileName;
+        if (move_uploaded_file($_FILES['bukti_pembayaran']['tmp_name'], $targetFilePath)) {
+            $bukti_pembayaran = 'uploads/' . $fileName;
+        }
+    }
+
+    // Simpan ke database
+    $sql = "INSERT INTO perusahaan (nama_perusahaan, alamat, email, telepon, website, paket, harga, metode_pembayaran, bukti_pembayaran, status, verifikasi, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'belum', NOW())";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssssiss", $nama_perusahaan, $alamat_perusahaan, $email_perusahaan, $telepon_perusahaan, $website_perusahaan, $paket, $harga, $metode_pembayaran, $bukti_pembayaran);
+    if ($stmt->execute()) {
+        echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-green-100 border border-green-300 rounded text-green-800 text-center">Data perusahaan berhasil dikirim!<br>Tunggu email dari kami.</div>';
+    } else {
+        echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-red-100 border border-red-300 rounded text-red-800 text-center">Gagal menyimpan data perusahaan.</div>';
+    }
+}
 ?>
 
 <div class="max-w-screen-2xl mx-auto mt-10 mb-6 bg-white p-8 rounded-lg border border-gray-200 shadow-lg">
     <h2 class="text-2xl font-bold mb-6 text-center">Form Pendaftaran Perusahaan</h2>
-    <form action="proses_buka_lowongan.php" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST" enctype="multipart/form-data">
 
         <!-- Data Perusahaan -->
         <h4 class="text-lg font-semibold mt-4 mb-2">Data Perusahaan</h4>
@@ -157,7 +199,7 @@ $harga = isset($harga_paket[$paket]) ? $harga_paket[$paket] : 0;
             <ol class="list-decimal pl-5">
                 <li>Buka aplikasi OVO / GoPay / Dana / ShopeePay</li>
                 <li>Pilih menu Transfer / Kirim</li>
-                <li>Masukkan nomor tujuan: <b>0812-3456-7890 (PT JobKu)</b></li>
+                <li>Masukkan nomor tujuan: <b>0821-2843-6309 (PT Cari Kerja)</b></li>
                 <li>Masukkan nominal sesuai harga paket</li>
                 <li>Konfirmasi transfer</li>
                 <li>Simpan bukti pembayaran lalu upload di form</li>
@@ -167,7 +209,7 @@ $harga = isset($harga_paket[$paket]) ? $harga_paket[$paket] : 0;
             <strong>Bayar dengan QRIS:</strong>
             <p>Scan kode QR di bawah ini menggunakan aplikasi e-wallet atau mobile banking Anda.</p>
             <div class="flex justify-center mt-2">
-                <img src="/assets/qris-example.png" alt="QRIS" class="w-48 h-48 border rounded shadow">
+                <img src="../img/qris.jpg" alt="QRIS" class="w-48 h-48 border rounded shadow">
             </div>
             <p class="mt-2 text-sm">Setelah pembayaran berhasil, simpan bukti transfer lalu upload di form.</p>
         `
