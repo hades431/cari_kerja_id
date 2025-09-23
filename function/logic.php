@@ -381,52 +381,60 @@ if (!function_exists('getNotifikasi')) {
     }
 }
 
-function hitungPerusahaan($status) {
-    global $conn;
-    if ($status === 'aktif') {
-        $q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE status='aktif'");
-    } else {
-        $q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE status!='aktif'");
+if (!function_exists('hitungPerusahaan')) {
+    function hitungPerusahaan($status) {
+        global $conn;
+        if ($status === 'aktif') {
+            $q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE status='aktif'");
+        } else {
+            $q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE status!='aktif'");
+        }
+        $row = mysqli_fetch_assoc($q);
+        return $row['total'] ?? 0;
     }
-    $row = mysqli_fetch_assoc($q);
-    return $row['total'] ?? 0;
 }
 
-function getPerusahaanPending() {
-    global $conn;
-    $sql = "SELECT * FROM perusahaan WHERE verifikasi = 'belum'";
-    $result = mysqli_query($conn, $sql);
+if (!function_exists('getPerusahaanPending')) {
+    function getPerusahaanPending() {
+        global $conn;
+        $sql = "SELECT * FROM perusahaan WHERE verifikasi = 'belum'";
+        $result = mysqli_query($conn, $sql);
 
-    if (!$result) {
-        die("Query Error: " . mysqli_error($conn));
-    }
+        if (!$result) {
+            die("Query Error: " . mysqli_error($conn));
+        }
 
-    $data = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $data[] = $row;
+        $data = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $data[] = $row;
+        }
+        return $data;
     }
-    return $data;
 }
 
-function verifikasiPerusahaan($id, $aksi) {
-    global $conn;
-    $status = $aksi === 'setujui' ? 'aktif' : 'ditolak';
-    $sql = "UPDATE perusahaan SET status='$status' WHERE id='$id'";
-    return mysqli_query($conn, $sql);
+if (!function_exists('verifikasiPerusahaan')) {
+    function verifikasiPerusahaan($id, $aksi) {
+        global $conn;
+        $status = $aksi === 'setujui' ? 'aktif' : 'ditolak';
+        $sql = "UPDATE perusahaan SET status='$status' WHERE id='$id'";
+        return mysqli_query($conn, $sql);
+    }
 }
 
-function getPerusahaanAcc($keyword = '') {
-    global $conn;
-    $sql = "SELECT * FROM perusahaan WHERE verifikasi='sudah'";
-    if (!empty($keyword)) {
-        $keyword = mysqli_real_escape_string($conn, $keyword);
-        $sql .= " AND nama_perusahaan LIKE '%$keyword%'";
-    }
+if (!function_exists('getPerusahaanAcc')) {
+    function getPerusahaanAcc($keyword = '') {
+        global $conn;
+        $sql = "SELECT * FROM perusahaan WHERE verifikasi='sudah'";
+        if (!empty($keyword)) {
+            $keyword = mysqli_real_escape_string($conn, $keyword);
+            $sql .= " AND nama_perusahaan LIKE '%$keyword%'";
+        }
 
-    $result = mysqli_query($conn, $sql);
-    if (!$result) {
-        die("Query error: " . mysqli_error($conn) . "<br>SQL: " . $sql);
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            die("Query error: " . mysqli_error($conn) . "<br>SQL: " . $sql);
+        }
+        return $result;
     }
-    return $result;
 }
 ?>
