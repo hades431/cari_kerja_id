@@ -1,15 +1,17 @@
 <?php
-session_start();
 include '../../function/logic.php';
-$menuAktif = menu_aktif('transaksi');
+$menuAktif = menu_aktif('perusahaan');
 
+// ambil keyword dari form search
+$keyword = $_GET['search'] ?? '';
+$result = getPerusahaanAcc($keyword);
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
-<head>
+<head> 
   <meta charset="UTF-8">
-  <title>Riwayat Transaksi</title>
+  <title>Perusahaan</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#222] min-h-screen">
@@ -35,7 +37,7 @@ $menuAktif = menu_aktif('transaksi');
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="7" r="4" />
             <path d="M6 21v-2a6 6 0 1112 0v2" />
-          </svg>
+          </svg> 
           <span>User</span>
         </a>
 
@@ -86,20 +88,63 @@ $menuAktif = menu_aktif('transaksi');
     </aside>
 
     <div class="flex-1 flex flex-col bg-white min-h-screen">
-        <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
-        <h2 class="text-2xl font-bold tracking-wide">Riwayat Transaksi</h2>
+      <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
+        <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
         <div class="flex items-center gap-3">
-        <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-        <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-    </div>
-  </header>
+          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
+          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
+        </div>
+      </header>
 
-  
+      <main class="p-8 flex-1 space-y-8">
+        <h3 class="text-xl font-bold text-gray-700">Daftar Perusahaan Terverifikasi</h3>
+        <form method="GET" class="mb-6">
+          <input type="text" name="search" value="<?= htmlspecialchars($keyword) ?>" 
+                 placeholder="Cari perusahaan..." 
+                 class="px-4 py-2 border rounded-lg w-80 focus:ring-2 focus:ring-teal-500 focus:outline-none" />
+          <button type="submit" 
+                  class="ml-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">Cari</button>
+        </form>
 
-  <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
-        <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
-      </footer>
-    </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border border-gray-200 rounded-lg overflow-hidden shadow">
+            <thead class="bg-teal-700 text-white">
+              <tr>
+                <th class="px-4 py-3 text-left">No</th>
+                <th class="px-4 py-3 text-left">Nama Perusahaan</th>
+                <th class="px-4 py-3 text-left">Email</th>
+                <th class="px-4 py-3 text-left">Bukti Pembayaran</th>
+                <th class="px-4 py-3 text-left">Deskripsi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <?php 
+              $no = 1;
+                if (mysqli_num_rows($result) > 0): 
+                    while ($row = mysqli_fetch_assoc($result)): ?>
+                        <tr>
+                            <td><?= $no++; ?></td>
+                            <td><?= htmlspecialchars($row['nama_perusahaan']); ?></td>
+                            <td><?= htmlspecialchars($row['email_perusahaan']); ?></td>
+                            <td><?= htmlspecialchars($row['verifikasi']); ?></td>
+                            <td>
+                                <a href="bukti_pembayaran.php?id=<?= $row['id_perusahaan'] ?>">Lihat Bukti</a>
+                            </td>
+                            <td>
+                                <a href="deskripsi_perusahaan.php?id=<?= $row['id_perusahaan'] ?>">Lihat Deskripsi</a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500 italic">Belum ada perusahaan terdaftar.</td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+          </table>
+        </div>
+      </main>
+      </div>
   </div>
 </body>
 </html>
