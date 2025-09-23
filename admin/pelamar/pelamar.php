@@ -1,14 +1,22 @@
 <?php
 session_start();
 include '../../function/logic.php';
+
 $menuAktif = menu_aktif('pelamar');
+$sql = "SELECT id, email, status_akun FROM user ORDER BY id ASC";
+$result = mysqli_query($conn, $sql);
+$users = [];
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $users[] = $row;
+    }
+}
 ?>
- 
 <!DOCTYPE html>
 <html lang="id">  
 <head>
   <meta charset="UTF-8">
-  <title>Daftar user</title>
+  <title>Daftar User</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#222] min-h-screen">
@@ -34,7 +42,7 @@ $menuAktif = menu_aktif('pelamar');
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="7" r="4" />
             <path d="M6 21v-2a6 6 0 1112 0v2" />
-          </svg>
+          </svg> 
           <span>User</span>
         </a>
 
@@ -47,7 +55,7 @@ $menuAktif = menu_aktif('pelamar');
         </a>  
 
         <a href="../transaksi/riwayat_transaksi.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition 
-          <?= $menuAktif['riwayat transaksi'] ? 'bg-teal-900 text-white' : 'text-teal-100 hover:bg-teal-900 hover:text-white' ?>">
+          <?= $menuAktif['transaksi'] ? 'bg-teal-900 text-white' : 'text-teal-100 hover:bg-teal-900 hover:text-white' ?>">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4M4 3h16v18l-2-2-2 2-2-2-2 2-2-2-2 2-2-2-2 2V3z" />
           </svg>
@@ -85,15 +93,58 @@ $menuAktif = menu_aktif('pelamar');
     </aside>
 
     <div class="flex-1 flex flex-col bg-white min-h-screen">
-        <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
+      <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar User</h2>
         <div class="flex items-center gap-3">
-        <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-        <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-    </div>
-  </header>
+          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
+          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
+        </div>
+      </header>
 
-  <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
+      <div class="flex-1 p-8 bg-gray-50">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-gray-700">List User Terdaftar</h2>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-gradient-to-r from-teal-600 to-teal-700 text-white">
+              <tr>
+                <th class="px-4 py-3">No</th>
+                <th class="px-4 py-3">Nama User</th>
+                <th class="px-4 py-3">Email</th>
+                <th class="px-4 py-3">Status Akun</th>
+                <th class="px-4 py-3 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <?php if (count($users) > 0): ?>
+                <?php foreach ($users as $i => $row): ?>
+                  <tr class="hover:bg-gray-50 transition">
+                    <td class="px-4 py-3"><?= $i+1 ?>.</td>
+                    <td class="px-4 py-3 font-medium text-gray-700"><?= htmlspecialchars($row['nama']); ?></td>
+                    <td class="px-4 py-3 text-gray-600"><?= htmlspecialchars($row['email']); ?></td>
+                    <td class="px-4 py-3">
+                      <span class="px-2 py-1 rounded-full text-xs font-semibold <?= $row['status'] == 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>"><?= $row['status']; ?></span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                      <?php if ($row['status'] == 'Aktif'): ?>
+                        <a href="update_status.php?id=<?= $row['id']; ?>&status=Nonaktif" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Nonaktifkan</a>
+                      <?php else: ?>
+                        <a href="update_status.php?id=<?= $row['id']; ?>&status=Aktif" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Aktifkan</a>
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="5" class="px-4 py-6 text-center text-gray-500 italic">Belum ada user terdaftar.</td>
+                </tr>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
         <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
       </footer>
     </div>

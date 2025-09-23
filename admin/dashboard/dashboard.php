@@ -58,7 +58,7 @@ $notifikasi  = getNotifikasi();
         </a>  
 
         <a href="../transaksi/riwayat_transaksi.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition 
-          <?= $menuAktif['riwayat transaksi'] ? 'bg-teal-900 text-white' : 'text-teal-100 hover:bg-teal-900 hover:text-white' ?>">
+          <?= $menuAktif['transaksi'] ? 'bg-teal-900 text-white' : 'text-teal-100 hover:bg-teal-900 hover:text-white' ?>">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4M4 3h16v18l-2-2-2 2-2-2-2 2-2-2-2 2-2-2-2 2V3z" />
           </svg>
@@ -211,7 +211,7 @@ $notifikasi  = getNotifikasi();
           <div class="space-y-3">
             <?php foreach($artikel as $art): ?>
               <div class="p-4 bg-gray-50 rounded-xl shadow-sm flex justify-between items-center text-sm text-gray-700">
-                <span>📄 <a href="../artikel/detail.php?id=<?= $art['id'] ?>" class="text-blue-600 hover:underline"><?= $art['judul'] ?></a></span>
+                <span>📄 <a href="../../admin/tips_kerja/lihat_artikel.php?= $art['id'] ?>" class="text-blue-600 hover:underline"><?= $art['judul'] ?></a></span>
                 <span class="text-gray-400 text-xs"><?= date("d/m/Y", strtotime($art['created_at'])) ?></span>
               </div>
             <?php endforeach; ?>
