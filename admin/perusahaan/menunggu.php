@@ -1,15 +1,24 @@
 <?php
 session_start();
 include '../../function/logic.php';
-$menuAktif = menu_aktif('transaksi');
+$menuAktif = menu_aktif('perusahaan');
 
+if (isset($_POST['verifikasi']) && isset($_POST['id'])) {
+    $id = $_POST['id'];
+    $aksi = $_POST['verifikasi'];
+    verifikasiPerusahaan($id, $aksi);
+    header("Location: perusahaan_menunggu.php");
+    exit;
+}
+
+$perusahaanList = getPerusahaanPending();
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
-<head>
+<head> 
   <meta charset="UTF-8">
-  <title>Riwayat Transaksi</title>
+  <title>Perusahaan Menunggu Verifikasi</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#222] min-h-screen">
@@ -35,7 +44,7 @@ $menuAktif = menu_aktif('transaksi');
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="7" r="4" />
             <path d="M6 21v-2a6 6 0 1112 0v2" />
-          </svg>
+          </svg> 
           <span>User</span>
         </a>
 
@@ -86,17 +95,65 @@ $menuAktif = menu_aktif('transaksi');
     </aside>
 
     <div class="flex-1 flex flex-col bg-white min-h-screen">
-        <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
-        <h2 class="text-2xl font-bold tracking-wide">Riwayat Transaksi</h2>
+      <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
+        <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
         <div class="flex items-center gap-3">
-        <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-        <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-    </div>
-  </header>
+          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
+          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
+        </div>
+      </header>
 
-  
+      <main class="p-8 flex-1 space-y-10">
+      <h3 class="text-xl font-bold mb-6 text-gray-700">Daftar Perusahaan Menunggu Verifikasi</h3>
 
-  <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
+
+      <div class="p-8">
+        <?php if (empty($perusahaanList)): ?>
+          <div class="bg-gray-50 rounded-xl shadow p-8 text-center text-gray-500">
+            Belum ada perusahaan yang menunggu verifikasi.
+          </div>
+        <?php else: ?>
+          <div class="overflow-x-auto bg-white shadow rounded-xl">
+            <table class="w-full border-collapse">
+              <thead class="bg-teal-600 text-white">
+                <tr>
+                  <th class="px-4 py-3 text-left">No</th>
+                  <th class="px-4 py-3 text-left">Nama Perusahaan</th>
+                  <th class="px-4 py-3 text-left">Email</th>
+                  <th class="px-4 py-3 text-left">Tanggal Daftar</th>
+                  <th class="px-4 py-3 text-left">Bukti Pembayaran</th>
+                  <th class="px-4 py-3 text-left">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($perusahaanList as $index => $row): ?>
+                  <tr class="border-t hover:bg-gray-50">
+                    <td class="px-4 py-3"><?= $index+1 ?></td>
+                    <td class="px-4 py-3 font-medium text-gray-800"><?= htmlspecialchars($row['nama_perusahaan']) ?></td>
+                    <td class="px-4 py-3"><?= htmlspecialchars($row['email_perusahaan']) ?></td>
+                    <td class="px-4 py-3"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
+                    <td class="px-4 py-3">
+                      <a href="../transaksi/transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                    </td>
+                    <td class="px-4 py-3 flex gap-2">
+                      <form method="POST">
+                        <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
+                        <button type="submit" name="verifikasi" value="setujui" class="px-3 py-1 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Setujui</button>
+                      </form>
+                      <form method="POST">
+                        <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
+                        <button type="submit" name="verifikasi" value="tolak" class="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Tolak</button>
+                      </form>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
         <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
       </footer>
     </div>

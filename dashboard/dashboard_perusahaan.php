@@ -209,7 +209,9 @@ $dashboardStats[1]['subtitle'] = count($lowonganList) > 0 ? implode(', ', array_
     <!-- Sidebar -->
     <div id="sidebar" class="bg-[#00888a] text-white flex flex-col items-center py-10 px-0 shadow-lg w-64 min-h-screen relative">
         <div class="flex flex-col items-center w-full flex-1">
-            <div class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg">
+            <div
+                class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg cursor-pointer"
+                onclick="window.location.href='../perusahaan/profile_perusahaan.php'">
                 <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-20 h-20 rounded-full object-cover">
             </div>
             <div class="text-lg font-bold text-white mb-8 text-center">Perusahaan</div>

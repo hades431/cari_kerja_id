@@ -29,8 +29,8 @@ if (!function_exists('menu_aktif')) {
             'dashboard' => false,
             'lowongan' => false,
             'perusahaan' => false,
-            'riwayat_transaksi' => false,
-            'user' => false,
+            'transaksi' => false,
+            'pelamar' => false,
             'artikel' => false,
             'logout' => false
         ];
@@ -379,5 +379,54 @@ if (!function_exists('getNotifikasi')) {
         }
         return $notifikasi;
     }
+}
+
+function hitungPerusahaan($status) {
+    global $conn;
+    if ($status === 'aktif') {
+        $q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE status='aktif'");
+    } else {
+        $q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE status!='aktif'");
+    }
+    $row = mysqli_fetch_assoc($q);
+    return $row['total'] ?? 0;
+}
+
+function getPerusahaanPending() {
+    global $conn;
+    $sql = "SELECT * FROM perusahaan WHERE verifikasi = 'belum'";
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        die("Query Error: " . mysqli_error($conn));
+    }
+
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+    return $data;
+}
+
+function verifikasiPerusahaan($id, $aksi) {
+    global $conn;
+    $status = $aksi === 'setujui' ? 'aktif' : 'ditolak';
+    $sql = "UPDATE perusahaan SET status='$status' WHERE id='$id'";
+    return mysqli_query($conn, $sql);
+}
+
+function getPerusahaanAcc($keyword = '') {
+    global $conn;
+    $sql = "SELECT * FROM perusahaan WHERE verifikasi='sudah'";
+    if (!empty($keyword)) {
+        $keyword = mysqli_real_escape_string($conn, $keyword);
+        $sql .= " AND nama_perusahaan LIKE '%$keyword%'";
+    }
+
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        die("Query error: " . mysqli_error($conn) . "<br>SQL: " . $sql);
+    }
+    return $result;
 }
 ?>

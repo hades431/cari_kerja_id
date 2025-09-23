@@ -332,27 +332,7 @@
   </script>
 </body>
 </html>
-          // Jika warning, scroll ke parent (agar tidak scroll ke text kecil)
-          if (firstError.classList.contains('text-red-600')) {
-            firstError.parentNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          } else {
-            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }
-      }
-    });
-
-    // Pengalaman checkbox logic
-    const pengalamanCheckboxes = document.querySelectorAll('.pengalaman-checkbox');
-    pengalamanCheckboxes.forEach(cb => {
-      cb.addEventListener('change', function() {
-        let checked = Array.from(pengalamanCheckboxes).filter(x => x.checked);
-        // Batasi maksimal 2
-        if (checked.length > 2) { 
-          this.checked = false;
-        }
-      });
-    });
+         
   </script>
 </body>
 </html>

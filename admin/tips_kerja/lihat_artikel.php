@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../../function/logic.php'; 
 
 if (!isset($_GET['id'])) {
