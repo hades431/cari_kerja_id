@@ -135,7 +135,7 @@ $result = getPerusahaanMenunggu();
                     <td class="px-4 py-3"><?= htmlspecialchars($row['email_perusahaan']) ?></td>
                     <td class="px-4 py-3"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
                     <td class="px-4 py-3">
-                      <a href="../transaksi/riwayat_  transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                      <a href="../transaksi/riwayat_transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
                     </td>
                     <td class="px-4 py-3">
                       <a href="detail_perusahaan.php?id=<?= $row['id_perusahaan'] ?>" class="text-indigo-600 hover:underline">Lihat Deskripsi</a>
