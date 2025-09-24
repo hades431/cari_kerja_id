@@ -2,48 +2,60 @@
 
 $judul_halaman = "Info & Tips Kerja";
 include '../header.php';
-$data = tampil("SELECT * FROM artikel")
-
-
-
+$data = tampil("SELECT artikel.*, user.username, user.email
+FROM artikel
+JOIN user ON artikel.id_user = user.id_user")
 
 ?>
 
 <section class="bg-[#e6eef5] py-8 px-4 relative overflow-visible">
     <div class="max-w-7xl mx-auto flex flex-col items-center">
-
         <h1 class="text-4xl md:text-5xl font-semibold text-center text-[#23395d] mb-2 leading-tight">
             Artikel <span class="font-bold text-[#00646A]">Cari Kerja</span>
         </h1>
+        <p class="text-lg text-[#23395d] mb-6 text-center max-w-2xl">
+            Temukan berbagai info dan tips kerja terbaru untuk mendukung karir Anda.
+        </p>
+        <div class="w-full max-w-5xl mx-auto">
+            <input type="text" placeholder="Cari artikel..."
+                class="w-full rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00646A] mb-8" />
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php foreach($data as $row) : ?>
+                <div class="bg-white rounded-xl shadow-md p-6 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs text-gray-500">
+                            <?php
+                                // Tampilkan tanggal, fallback ke '14 hari lalu'
+                                echo !empty($row['tanggal']) ? date('d M Y', strtotime($row['tanggal'])) : '14 hari lalu';
+                            ?>
+                        </span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-[#23395d] mb-2"><?php echo $row['judul'] ?></h2>
+                    <p class="text-gray-600 mb-4">
+                        <?php echo !empty($row['isi']) ? substr(strip_tags($row['isi']),0,60).'...' : 'Deskripsi artikel belum tersedia.'; ?>
+                    </p>
+                    <div class="flex items-center justify-between mt-auto pt-2">
+                        <div class="flex items-center space-x-2">
+                            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="author" class="w-8 h-8 rounded-full border" />
+                            <span class="text-sm font-medium text-[#23395d]">
+                                <?php echo !empty($row['username']) ? $row['username'] : 'Jese Leos'; ?>
+                            </span>
+                        </div>
+                        <a href="detail_artikel.php?id=<?php echo $row['id'] ?>"
+                            class="text-[#00646A] text-sm font-semibold hover:underline flex items-center gap-1">
+                            Read more <span class="ml-1">&#8594;</span>
+                        </a>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="flex justify-center space-x-2 pt-8">
+                <button class="bg-white hover:bg-[#e6eef5] text-[#00646A] font-semibold px-4 py-2 rounded shadow transition-colors duration-150 border border-[#00646A]">1</button>
+                <!-- Tambahkan tombol pagination lain jika diperlukan -->
+            </div>
+        </div>
+    </div>
 </section>
-
-
-<section class="flex justify-center"></section>
-<div class="bg-[#00646A] rounded-xl border-4 w-full max-w-xl p-4 flex flex-col space-y-6 mx-auto mt-8">
-
-    <div>
-        <input type="text" placeholder="Search..."
-            class="w-full rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-black" />
-    </div>
-
-    <?php
-    foreach($data as $row) :
-    ?>
-
-    <div class="flex flex-col space-y-2">
-        <h2 class="text-center text-white font-semibold"><?php echo $row['judul'] ?></h2>
-        <div class="bg-gray-300 h-32 rounded-md flex items-center justify-center text-gray-700"><img src="../img/logo.png" alt="logo"></div>
-        <div class="border-b border-white"></div>
-        <div class="border-b border-white"></div>
-        <div class="border-b border-white"></div>
-    </div>
-    <?php endforeach; ?>
-
-
-    <div class="flex justify-center space-x-2 pt-4">
-        <button class="bg-white hover:bg-gray-400 text-[#00646A] font-semibold px-3 py-1 rounded">1</button>
-    </div>
-</div>
 
 <?php
 include '../footer.php';

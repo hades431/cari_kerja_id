@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '../../function/logic.php';
-
+$useronline = $_SESSION['user']['id']; 
 $menuAktif = menu_aktif('artikel');
 $notif = "";
 
@@ -24,8 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    $sql = "INSERT INTO artikel (judul, isi, tanggal, gambar) 
-            VALUES ('$judul', '$isi', '$tanggal', '$gambar')";
+    $sql = "INSERT INTO artikel (judul, isi, tanggal, gambar, id_user) 
+            VALUES ('$judul', '$isi', '$tanggal', '$gambar', $useronline)";
     if (mysqli_query($conn, $sql)) {
         $_SESSION['success'] = "Artikel berhasil ditambahkan ✅";
         header("Location: tips_kerja_artikel.php");
