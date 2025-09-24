@@ -474,4 +474,22 @@ if (!function_exists('getUserList')) {
     }
 }
 
+function getPerusahaanMenunggu() {
+    global $conn;
+    return mysqli_query($conn, "SELECT * FROM perusahaan WHERE status='menunggu'");
+}
+
+function getPerusahaanById($id) {
+    global $conn;
+    $q = mysqli_query($conn, "SELECT * FROM perusahaan WHERE id='$id'");
+    return mysqli_fetch_assoc($q);
+}
+
+function verifikasiPerusahaan($id, $aksi) {
+    global $conn;
+    $status = $aksi === 'setujui' ? 'aktif' : 'ditolak';
+    mysqli_query($conn, "UPDATE perusahaan SET status='$status' WHERE id='$id'");
+}
+
+
 ?>

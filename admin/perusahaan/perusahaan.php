@@ -20,6 +20,7 @@ $belum = $rowBelum['total'] ?? 0;
 </head>
 <body class="bg-[#222] min-h-screen">
   <div class="flex min-h-screen">
+    <!-- Sidebar -->
     <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl">
       <div class="px-4 py-6 flex flex-col items-center gap-2">
         <img src="../../img/carikerja.png" alt="Logo" class="w-40 object-contain" />
@@ -91,6 +92,7 @@ $belum = $rowBelum['total'] ?? 0;
       </nav>
     </aside>
 
+    <!-- Main -->
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
@@ -100,6 +102,7 @@ $belum = $rowBelum['total'] ?? 0;
         </div>
       </header>
 
+      <!-- Statistik -->
       <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         <a href="acc.php" class="block">
           <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl shadow-lg p-8 text-white border-2 border-transparent hover:border-white/40 transform hover:-translate-y-1 active:scale-95 transition duration-200 text-center">
@@ -118,39 +121,52 @@ $belum = $rowBelum['total'] ?? 0;
         </a>
       </div>
 
+      <!-- Aktivitas Terbaru -->
       <div class="px-8 pb-8">
-          <h3 class="text-xl font-bold mb-4">Aktivitas Terbaru</h3>
-          <div class="space-y-3">
-            <?php
-            $qNotif = mysqli_query($conn, "SELECT nama_perusahaan, created_at 
-                                          FROM perusahaan 
-                                          WHERE verifikasi='belum' 
-                                          ORDER BY created_at DESC LIMIT 5");
-            if (mysqli_num_rows($qNotif) > 0) {
-                while ($n = mysqli_fetch_assoc($qNotif)) {
-                    echo '
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 shadow-sm">
-                      <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-yellow-100 text-yellow-600 rounded-full">
-                        ⏳
-                      </div>
-                      <div>
-                        <p class="text-sm">
-                          Perusahaan <span class="font-semibold text-gray-800">'.htmlspecialchars($n['nama_perusahaan']).'</span> 
-                          menunggu ACC
-                        </p>
-                        <span class="text-xs text-gray-500">'.date("d/m/Y", strtotime($n['created_at'])).'</span>
-                      </div>
-                    </div>';
-                }
-            } else {
-                echo '
-                <div class="bg-gray-50 rounded-xl p-4 text-center text-gray-500 shadow-sm">
-                  Belum ada pembaruan
-                </div>';
-            }
-            ?>
-          </div>
+        <h3 class="text-xl font-bold mb-4">Aktivitas Terbaru</h3>
+        <div class="space-y-3">
+          <?php
+          $qNotif = mysqli_query($conn, "SELECT nama_perusahaan, logo, verifikasi, created_at 
+                                         FROM perusahaan 
+                                         ORDER BY created_at DESC LIMIT 5");
+
+          if (mysqli_num_rows($qNotif) > 0) {
+              while ($n = mysqli_fetch_assoc($qNotif)) {
+                  echo '
+                  <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 shadow-sm">
+                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">';
+                  if (!empty($n['logo'])) {
+                      echo '<img src="../../uploads/logo/'.htmlspecialchars($n['logo']).'" 
+                                 alt="Logo '.htmlspecialchars($n['nama_perusahaan']).'" 
+                                 class="w-full h-full object-cover">';
+                  } else {
+                      echo '<span class="text-gray-400">🏢</span>';
+                  }
+                  echo '</div>
+                    <div>
+                      <p class="text-sm">
+                        Perusahaan <span class="font-semibold text-gray-800">'.htmlspecialchars($n['nama_perusahaan']).'</span> ';
+
+                  if ($n['verifikasi'] === 'sudah') {
+                      echo '<span class="text-green-600 font-medium">sudah di ACC</span>';
+                  } else {
+                      echo '<span class="text-yellow-600 font-medium">menunggu ACC</span>';
+                  }
+
+                  echo '</p>
+                      <span class="text-xs text-gray-500">'.date("d/m/Y", strtotime($n['created_at'])).'</span>
+                    </div>
+                  </div>';
+              }
+          } else {
+              echo '
+              <div class="bg-gray-50 rounded-xl p-4 text-center text-gray-500 shadow-sm">
+                Belum ada pembaruan
+              </div>';
+          }
+          ?>
         </div>
+      </div>
 
       <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
         <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
