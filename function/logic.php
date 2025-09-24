@@ -437,4 +437,59 @@ if (!function_exists('getPerusahaanAcc')) {
         return $result;
     }
 }
+
+function getLowonganList($keyword = '') {
+  global $conn;
+  $keyword = mysqli_real_escape_string($conn, $keyword);
+  $sql = "SELECT l.*, p.nama_perusahaan 
+          FROM lowongan l
+          JOIN perusahaan p ON l.id_perusahaan = p.id
+          WHERE p.nama_perusahaan LIKE '%$keyword%'
+             OR l.judul LIKE '%$keyword%'
+          ORDER BY l.tanggal_post DESC";
+  $result = mysqli_query($conn, $sql);
+
+  $data = [];
+  if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+      $data[] = $row;
+    }
+  }
+  return $data;
+}
+
+if (!function_exists('getUserList')) {
+    function getUserList() {
+        global $conn;
+        $sql = "SELECT id_user, email, role, status_akun, created_at FROM user ORDER BY id_user DESC";
+        $result = mysqli_query($conn, $sql);
+
+        $data = [];
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
+        }
+        return $data;
+    }
+}
+
+function getPerusahaanMenunggu() {
+    global $conn;
+    return mysqli_query($conn, "SELECT * FROM perusahaan WHERE status='menunggu'");
+}
+
+function getPerusahaanById($id) {
+    global $conn;
+    $q = mysqli_query($conn, "SELECT * FROM perusahaan WHERE id='$id'");
+    return mysqli_fetch_assoc($q);
+}
+
+function verifikasiPerusahaan($id, $aksi) {
+    global $conn;
+    $status = $aksi === 'setujui' ? 'aktif' : 'ditolak';
+    mysqli_query($conn, "UPDATE perusahaan SET status='$status' WHERE id='$id'");
+}
+
+
 ?>

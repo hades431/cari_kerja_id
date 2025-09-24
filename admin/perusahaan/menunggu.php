@@ -12,6 +12,7 @@ if (isset($_POST['verifikasi']) && isset($_POST['id'])) {
 }
 
 $perusahaanList = getPerusahaanPending();
+$result = getPerusahaanMenunggu();
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +24,7 @@ $perusahaanList = getPerusahaanPending();
 </head>
 <body class="bg-[#222] min-h-screen">
   <div class="flex min-h-screen">
+    <!-- Sidebar -->
     <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl">
       <div class="px-4 py-6 flex flex-col items-center gap-2">
         <img src="../../img/carikerja.png" alt="Logo" class="w-40 object-contain" />
@@ -106,7 +108,6 @@ $perusahaanList = getPerusahaanPending();
       <main class="p-8 flex-1 space-y-10">
       <h3 class="text-xl font-bold mb-6 text-gray-700">Daftar Perusahaan Menunggu Verifikasi</h3>
 
-
       <div class="p-8">
         <?php if (empty($perusahaanList)): ?>
           <div class="bg-gray-50 rounded-xl shadow p-8 text-center text-gray-500">
@@ -122,6 +123,7 @@ $perusahaanList = getPerusahaanPending();
                   <th class="px-4 py-3 text-left">Email</th>
                   <th class="px-4 py-3 text-left">Tanggal Daftar</th>
                   <th class="px-4 py-3 text-left">Bukti Pembayaran</th>
+                  <th class="px-4 py-3 text-left">Deskripsi Perusahaan</th>
                   <th class="px-4 py-3 text-left">Aksi</th>
                 </tr>
               </thead>
@@ -133,7 +135,10 @@ $perusahaanList = getPerusahaanPending();
                     <td class="px-4 py-3"><?= htmlspecialchars($row['email_perusahaan']) ?></td>
                     <td class="px-4 py-3"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
                     <td class="px-4 py-3">
-                      <a href="../transaksi/transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                      <a href="../transaksi/riwayat_transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                    </td>
+                    <td class="px-4 py-3">
+                      <a href="detail_perusahaan.php?id=<?= $row['id_perusahaan'] ?>" class="text-indigo-600 hover:underline">Lihat Deskripsi</a>
                     </td>
                     <td class="px-4 py-3 flex gap-2">
                       <form method="POST">
