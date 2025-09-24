@@ -1,14 +1,17 @@
 <?php
 session_start();
 include '../../function/logic.php';
+
 $menuAktif = menu_aktif('lowongan');
+$keyword = $_GET['search'] ?? '';
+$lowongan = getLowonganList($keyword);
 ?>
 
 <!DOCTYPE html>
-<html lang="id"> 
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Lowongan kerja</title>
+  <title>Lowongan Kerja</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#222] min-h-screen">
@@ -84,18 +87,79 @@ $menuAktif = menu_aktif('lowongan');
       </nav>
     </aside>
 
-<div class="flex-1 flex flex-col bg-white min-h-screen">
-  <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
-    <h2 class="text-2xl font-bold tracking-wide">Daftar Lowongan</h2>
-    <div class="flex items-center gap-3">
-      <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-      <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-    </div>
-  </header>
+    <div class="flex-1 flex flex-col bg-gray-100 min-h-screen">
+      <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
+        <h2 class="text-2xl font-bold tracking-wide">Daftar Lowongan</h2>
+        <div class="flex items-center gap-3">
+          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
+          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
+        </div>
+      </header>
 
-  <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
-        <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
-      </footer>
+      <div class="p-6 mt-6">
+
+        <form method="GET" class="mb-4 flex gap-2">
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Cari perusahaan..." 
+            value="<?= htmlspecialchars($keyword) ?>" 
+            class="px-4 py-2 w-1/3 rounded-lg border border-gray-300 
+                  focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+          />
+
+          <button class="px-4 py-2 bg-teal-700 text-white rounded-lg hover:bg-teal-800">
+            Cari
+          </button>
+        </form>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <table class="min-w-full">
+            <thead class="bg-gradient-to-r from-teal-600 to-teal-800 text-white">
+              <tr>
+                <th class="px-6 py-4 text-left">No</th>
+                <th class="px-6 py-4 text-left">Nama Perusahaan</th>
+                <th class="px-6 py-4 text-left">Lokasi</th>
+                <th class="px-6 py-4 text-left">Posisi</th>
+                <th class="px-6 py-4 text-left">Tanggal Posting</th>
+                <th class="px-6 py-4 text-left">Batas Tanggal</th>
+                <th class="px-6 py-4 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (empty($lowongan)) : ?>
+                <tr>
+                  <td colspan="7" class="py-10 text-center text-gray-500 italic">
+                    Belum ada lowongan yang tersedia.
+                  </td>
+                </tr>
+              <?php else: ?>
+                <?php foreach ($lowongan as $i => $row) : ?>
+                  <tr class="border-b last:border-0 hover:bg-gray-50">
+                    <td class="px-6 py-4"><?= $i + 1 ?></td>
+                    <td class="px-6 py-4 font-medium text-gray-800"><?= htmlspecialchars($row['nama_perusahaan']) ?></td>
+                    <td class="px-6 py-4"><?= htmlspecialchars($row['lokasi']) ?></td>
+                    <td class="px-6 py-4"><?= htmlspecialchars($row['judul']) ?></td>
+                    <td class="px-6 py-4"><?= htmlspecialchars($row['tanggal_post']) ?></td>
+                    <td class="px-6 py-4"><?= htmlspecialchars($row['batas_lamaran']) ?></td>
+                    <td class="px-6 py-4 text-center">
+                      <a href="detail_lowongan.php?id=<?= $row['id_lowongan'] ?>"
+                         class="inline-block px-3 py-1 bg-green-500 text-white rounded-md text-sm hover:bg-green-600">
+                        Detail
+                      </a>
+                      <a href="hapus_lowongan.php?id=<?= $row['id_lowongan'] ?>"
+                         onclick="return confirm('Yakin hapus lowongan ini?')"
+                         class="inline-block ml-2 px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-600">
+                        Hapus
+                      </a>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </body>
