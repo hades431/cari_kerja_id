@@ -429,4 +429,24 @@ function getPerusahaanAcc($keyword = '') {
     }
     return $result;
 }
+
+function getLowonganList($keyword = '') {
+  global $conn;
+  $keyword = mysqli_real_escape_string($conn, $keyword);
+  $sql = "SELECT l.*, p.nama_perusahaan 
+          FROM lowongan l
+          JOIN perusahaan p ON l.id_perusahaan = p.id
+          WHERE p.nama_perusahaan LIKE '%$keyword%'
+             OR l.judul LIKE '%$keyword%'
+          ORDER BY l.tanggal_post DESC";
+  $result = mysqli_query($conn, $sql);
+
+  $data = [];
+  if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+      $data[] = $row;
+    }
+  }
+  return $data;
+}
 ?>
