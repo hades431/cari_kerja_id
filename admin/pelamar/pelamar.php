@@ -3,7 +3,7 @@ session_start();
 include '../../function/logic.php';
 
 $menuAktif = menu_aktif('pelamar');
-$sql = "SELECT id, email, status_akun FROM user ORDER BY id ASC";
+$sql = "SELECT id_user, email, role, status_akun, created_at FROM user ORDER BY id_user ASC";
 $result = mysqli_query($conn, $sql);
 $users = [];
 if ($result && mysqli_num_rows($result) > 0) {
@@ -21,6 +21,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 </head>
 <body class="bg-[#222] min-h-screen">
   <div class="flex min-h-screen">
+    <!-- Sidebar -->
     <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl">
       <div class="px-4 py-6 flex flex-col items-center gap-2">
         <img src="../../img/carikerja.png" alt="Logo" class="w-40 object-contain" />
@@ -92,6 +93,7 @@ if ($result && mysqli_num_rows($result) > 0) {
       </nav>
     </aside>
 
+    <!-- Main Content -->
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar User</h2>
@@ -110,7 +112,7 @@ if ($result && mysqli_num_rows($result) > 0) {
             <thead class="bg-gradient-to-r from-teal-600 to-teal-700 text-white">
               <tr>
                 <th class="px-4 py-3">No</th>
-                <th class="px-4 py-3">Nama User</th>
+                <th class="px-4 py-3">Role</th>
                 <th class="px-4 py-3">Email</th>
                 <th class="px-4 py-3">Status Akun</th>
                 <th class="px-4 py-3 text-center">Aksi</th>
@@ -121,16 +123,18 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <?php foreach ($users as $i => $row): ?>
                   <tr class="hover:bg-gray-50 transition">
                     <td class="px-4 py-3"><?= $i+1 ?>.</td>
-                    <td class="px-4 py-3 font-medium text-gray-700"><?= htmlspecialchars($row['nama']); ?></td>
+                    <td class="px-4 py-3 font-medium text-gray-700"><?= htmlspecialchars($row['role']); ?></td>
                     <td class="px-4 py-3 text-gray-600"><?= htmlspecialchars($row['email']); ?></td>
                     <td class="px-4 py-3">
-                      <span class="px-2 py-1 rounded-full text-xs font-semibold <?= $row['status'] == 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>"><?= $row['status']; ?></span>
+                      <span class="px-2 py-1 rounded-full text-xs font-semibold <?= $row['status_akun'] == 'aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>">
+                        <?= $row['status_akun']; ?>
+                      </span>
                     </td>
                     <td class="px-4 py-3 text-center">
-                      <?php if ($row['status'] == 'Aktif'): ?>
-                        <a href="update_status.php?id=<?= $row['id']; ?>&status=Nonaktif" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Nonaktifkan</a>
+                      <?php if ($row['status_akun'] == 'aktif'): ?>
+                        <a href="update_status.php?id=<?= $row['id_user']; ?>&status=nonaktif" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Nonaktifkan</a>
                       <?php else: ?>
-                        <a href="update_status.php?id=<?= $row['id']; ?>&status=Aktif" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Aktifkan</a>
+                        <a href="update_status.php?id=<?= $row['id_user']; ?>&status=aktif" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Aktifkan</a>
                       <?php endif; ?>
                     </td>
                   </tr>

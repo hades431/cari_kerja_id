@@ -449,4 +449,21 @@ function getLowonganList($keyword = '') {
   }
   return $data;
 }
+
+if (!function_exists('getUserList')) {
+    function getUserList() {
+        global $conn;
+        $sql = "SELECT id_user, email, role, status_akun, created_at FROM user ORDER BY id_user DESC";
+        $result = mysqli_query($conn, $sql);
+
+        $data = [];
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
+        }
+        return $data;
+    }
+}
+
 ?>
