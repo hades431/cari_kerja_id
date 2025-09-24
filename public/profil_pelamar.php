@@ -3,12 +3,6 @@ $judul_halaman = "Profil Pelamar";
 $hide_header_profile = true; // tambahkan ini
 include '../header.php';
 
-// Koneksi ke database dan logic function
-if (file_exists(__DIR__ . '/../function/logic.php')) {
-    include __DIR__ . '/../function/logic.php';
-} else {
-    die('File logic.php tidak ditemukan.');
-}
 
 // Tidak perlu session_start() lagi karena sudah di header.php
 if (!isset($_SESSION['user']['id'])) {

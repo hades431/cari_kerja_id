@@ -33,6 +33,10 @@ if ($is_logged_in) {
         }
     }
 }
+
+if (!isset($_SESSION['user'])){
+    require_once '../function/logic.php';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
