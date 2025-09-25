@@ -51,8 +51,24 @@ if (!empty($pelamar['keahlian'])) {
         <i class="fas fa-arrow-left mr-2"></i> Kembali
     </a>
 </div>
-<!-- Layout profil -->
-<div class="max-w-4xl mx-auto flex flex-col md:flex-row items-start gap-8 px-4">
+
+<!-- Tabs Card Profil -->
+<div class="max-w-4xl mx-auto mt-6 mb-6 flex justify-center">
+    <div class="flex rounded-full overflow-hidden w-fit shadow" style="background:#00646A;">
+        <button id="tab-profil" type="button"
+            class="px-8 py-2 font-semibold text-white bg-[#00646A] focus:outline-none"
+            style="background:#00646A;">
+            Profil
+        </button>
+        <button id="tab-riwayat" type="button"
+            class="px-8 py-2 font-semibold text-white bg-[#024B4F] hover:bg-[#00646A] focus:outline-none">
+            Riwayat Lamaran
+        </button>
+    </div>
+</div>
+
+<!-- Card Profil -->
+<div id="card-profil" class="max-w-4xl mx-auto flex flex-col md:flex-row items-start gap-8 px-4">
     <!-- Foto profil kiri -->
     <div class="flex-shrink-0 flex flex-col items-center w-full md:w-56">
         <a href="<?= htmlspecialchars($foto_link) ?>" target="_blank" title="Lihat Foto Profil">
@@ -153,7 +169,44 @@ if (!empty($pelamar['keahlian'])) {
         </div>
     </div>
 </div>
+
+<!-- Card Riwayat Lamaran -->
+<div id="card-riwayat" class="max-w-4xl mx-auto px-4" style="display:none;">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <h3 class="text-xl font-bold text-[#00646A] mb-4">Riwayat Lamaran</h3>
+        <div class="text-gray-500 text-sm">
+            Belum ada riwayat lamaran.
+            <!-- Nanti isi dengan data lamaran dari database -->
+        </div>
+    </div>
+</div>
+
 <!-- Font Awesome CDN for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<script>
+    const tabProfil = document.getElementById('tab-profil');
+    const tabRiwayat = document.getElementById('tab-riwayat');
+    const cardProfil = document.getElementById('card-profil');
+    const cardRiwayat = document.getElementById('card-riwayat');
+
+    tabProfil.addEventListener('click', function() {
+        tabProfil.classList.add('bg-[#00646A]');
+        tabProfil.classList.remove('bg-[#024B4F]');
+        tabRiwayat.classList.remove('bg-[#00646A]');
+        tabRiwayat.classList.add('bg-[#024B4F]');
+        cardProfil.style.display = '';
+        cardRiwayat.style.display = 'none';
+    });
+
+    tabRiwayat.addEventListener('click', function() {
+        tabRiwayat.classList.add('bg-[#00646A]');
+        tabRiwayat.classList.remove('bg-[#024B4F]');
+        tabProfil.classList.remove('bg-[#00646A]');
+        tabProfil.classList.add('bg-[#024B4F]');
+        cardProfil.style.display = 'none';
+        cardRiwayat.style.display = '';
+    });
+</script>
 </body>
 </html>
