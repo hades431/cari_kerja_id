@@ -36,7 +36,6 @@ JOIN user ON artikel.id_user = user.id_user")
                     </p>
                     <div class="flex items-center justify-between mt-auto pt-2">
                         <div class="flex items-center space-x-2">
-                            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="author" class="w-8 h-8 rounded-full border" />
                             <span class="text-sm font-medium text-[#23395d]">
                                 <?php echo !empty($row['username']) ? $row['username'] : 'Jese Leos'; ?>
                             </span>
