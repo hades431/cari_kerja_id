@@ -30,8 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telepon_perusahaan = $_POST['telepon_perusahaan'] ?? '';
     $website_perusahaan = $_POST['website_perusahaan'] ?? '';
     $paket = $_POST['paket'] ?? '';
-    $harga = $_POST['harga'] ?? 0;
-    $metode_pembayaran = $_POST['metode_pembayaran'] ?? '';
     $bukti_pembayaran = '';
 
     // Upload bukti pembayaran jika ada
@@ -46,14 +44,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Simpan ke database
-    $sql = "INSERT INTO perusahaan (nama_perusahaan, alamat, email, telepon, website, paket, harga, metode_pembayaran, bukti_pembayaran, status, verifikasi, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'belum', NOW())";
+    $sql = "INSERT INTO perusahaan (nama_perusahaan, alamat, email_perusahaan, no_telepon, website, paket, bukti_pembayaran, verifikasi, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'belum', NOW())";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssiss", $nama_perusahaan, $alamat_perusahaan, $email_perusahaan, $telepon_perusahaan, $website_perusahaan, $paket, $harga, $metode_pembayaran, $bukti_pembayaran);
-    if ($stmt->execute()) {
-        echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-green-100 border border-green-300 rounded text-green-800 text-center">Data perusahaan berhasil dikirim!<br>Tunggu email dari kami.</div>';
+    if (!$stmt) {
+        echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-red-100 border border-red-300 rounded text-red-800 text-center">Query error: ' . htmlspecialchars($conn->error) . '</div>';
     } else {
-        echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-red-100 border border-red-300 rounded text-red-800 text-center">Gagal menyimpan data perusahaan.</div>';
+        $stmt->bind_param("sssssss", $nama_perusahaan, $alamat_perusahaan, $email_perusahaan, $telepon_perusahaan, $website_perusahaan, $paket, $bukti_pembayaran);
+        if ($stmt->execute()) {
+            echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-green-100 border border-green-300 rounded text-green-800 text-center">Data perusahaan berhasil dikirim!<br>Tunggu email dari kami.</div>';
+        } else {
+            echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-red-100 border border-red-300 rounded text-red-800 text-center">Gagal menyimpan data perusahaan.</div>';
+        }
     }
 }
 ?>
