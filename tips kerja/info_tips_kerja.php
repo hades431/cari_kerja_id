@@ -25,7 +25,6 @@ JOIN user ON artikel.id_user = user.id_user")
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs text-gray-500">
                             <?php
-                                // Tampilkan tanggal, fallback ke '14 hari lalu'
                                 echo !empty($row['tanggal']) ? date('d M Y', strtotime($row['tanggal'])) : '14 hari lalu';
                             ?>
                         </span>
@@ -36,9 +35,6 @@ JOIN user ON artikel.id_user = user.id_user")
                     </p>
                     <div class="flex items-center justify-between mt-auto pt-2">
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm font-medium text-[#23395d]">
-                                <?php echo !empty($row['username']) ? $row['username'] : 'Jese Leos'; ?>
-                            </span>
                         </div>
                         <a href="detail_artikel.php?id=<?php echo $row['id'] ?>"
                             class="text-[#00646A] text-sm font-semibold hover:underline flex items-center gap-1">
