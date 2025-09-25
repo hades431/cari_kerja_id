@@ -56,7 +56,7 @@ if(isset($_POST['submit'])){
     <div class="max-w-md w-full glass rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-[1.02] floating z-10">
       <!-- Header / Logo -->
       <div class="bg-[#00646A] h-20 flex flex-col items-center justify-center rounded-t-2xl">
-        <img src="../img/logo2.png" alt="Logo Cari Kerja ID" class="h-10 w-auto object-contain mb-2">
+        <img src="../img/carikerja.png" alt="Logo Cari Kerja ID" class="h-20 w-auto object-contain mb-2">
         <span class="text-white font-semibold text-lg tracking-wide"></span>
       </div>
       <!-- Register / Login card content -->
