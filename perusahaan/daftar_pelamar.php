@@ -68,7 +68,7 @@ if ($result && $result->num_rows > 0) {
                 >
                 <button 
                     type="submit" 
-                    class="bg-[#00646A] text-white px-4 hover:bg-[#004F52]"
+                    class="bg-[#00888a] text-white px-4 hover:bg-[#004F52]"
                 >
                     🔍
                 </button>

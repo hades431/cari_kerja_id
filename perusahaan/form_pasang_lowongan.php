@@ -1,5 +1,5 @@
 <?php
-// kalau sudah ada sistem login perusahaan, bisa tambahkan session cek disini
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -8,6 +8,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Pasang Lowongan</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Toggle field gaji (opsional)
+    function toggleGaji() {
+      const checkbox = document.getElementById('show_gaji');
+      const gajiField = document.getElementById('gaji_field');
+      if (checkbox.checked) {
+        gajiField.classList.remove('hidden');
+      } else {
+        gajiField.classList.add('hidden');
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -17,45 +29,34 @@
   </header>
 
   <!-- Container -->
-  <div class="max-w-3xl mx-auto mt-8 bg-white p-8 rounded-2xl shadow-lg border">
-    <!-- Notifikasi sukses jika ada -->
-    <?php if (isset($_GET['success'])): ?>
-      <div id="notif-success" class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg font-semibold">
-        Lowongan berhasil ditambahkan!
-      </div>
-      <script>
-        setTimeout(function() {
-          var notif = document.getElementById('notif-success');
-          if (notif) notif.style.display = 'none';
-        }, 2000);
-      </script>
-    <?php endif; ?>
-    <form action="../dashboard/dashboard_perusahaan.php" method="POST" enctype="multipart/form-data" class="space-y-6">
+  <div class="max-w-4xl mx-auto mt-8 bg-white p-8 rounded-2xl shadow-lg border">
+    <form action="proses_lowongan.php" method="POST" enctype="multipart/form-data" class="space-y-6">
 
-      <!-- Nama Perusahaan -->
+      
       <div>
-        <label for="nama_perusahaan" class="block text-gray-700 font-semibold mb-2">Nama Perusahaan</label>
-        <input type="text" id="nama_perusahaan" name="nama_perusahaan" required 
+        <label class="block text-gray-700 font-semibold mb-2">Nama Perusahaan</label>
+        <input type="text" name="nama_perusahaan" required
                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
       </div>
 
-      <!-- Judul Lowongan -->
+    
       <div>
-        <label for="judul_lowongan" class="block text-gray-700 font-semibold mb-2">Judul Lowongan</label>
-        <input type="text" id="judul_lowongan" name="judul_lowongan" required 
+        <label class="block text-gray-700 font-semibold mb-2">Posisi Pekerjaan</label>
+        <input type="text" name="posisi_pekerjaan" required
                class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
       </div>
 
-      <!-- Deskripsi Lowongan -->
+      <!-- Deskripsi -->
       <div>
-        <label for="deskripsi" class="block text-gray-700 font-semibold mb-2">Deskripsi Lowongan</label>
-        <textarea id="deskripsi" name="deskripsi" rows="5" required
+        <label class="block text-gray-700 font-semibold mb-2">Deskripsi Lowongan</label>
+        <textarea name="deskripsi" rows="5" required
                   class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
       </div>
 
       <!-- Ringkasan -->
       <div class="space-y-6">
         <h3 class="text-lg font-bold text-gray-700">Ringkasan</h3>
+
 
         <!-- Batas Pengalaman -->
         <div>
@@ -83,11 +84,13 @@
             </label>
           </div>
           <div id="pengalaman-warning" class="text-red-600 text-sm mt-1 hidden">Pilih 2 pengalaman!</div>
+
         </div>
 
        
         <!-- Pendidikan -->
         <div>
+
           <label for="pendidikan" class="block text-gray-700 font-semibold mb-2">Pendidikan Minimal</label>
           <div id="pendidikan-options" class="flex flex-wrap gap-4">
             <label class="flex items-center gap-2">
@@ -108,20 +111,22 @@
             </label>
           </div>
           <div id="pendidikan-warning" class="text-red-600 text-sm mt-1 hidden">Masukkan pendidikan!</div>
+
         </div>
 
-       
-        <!-- Jenis Kelamin -->
+        <!-- Gender -->
         <div>
           <label class="block text-gray-700 font-semibold mb-2">Jenis Kelamin</label>
           <div id="gender-options" class="flex items-center gap-6">
             <label class="flex items-center gap-2">
+
               <input type="checkbox" name="gender[]" value="pria" class="gender-checkbox text-teal-600 focus:ring-teal-500">
               Pria
             </label>
             <label class="flex items-center gap-2">
               <input type="checkbox" name="gender[]" value="wanita" class="gender-checkbox text-teal-600 focus:ring-teal-500">
               Wanita
+
             </label>
           </div>
           <div id="gender-warning" class="text-red-600 text-sm mt-1 hidden">Pilih minimal 1 jenis kelamin!</div>
@@ -140,15 +145,17 @@
           <input type="text" id="besaran_gaji" name="besaran_gaji" placeholder="Contoh: 5.000.000 atau Kompetitif"
                  class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
           <div id="gaji-warning" class="text-red-600 text-sm mt-1 hidden">Masukkan besaran gaji!</div>
+
         </div>
       </div>
 
-      <!-- Logo -->
+      <!-- Banner -->
       <div>
-        <label for="logo" class="block text-gray-700 font-semibold mb-2">Banner Perusahaan</label>
-        <input type="file" id="logo" name="logo" accept="image/*"
-               class="w-full border p-3 rounded-lg bg-gray-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500">
+        <label class="block text-gray-700 font-semibold mb-2">Banner Perusahaan</label>
+        <input type="file" name="logo" accept="image/*"
+               class="w-full border p-3 rounded-lg bg-gray-50 cursor-pointer">
       </div>
+
 
      <!-- Tombol -->
       <div class="flex justify-between pt-4">
@@ -163,6 +170,7 @@
         >
           Selanjutnya
         </a>
+
       </div>
     </form>
   </div>
@@ -334,6 +342,7 @@
 </html>
          
   </script>
+
 </body>
 </html>
 </html>
