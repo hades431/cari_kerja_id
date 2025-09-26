@@ -92,17 +92,11 @@ $belum = $rowBelum['total'] ?? 0;
       </nav>
     </aside>
 
-    <!-- Main -->
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
-        <div class="flex items-center gap-3">
-          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-        </div>
       </header>
 
-      <!-- Statistik -->
       <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         <a href="acc.php" class="block">
           <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl shadow-lg p-8 text-white border-2 border-transparent hover:border-white/40 transform hover:-translate-y-1 active:scale-95 transition duration-200 text-center">
@@ -121,7 +115,6 @@ $belum = $rowBelum['total'] ?? 0;
         </a>
       </div>
 
-      <!-- Aktivitas Terbaru -->
       <div class="px-8 pb-8">
         <h3 class="text-xl font-bold mb-4">Aktivitas Terbaru</h3>
         <div class="space-y-3">

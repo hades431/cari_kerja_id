@@ -21,7 +21,6 @@ if ($result && mysqli_num_rows($result) > 0) {
 </head>
 <body class="bg-[#222] min-h-screen">
   <div class="flex min-h-screen">
-    <!-- Sidebar -->
     <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl">
       <div class="px-4 py-6 flex flex-col items-center gap-2">
         <img src="../../img/carikerja.png" alt="Logo" class="w-40 object-contain" />
@@ -92,17 +91,13 @@ if ($result && mysqli_num_rows($result) > 0) {
         </a>
       </nav>
     </aside>
+    
 
-    <!-- Main Content -->
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar User</h2>
-        <div class="flex items-center gap-3">
-          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-        </div>
       </header>
-
+        
       <div class="flex-1 p-8 bg-gray-50">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-bold text-gray-700">List User Terdaftar</h2>
