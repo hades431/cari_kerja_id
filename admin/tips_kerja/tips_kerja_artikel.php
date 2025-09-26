@@ -97,10 +97,6 @@ if ($keyword) {
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Artikel Tips kerja</h2>
-        <div class="flex items-center gap-4">
-          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-        </div>
       </header>
 
       <div class="flex-1 p-8 bg-gray-100">

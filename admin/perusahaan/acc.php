@@ -90,10 +90,6 @@ $result = getPerusahaanAcc($keyword);
     <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
-        <div class="flex items-center gap-3">
-          <span class="text-lg font-medium"><?= htmlspecialchars($_SESSION['nama_admin'] ?? 'Admin'); ?></span>
-          <img src="../../img/beauty.png" alt="Admin" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
-        </div>
       </header>
 
       <main class="p-8 flex-1 space-y-8">
