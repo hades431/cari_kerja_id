@@ -1,6 +1,6 @@
 <?php
 include __DIR__ . "/../config.php"; // koneksi database
-
+include '../header.php';
 // Statistik
 $jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan")->fetch_row()[0];
 $jmlPerusahaan  = $conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
