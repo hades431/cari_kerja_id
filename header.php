@@ -65,7 +65,7 @@ if (!isset($_SESSION['user'])){
                     <?php
                         $profil_link = '../public/profil_pelamar.php';
                         if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'perusahaan') {
-                            $profil_link = '../dashboard/dashboard_perusahaan.php';
+                            $profil_link = '../perusahaan/dashboard_perusahaan.php';
                         }
                     ?>
                     <a href="<?= $profil_link ?>" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
