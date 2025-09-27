@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         'status_akun' => $user['status_akun']
       ];
       if($user['role'] == 'admin'){
-        header('Location: ../admin/dashboard.php');
+        header('Location: ../admin/dashboard/dashboard.php');
       }elseif($user['role'] == 'pelamar'){
         header('Location: ../landing/landing_page.php');
       }else{
