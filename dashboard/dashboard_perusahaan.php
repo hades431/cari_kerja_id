@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'perusahaan') {
+    header('Location: ../login/login.php');
+    exit;
+}
+
 include __DIR__ . "/../config.php"; // koneksi database
 include '../header.php';
 // Statistik
@@ -76,6 +82,17 @@ if ($res) {
            class="block py-2 px-4 rounded-lg hover:bg-[#00b6b9] transition">
           Pasang Lowongan
         </a>
+        <!-- Button Kembali -->
+        <a href="../landing/landing_page.php" 
+           class="block py-2 px-4 rounded-lg bg-gray-200 text-[#009fa3] font-semibold hover:bg-gray-300 transition mt-4">
+          Kembali
+        </a>
+        <!-- Button Logout -->
+        <form action="../logout.php" method="post" class="mt-2">
+          <button type="submit" class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">
+            Logout
+          </button>
+        </form>
       </nav>
     </div>
     <!-- Footer -->

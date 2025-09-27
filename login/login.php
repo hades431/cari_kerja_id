@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         header('Location: ../landing/landing_page.php');
         exit;
       }elseif($user['role'] == 'perusahaan'){
-        header('Location: ../dashboard/dashboard_perusahaan.php');
+        header('Location: ../landing/landing_page.php');
         exit;
       }else{
         // Jika role tidak dikenali, bisa diarahkan ke halaman error atau landing
