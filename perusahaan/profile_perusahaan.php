@@ -1,11 +1,11 @@
 <?php
 // Dummy data
-$nama = "Barberking hair";
-$posisi = "Barbershop";
-$email = "email@barberking.com";
-$telepon = "0882-1842-5516";
-$lokasi = "Bandung, Indonesia";
-$deskripsi = "Barbershop kami hadir untuk memberikan pengalaman grooming terbaik dengan sentuhan modern dan pelayanan berkualitas. Kami percaya bahwa setiap potongan rambut bukan hanya gaya, tetapi juga cerminan kepribadian. Dengan barber berpengalaman dan suasana nyaman, kami siap membuat penampilan Anda selalu maksimal.";
+$nama = "";
+$posisi = "";
+$email = "";
+$telepon = "";
+$lokasi = "";
+$deskripsi = "";
 $foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
 ?>
 <!DOCTYPE html>
@@ -25,7 +25,7 @@ $foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
     </div>
     <!-- Back Button -->
     <div class="px-8 mt-6">
-        <a href="javascript:history.back()" class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-md text-gray-700 hover:bg-gray-200 transition">
+        <a href="../dashboard/dashboard_perusahaan.php" class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-md text-gray-700 hover:bg-gray-200 transition">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
@@ -64,7 +64,7 @@ $foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
                     <div class="bg-gray-100 rounded-lg p-6 mt-2 text-gray-700 text-lg"><?php echo $deskripsi; ?></div>
                 </div>
                 <div class="mt-8 mb-2 flex justify-end">
-                    <button class="bg-[#00797a] hover:bg-[#005f5f] text-white px-10 py-3 rounded-full font-semibold shadow transition text-lg">Edit</button>
+                    <a href="edit_profile_perusahaan.php" class="bg-[#00797a] hover:bg-[#005f5f] text-white px-10 py-3 rounded-full font-semibold shadow transition text-lg text-center">Edit</a>
                 </div>
             </div>
         </div>
