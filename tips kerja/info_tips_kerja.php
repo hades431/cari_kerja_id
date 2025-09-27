@@ -5,7 +5,6 @@ include '../header.php';
 $data = tampil("SELECT artikel.*, user.username, user.email
 FROM artikel
 JOIN user ON artikel.id_user = user.id_user")
-
 ?>
 
 <section class="bg-[#e6eef5] py-8 px-4 relative overflow-visible">
@@ -21,7 +20,8 @@ JOIN user ON artikel.id_user = user.id_user")
                 class="w-full rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00646A] mb-8" />
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php foreach($data as $row) : ?>
-                <div class="bg-white rounded-xl shadow-md p-6 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200">
+                <div
+                    class="bg-white rounded-xl shadow-md p-6 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs text-gray-500">
                             <?php
@@ -45,7 +45,8 @@ JOIN user ON artikel.id_user = user.id_user")
                 <?php endforeach; ?>
             </div>
             <div class="flex justify-center space-x-2 pt-8">
-                <button class="bg-white hover:bg-[#e6eef5] text-[#00646A] font-semibold px-4 py-2 rounded shadow transition-colors duration-150 border border-[#00646A]">1</button>
+                <button
+                    class="bg-white hover:bg-[#e6eef5] text-[#00646A] font-semibold px-4 py-2 rounded shadow transition-colors duration-150 border border-[#00646A]">1</button>
                 <!-- Tambahkan tombol pagination lain jika diperlukan -->
             </div>
         </div>
@@ -55,5 +56,3 @@ JOIN user ON artikel.id_user = user.id_user")
 <?php
 include '../footer.php';
 ?>
-
-
