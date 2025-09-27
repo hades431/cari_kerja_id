@@ -211,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <strong>Bayar dengan QRIS:</strong>
             <p>Scan kode QR di bawah ini menggunakan aplikasi e-wallet atau mobile banking Anda.</p>
             <div class="flex justify-center mt-2">
-                <img src="../img/qris.jpg" alt="QRIS" class="w-48 h-48 border rounded shadow">
+                <img src="../img/qris_new.jpg" alt="QRIS" class="w-48 h-48 border rounded shadow">
             </div>
             <p class="mt-2 text-sm">Setelah pembayaran berhasil, simpan bukti transfer lalu upload di form.</p>
         `

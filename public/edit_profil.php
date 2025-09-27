@@ -123,15 +123,27 @@ if (isset($_POST['submit'])) {
             <!-- Pengalaman Kerja -->
             <div>
                 <label class="block text-gray-700 mb-1">Pengalaman Kerja</label>
-                <div class="space-y-3">
-                    <div class="flex flex-col md:flex-row gap-2">
-                        <input type="text" name="pengalaman_jabatan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Jabatan/Posisi">
-                        <input type="text" name="pengalaman_perusahaan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Perusahaan">
-                        <input type="text" name="pengalaman_tahun[]" class="md:w-40 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Tahun">
+                <div id="pengalaman-list" class="space-y-3 max-w-full">
+                    <?php
+                    $pengalaman_jabatan = $pelamar['pengalaman'] ? json_decode($pelamar['pengalaman'], true)['jabatan'] ?? [] : [];
+                    $pengalaman_perusahaan = $pelamar['pengalaman'] ? json_decode($pelamar['pengalaman'], true)['perusahaan'] ?? [] : [];
+                    $pengalaman_tahun = $pelamar['pengalaman'] ? json_decode($pelamar['pengalaman'], true)['tahun'] ?? [] : [];
+                    $count_pengalaman = max(count($pengalaman_jabatan), count($pengalaman_perusahaan), count($pengalaman_tahun));
+                    if ($count_pengalaman < 1) $count_pengalaman = 1;
+                    for ($i = 0; $i < $count_pengalaman; $i++):
+                    ?>
+                    <div class="flex flex-col md:flex-row gap-2 pengalaman-row items-center">
+                        <input type="text" name="pengalaman_jabatan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Jabatan/Posisi" value="<?= htmlspecialchars($pengalaman_jabatan[$i] ?? '') ?>">
+                        <input type="text" name="pengalaman_perusahaan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Perusahaan" value="<?= htmlspecialchars($pengalaman_perusahaan[$i] ?? '') ?>">
+                        <input type="text" name="pengalaman_tahun[]" class="md:w-40 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Tahun" value="<?= htmlspecialchars($pengalaman_tahun[$i] ?? '') ?>">
+                        <button type="button" class="remove-pengalaman px-2 ml-2" style="display:<?= $i === 0 ? 'none' : 'inline-block' ?>;">
+                            <i class="fas fa-trash text-red-500 text-lg"></i>
+                        </button>
                     </div>
-                    <!-- Tambah pengalaman lain dengan menambah input di sisi backend/JS jika perlu -->
+                    <?php endfor; ?>
                 </div>
-                <p class="text-xs text-gray-400 mt-1">* Tambahkan lebih banyak pengalaman dengan mengisi baris baru.</p>
+                <button type="button" id="tambah-pengalaman" class="mt-2 bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm hover:bg-blue-200 transition">+ Tambah Pengalaman</button>
+                <p class="text-xs text-gray-400 mt-1">* Tambahkan lebih banyak pengalaman dengan klik tombol di atas.</p>
             </div>
             <!-- Keahlian -->
             <div>
@@ -200,5 +212,31 @@ if (isset($_POST['submit'])) {
             </div>
         </form>
     </div>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script>
+    document.getElementById('tambah-pengalaman').addEventListener('click', function() {
+        var pengalamanList = document.getElementById('pengalaman-list');
+        var row = document.createElement('div');
+        row.className = "flex flex-col md:flex-row gap-2 pengalaman-row items-center";
+        row.innerHTML = `
+            <input type="text" name="pengalaman_jabatan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Jabatan/Posisi">
+            <input type="text" name="pengalaman_perusahaan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Perusahaan">
+            <input type="text" name="pengalaman_tahun[]" class="md:w-40 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Tahun">
+            <button type="button" class="remove-pengalaman px-2 ml-2">
+                <i class="fas fa-trash text-red-500 text-lg"></i>
+            </button>
+        `;
+        pengalamanList.appendChild(row);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-pengalaman') || e.target.classList.contains('fa-trash')) {
+            // Support click on button or icon
+            const btn = e.target.classList.contains('remove-pengalaman') ? e.target : e.target.closest('.remove-pengalaman');
+            if (btn) btn.parentElement.remove();
+        }
+    });
+    </script>
 </body>
 </html>
