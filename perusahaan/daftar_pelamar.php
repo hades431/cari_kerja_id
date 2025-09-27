@@ -1,4 +1,5 @@
 <?php
+include '../header.php';
 
 $koneksi = new mysqli("localhost", "root", "", "lowongan_kerja");
 
@@ -35,7 +36,7 @@ if ($result && $result->num_rows > 0) {
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
     <!-- Sidebar -->
-   <div id="sidebar" class="bg-[#00888a] text-white flex flex-col items-center py-10 px-0 shadow-lg w-64 min-h-screen relative">
+   <div id="sidebar" class="bg-[#00646A] text-white flex flex-col items-center py-10 px-0 shadow-lg w-64 min-h-screen relative">
         <div class="flex flex-col items-center w-full flex-1">
             <div class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg">
                 <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-20 h-20 rounded-full object-cover">
@@ -57,43 +58,44 @@ if ($result && $result->num_rows > 0) {
         <h2 class="text-2xl font-bold text-[#00646A] mb-6">Daftar Pelamar</h2>
 
         <!-- Search -->
-        <form method="GET" class="flex justify-start mb-6 w-full sm:w-1/3">
-            <div class="flex w-full shadow rounded-lg overflow-hidden">
-                <input 
-                    type="text" 
-                    name="q" 
-                    value="<?= htmlspecialchars($q) ?>" 
-                    placeholder="Cari posisi..." 
-                    class="px-3 py-2 w-full focus:outline-none"
-                >
-                <button 
-                    type="submit" 
-                    class="bg-[#00888a] text-white px-4 hover:bg-[#004F52]"
-                >
-                    🔍
-                </button>
-            </div>
-        </form>
+<form method="GET" class="flex justify-start mb-6 w-full sm:w-1/3">
+    <div class="flex w-full shadow rounded-lg overflow-hidden">
+        <input 
+            type="text" 
+            name="q" 
+            value="<?= htmlspecialchars($q) ?>" 
+            placeholder="Cari posisi..." 
+            class="px-3 py-2 w-full focus:outline-none"
+        >
+        <button 
+            type="submit" 
+            class="bg-[#00949A] text-white px-4 hover:bg-[#00646A]"
+        >
+            🔍
+        </button>
+    </div>
+</form>
 
-        <!-- Table -->
-        <div class="bg-white rounded-lg shadow overflow-x-auto">
-            <table class="w-full border-collapse min-w-[800px]">
-                <thead class="bg-[#00949A] text-white">
-                    <tr>
-                        <th class="p-3 text-left">Nama</th>
-                        <th class="p-3 text-left">Email</th>
-                        <th class="p-3 text-left">Posisi</th>
-                        <th class="p-3 text-left">No HP</th>
-                        <th class="p-3 text-left">CV</th>
-                    </tr>
-                </thead>
-                <tbody>
+<!-- Table -->
+<div class="bg-white rounded-lg shadow overflow-x-auto">
+    <table class="w-full border-collapse min-w-[800px]">
+        <thead class="bg-[#00949A] text-white">
+            <tr>
+                <th class="p-3 text-left">Nama</th>
+                <th class="p-3 text-left">Email</th>
+                <th class="p-3 text-left">Posisi</th>
+                <th class="p-3 text-left">No HP</th>
+                <th class="p-3 text-left">CV</th>
+            </tr>
+        </thead>
+        <tbody>
+
                     <?php if (count($pelamar) > 0): ?>
                         <?php foreach ($pelamar as $p): ?>
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3"><?= htmlspecialchars($p['nama_lengkap']) ?></td>
                                 <td class="p-3"><?= htmlspecialchars($p['email']) ?></td>
-                                <td class="p-3"><?= htmlspecialchars($p['posisi']) ?></td>
+                                <td class="p-3"><?= htmlspecialchars($p['jabatan']) ?></td>
                                 <td class="p-3"><?= htmlspecialchars($p['no_hp']) ?></td>
                                 <td class="p-3 text-center">
                                     <?php if (!empty($p['cv'])): ?>
