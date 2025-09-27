@@ -95,5 +95,5 @@ $foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
             </div>
         </div>
     </div>
-</body>
+        </body>
 </html>
