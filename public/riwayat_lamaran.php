@@ -1,5 +1,6 @@
 <?php
 // Data dummy
+include '../header.php';
 $riwayat = [
     ["perusahaan" => "PT Maju Jaya", "posisi" => "Frontend Developer", "tanggal" => "2025-09-01", "status" => "Menunggu"],
     ["perusahaan" => "CV Kreatifindo", "posisi" => "UI/UX Designer", "tanggal" => "2025-09-05", "status" => "Diproses"],
@@ -37,7 +38,9 @@ if (!empty($_GET['sort'])) {
   </style>
 </head>
 <body class="bg-gray-100 font-sans">
-  <div class="max-w-5xl mx-auto mt-10">
+
+  <!-- Container Full Width dengan Padding -->
+  <div class="w-full px-6 mt-10">
     <h1 class="text-3xl font-bold mb-6 primary-text">📄 Riwayat Lamaran</h1>
 
     <!-- Filter Form -->
