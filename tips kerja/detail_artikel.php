@@ -56,8 +56,13 @@ $isi = nl2br(htmlspecialchars($isi_raw));
     <div style="font-size:1.15rem;color:#374151;">
         <?php echo $isi; ?>
     </div>
+    <div style="margin-top:2.5em;">
+        <a href="../tips kerja/info_tips_kerja.php"
+            class="inline-block px-10 py-3 text-lg font-medium rounded-xl bg-teal-600 text-white shadow hover:bg-black transition-colors duration-200">
+            &#8592; Kembali
+        </a>
+    </div>
 </div>
-
 <?php
-// ...existing code...
+
 ?>
