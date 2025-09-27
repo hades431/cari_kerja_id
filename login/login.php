@@ -11,7 +11,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($result && $result->num_rows > 0){
     $user = $result->fetch_assoc();
     // Ganti pengecekan password sesuai kebutuhan (hash atau plain)
-    if(password_verify($password,$user['password'])){
+    $dbPassword = $user['password'];
+    $isHashed = strlen($dbPassword) === 60 && preg_match('/^\$2y\$/', $dbPassword);
+    if(
+      ($isHashed && password_verify($password, $dbPassword)) ||
+      (!$isHashed && $password === $dbPassword)
+    ){
       $_SESSION['login'] = true;
       $_SESSION['id_user'] = $user['id_user'];
       $_SESSION['email'] = $user['email'];
@@ -27,14 +32,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
       ];
       if($user['role'] == 'admin'){
         header('Location: ../admin/dashboard/dashboard.php');
+        exit;
       }elseif($user['role'] == 'pelamar'){
         header('Location: ../landing/landing_page.php');
-      }else{
+        exit;
+      }elseif($user['role'] == 'perusahaan'){
         header('Location: ../dashboard/dashboard_perusahaan.php');
+        exit;
+      }else{
+        // Jika role tidak dikenali, bisa diarahkan ke halaman error atau landing
+        header('Location: ../landing/landing_page.php');
+        exit;
       }
+    } else {
+      $error2 = true;
     }
+  } else {
+    $error2 = true;
   }
-  $error2 = true;
 }
 ?>
 <!doctype html>
