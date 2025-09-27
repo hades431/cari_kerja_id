@@ -7,6 +7,20 @@ if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'perusahaan') {
 
 include __DIR__ . "/../config.php"; // koneksi database
 include '../header.php';
+
+// Ambil data perusahaan berdasarkan email user yang login
+$email_user = $_SESSION['email'];
+$logo_perusahaan = '../img/default_profile.png';
+$nama_perusahaan = 'Perusahaan';
+
+$res_perusahaan = $conn->query("SELECT logo, nama_perusahaan FROM perusahaan WHERE email = '$email_user' LIMIT 1");
+if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
+    if (!empty($row['logo'])) {
+        $logo_perusahaan = (strpos($row['logo'], 'uploads/') === 0) ? '../'.$row['logo'] : $row['logo'];
+    }
+    $nama_perusahaan = $row['nama_perusahaan'];
+}
+
 // Statistik
 $jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan")->fetch_row()[0];
 $jmlPerusahaan  = $conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
@@ -64,9 +78,9 @@ if ($res) {
     <div>
       <div class="flex flex-col items-center py-6">
         <a href="../perusahaan/profile_perusahaan.php" class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
-          <img src="https://via.placeholder.com/150" alt="Logo Perusahaan" class="w-full h-full object-cover">
+          <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan" class="w-full h-full object-cover">
         </a>
-        <h2 class="mt-3 text-lg font-semibold">Perusahaan</h2>
+        <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
       </div>
       <!-- Menu -->
       <nav class="mt-6 space-y-2 px-4">
