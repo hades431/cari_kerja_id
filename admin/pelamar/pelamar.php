@@ -3,8 +3,9 @@ session_start();
 include '../../function/logic.php';
 
 $menuAktif = menu_aktif('pelamar');
-$sql = "SELECT id_user, email, role, status_akun, created_at FROM user ORDER BY id_user ASC";
-$result = mysqli_query($conn, $sql);
+
+$sql = "SELECT id_user, username AS nama, email, role, status_akun, created_at FROM user ORDER BY id_user ASC";
+$result = mysqli_query($conn, $sql); 
 $users = [];
 if ($result && mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
@@ -21,7 +22,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 </head>
 <body class="bg-[#222] min-h-screen">
   <div class="flex min-h-screen">
-      <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl fixed inset-y-0 left-0">
+    <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl">
       <div class="px-4 py-6 flex flex-col items-center gap-2">
         <img src="../../img/carikerja.png" alt="Logo" class="w-40 object-contain" />
       </div>
@@ -81,7 +82,7 @@ if ($result && mysqli_num_rows($result) > 0) {
           <span>Artikel & Tips</span>
         </a>
 
-        <a href="../../public/logout.php" onclick="return confirm('Yakin mau logout?')" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition 
+        <a href="../logout.php" onclick="return confirm('Yakin mau logout?')" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition 
           <?= $menuAktif['logout'] ? 'bg-red-700 text-white' : 'text-teal-100 hover:bg-red-700 hover:text-white' ?> mt-auto">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M17 16l4-4m0 0l-4-4m4 4H7" />
@@ -93,7 +94,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     </aside>
     
 
-    <div class="flex-1 flex flex-col bg-white min-h-screen ml-64">
+    <div class="flex-1 flex flex-col bg-white min-h-screen">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar User</h2>
       </header>
@@ -107,6 +108,7 @@ if ($result && mysqli_num_rows($result) > 0) {
             <thead class="bg-gradient-to-r from-teal-600 to-teal-700 text-white">
               <tr>
                 <th class="px-4 py-3">No</th>
+                <th class="px-4 py-3">Nama</th>
                 <th class="px-4 py-3">Role</th>
                 <th class="px-4 py-3">Email</th>
                 <th class="px-4 py-3">Status Akun</th>
@@ -118,6 +120,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <?php foreach ($users as $i => $row): ?>
                   <tr class="hover:bg-gray-50 transition">
                     <td class="px-4 py-3"><?= $i+1 ?>.</td>
+                    <td class="px-4 py-3 font-medium text-gray-700"><?= htmlspecialchars($row['nama']); ?></td>
                     <td class="px-4 py-3 font-medium text-gray-700"><?= htmlspecialchars($row['role']); ?></td>
                     <td class="px-4 py-3 text-gray-600"><?= htmlspecialchars($row['email']); ?></td>
                     <td class="px-4 py-3">
@@ -136,7 +139,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <?php endforeach; ?>
               <?php else: ?>
                 <tr>
-                  <td colspan="5" class="px-4 py-6 text-center text-gray-500 italic">Belum ada user terdaftar.</td>
+                  <td colspan="6" class="px-4 py-6 text-center text-gray-500 italic">Belum ada user terdaftar.</td>
                 </tr>
               <?php endif; ?>
             </tbody>
