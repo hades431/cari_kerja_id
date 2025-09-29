@@ -13,7 +13,8 @@ $email_user = $_SESSION['email'];
 $logo_perusahaan = '../img/default_profile.png';
 $nama_perusahaan = 'Perusahaan';
 
-$res_perusahaan = $conn->query("SELECT logo, nama_perusahaan FROM perusahaan WHERE email = '$email_user' LIMIT 1");
+// Perbaiki query: kolom email di database adalah email_perusahaan
+$res_perusahaan = $conn->query("SELECT logo, nama_perusahaan FROM perusahaan WHERE email_perusahaan = '$email_user' LIMIT 1");
 if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
     if (!empty($row['logo'])) {
         $logo_perusahaan = (strpos($row['logo'], 'uploads/') === 0) ? '../'.$row['logo'] : $row['logo'];
