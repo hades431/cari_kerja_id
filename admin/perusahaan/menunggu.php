@@ -95,7 +95,7 @@ $result = getPerusahaanMenunggu();
       </nav>
     </aside>
 
-      <div class="flex-1 flex flex-col bg-white min-h-screen">
+      <div class="flex-1 flex flex-col bg-white min-h-screen ml-64">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
       </header>
