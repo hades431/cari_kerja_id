@@ -13,34 +13,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_perusahaan = $_POST['nama_perusahaan'];
     $alamat = $_POST['alamat'];
     $email = $_POST['email_perusahaan'];
-    $telepon = $_POST['no_telepon'];
+    $telepon = $_POST['telepon'];
+    $website = $_POST['website'];
     $deskripsi = $_POST['deskripsi'];
-}
+
     // Logo upload (opsional)
-   $logo = $data['logo'] ?? '';
-if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-    $target = "../img/" . basename($_FILES['logo']['name']);
-    if (move_uploaded_file($_FILES['logo']['tmp_name'], $target)) {
-        $logo = $target;
+    $logo = $data['logo'] ?? '';
+    if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+        $target = "../img/" . basename($_FILES['logo']['name']);
+        if (move_uploaded_file($_FILES['logo']['tmp_name'], $target)) {
+            $logo = $target;
+        }
+    }
+
+    // Jalankan UPDATE
+    $sql = "UPDATE perusahaan SET
+        nama_perusahaan='$nama_perusahaan',
+        alamat='$alamat',
+        email_perusahaan='$email',
+        no_telepon='$telepon',
+        website='$website',
+        deskripsi='$deskripsi',
+        logo='$logo'
+        WHERE id_perusahaan='$id_perusahaan'";
+
+    if ($conn->query($sql) === TRUE) {
+        header("Location: profile_perusahaan.php?success=1");
+        exit;
+    } else {
+        echo "Error: " . $conn->error;
+        exit;
     }
 }
 
-  $sql = "UPDATE perusahaan SET
-    nama_perusahaan='$nama_perusahaan',
-    alamat='$alamat',
-    email_perusahaan='$email',
-    no_telepon='$telepon',
-    deskripsi='$deskripsi',
-    logo='$logo'
-    WHERE id_perusahaan='$id_perusahaan'";
-
-if ($conn->query($sql) === TRUE) {
-    header("Location: profile_perusahaan.php?success=1");
-    exit;
-} else {
-    echo "Error: " . $conn->error;
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -80,11 +85,15 @@ if ($conn->query($sql) === TRUE) {
         </div>
         <div>
             <label class="block font-semibold mb-1">Email</label>
-            <input type="email" name="email_perusahaan" value="<?= htmlspecialchars($data['email'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
+            <input type="email" name="email_perusahaan" value="<?= htmlspecialchars($data['email_perusahaan'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
         </div>
         <div>
             <label class="block font-semibold mb-1">Telepon</label>
-            <input type="text" name="telepon" value="<?= htmlspecialchars($data['telepon'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
+            <input type="text" name="telepon" value="<?= htmlspecialchars($data['no_telepon'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
+        </div>
+        <div>
+            <label class="block font-semibold mb-1">Website</label>
+            <input type="text" name="website" value="<?= htmlspecialchars($data['website'] ?? '') ?>" class="w-full p-3 border rounded-lg">
         </div>
         <div>
             <label class="block font-semibold mb-1">Deskripsi</label>

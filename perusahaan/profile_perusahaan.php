@@ -1,12 +1,23 @@
 <?php
-// Dummy data
-$nama = "";
-$posisi = "";
-$email = "";
-$telepon = "";
-$lokasi = "";
-$deskripsi = "";
-$foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
+include '../header.php';
+// Ambil data dari database
+include __DIR__ . "/../config.php";
+$id_perusahaan = 1; // Ganti dengan id perusahaan yang login
+
+$data = [];
+$res = $conn->query("SELECT * FROM perusahaan WHERE id_perusahaan='$id_perusahaan' LIMIT 1");
+if ($res && $res->num_rows > 0) {
+    $data = $res->fetch_assoc();
+}
+
+$nama = $data['nama_perusahaan'] ?? '';
+$email = $data['email_perusahaan'] ?? '';
+$telepon = $data['no_telepon'] ?? '';
+$alamat = $data['alamat'] ?? '';
+$website = $data['website'] ?? '';
+$deskripsi = $data['deskripsi'] ?? '';
+$paket = $data['paket'] ?? '';
+$logo = !empty($data['logo']) ? $data['logo'] : "../img/barber.jpg";
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,15 +28,9 @@ $foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
 </head>
 <body class="bg-[#f4f6f8] min-h-screen">
     <!-- Header -->
-    <div class="w-full bg-[#00797a] py-4 px-8 flex items-center justify-between">
-        <img src="../img/logo2.png" alt="Logo" class="h-10">
-        <div class="flex gap-3">
-            <!-- Tombol Info & Tips Kerja dan Buka Lowongan dihapus -->
-        </div>
-    </div>
     <!-- Back Button -->
     <div class="px-8 mt-6">
-        <a href="../dashboard/dashboard_perusahaan.php" class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-md text-gray-700 hover:bg-gray-200 transition">
+        <a href="../perusahaan/dashboard_perusahaan.php" class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-md text-gray-700 hover:bg-gray-200 transition">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
@@ -36,32 +41,36 @@ $foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
             <!-- Avatar -->
             <div class="flex flex-col items-center justify-start pl-8 pt-8">
                 <div class="w-40 h-40 rounded-full bg-[#2563eb] flex items-center justify-center text-white text-6xl font-bold shadow-md mb-4 border-4 border-white overflow-hidden">
-                    <img src="<?php echo $foto; ?>" alt="Foto Profil" class="w-full h-full object-cover">
+                    <img src="<?php echo htmlspecialchars($logo); ?>" alt="Foto Profil" class="w-full h-full object-cover">
                 </div>
             </div>
             <!-- Info -->
             <div class="flex-1 flex flex-col justify-center pr-8">
                 <div class="mb-2">
-                    <div class="text-4xl font-bold"><?php echo $nama; ?></div>
-                    <div class="text-2xl text-[#00797a] font-semibold"><?php echo $posisi; ?></div>
+                    <div class="text-4xl font-bold"><?php echo htmlspecialchars($nama); ?></div>
+                    <div class="text-2xl text-[#00797a] font-semibold"><?php echo htmlspecialchars($paket); ?></div>
                 </div>
-                <div class="flex items-center gap-8 text-gray-500 mb-6 flex-wrap text-lg">
+                <div class="flex flex-col gap-4 text-gray-700 mb-6 text-lg">
                     <div class="flex items-center gap-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/><path d="M12 14v7m0 0H7m5 0h5"/></svg>
-                        <?php echo $email; ?>
+                        <span class="font-semibold w-32">Email</span>
+                        <span><?php echo htmlspecialchars($email); ?></span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm0 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2zm10-10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V5zm0 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2z"/></svg>
-                        <?php echo $telepon; ?>
+                        <span class="font-semibold w-32">Telepon</span>
+                        <span><?php echo htmlspecialchars($telepon); ?></span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 12.414a4 4 0 1 0-1.414 1.414l4.243 4.243a1 1 0 0 0 1.414-1.414z"/><path d="M15 11a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/></svg>
-                        <?php echo $lokasi; ?>
+                        <span class="font-semibold w-32">Alamat</span>
+                        <span><?php echo htmlspecialchars($alamat); ?></span>
                     </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold w-32">Website</span>
+                        <span><?php echo htmlspecialchars($website); ?></span>
+                    </div>  
                 </div>
                 <div class="mb-6">
                     <div class="font-semibold text-xl">Deskripsi</div>
-                    <div class="bg-gray-100 rounded-lg p-6 mt-2 text-gray-700 text-lg"><?php echo $deskripsi; ?></div>
+                    <div class="bg-gray-100 rounded-lg p-6 mt-2 text-gray-700 text-lg"><?php echo htmlspecialchars($deskripsi); ?></div>
                 </div>
                 <div class="mt-8 mb-2 flex justify-end">
                     <a href="edit_profile_perusahaan.php" class="bg-[#00797a] hover:bg-[#005f5f] text-white px-10 py-3 rounded-full font-semibold shadow transition text-lg text-center">Edit</a>
@@ -69,29 +78,8 @@ $foto = "../img/barber.jpg"; // tambahkan path foto profile di sini
             </div>
         </div>
     </div>
-</body>
+        </body>
 </html>
-</html>
-                
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-</html>
-                </div>
-                
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-</body>
-</html>
-                        
-                    </div>
-                </div>
             </div>
         </div>
     </div>
