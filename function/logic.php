@@ -374,7 +374,7 @@ if (!function_exists('getNotifikasi')) {
                 "icon" => "🆕",
                 "pesan" => $row2['total']." user baru mendaftar",
                 "aksi" => "Lihat",
-                "link" => "../user/user.php"
+                "link" => "../pelamar/pelamar.php"
             ];
         }
         return $notifikasi;

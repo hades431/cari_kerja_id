@@ -24,7 +24,7 @@ $notifikasi  = getNotifikasi();
 </head>
 <body class="bg-[#222] min-h-screen">
   <div class="flex min-h-screen">
-    <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl">
+    <aside class="bg-gradient-to-b from-teal-700 to-teal-900 w-64 flex flex-col shadow-xl fixed inset-y-0 left-0">
       <div class="px-4 py-6 flex flex-col items-center gap-2">
         <img src="../../img/carikerja.png" alt="Logo" class="w-40 object-contain" />
       </div>
@@ -95,7 +95,7 @@ $notifikasi  = getNotifikasi();
       </nav>
     </aside>
 
-    <div class="flex-1 flex flex-col bg-white min-h-screen">
+    <div class="flex-1 flex flex-col bg-white min-h-screen ml-64">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Dashboard Admin</h2>
       </header>
