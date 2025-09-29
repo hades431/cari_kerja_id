@@ -36,21 +36,30 @@ if ($result && $result->num_rows > 0) {
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
     <!-- Sidebar -->
-   <div id="sidebar" class="bg-[#00646A] text-white flex flex-col items-center py-10 px-0 shadow-lg w-64 min-h-screen relative">
-        <div class="flex flex-col items-center w-full flex-1">
-            <div class="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-4 border-4 border-white/30 shadow-lg">
-                <img src="../img/barber.jpg" alt="Logo Perusahaan" title="Logo Perusahaan" class="w-20 h-20 rounded-full object-cover">
-            </div>
-            <div class="text-lg font-bold text-white mb-8 text-center">Perusahaan</div>
-            <div class="flex flex-col gap-4 w-full px-6">
-                <a href="../dashboard/dashboard_perusahaan.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Dashboard</a>
-                <a href="../perusahaan/daftar_pelamar.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Daftar Pelamar</a>
-                <a href="../perusahaan/form_pasang_lowongan.php" class="w-full py-3 rounded-lg bg-white text-[#00888a] font-semibold text-left pl-6 hover:bg-[#009fa3] hover:text-white transition">Pasang Lowongan</a>
-            </div>
-        </div>  
-        <div class="absolute bottom-6 left-0 w-full px-6 text-base text-white/70 text-center font-semibold">© 2025 Carikerja.id</div>
+ <aside class="w-64 bg-[#00646A] text-white flex flex-col justify-between min-h-screen">
+    <div>
+        <div class="flex flex-col items-center py-6">
+            <a href="../perusahaan/profile_perusahaan.php?id=<?= $_SESSION['id_perusahaan'] ?>" class="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg flex items-center justify-center">
+                <img src="<?= htmlspecialchars($_SESSION['logo'] ?? '../img/default_profile.png') ?>" alt="Logo Perusahaan" class="w-20 h-20 object-cover">
+            </a>
+            <h2 class="mt-3 text-lg font-semibold text-center"><?= htmlspecialchars($_SESSION['nama_perusahaan'] ?? 'Perusahaan') ?></h2>
+        </div>
+
+        <!-- Menu -->
+        <nav class="mt-6 space-y-2 px-4">
+            <a href="dashboard_perusahaan.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
+            <a href="../perusahaan/daftar_pelamar.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
+            <a href="../perusahaan/form_pasang_lowongan.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
+            <a href="../landing/landing_page.php" class="block py-2 px-4 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-gray-100 transition mt-4">Kembali</a>
+
+            <form action="../logout.php" method="post" class="mt-2">
+                <button type="submit" class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
+            </form>
+        </nav>
     </div>
 
+    <div class="p-4 text-sm text-center text-white/70">© 2025 Carikerja.id</div>
+</aside>
 
 
     <!-- Main Content -->
@@ -69,7 +78,7 @@ if ($result && $result->num_rows > 0) {
         >
         <button 
             type="submit" 
-            class="bg-[#00949A] text-white px-4 hover:bg-[#00646A]"
+            class="bg-[#00646A] text-white px-4 hover:bg-[#00646A]"
         >
             🔍
         </button>
@@ -79,7 +88,7 @@ if ($result && $result->num_rows > 0) {
 <!-- Table -->
 <div class="bg-white rounded-lg shadow overflow-x-auto">
     <table class="w-full border-collapse min-w-[800px]">
-        <thead class="bg-[#00949A] text-white">
+        <thead class="bg-[#00646A] text-white">
             <tr>
                 <th class="p-3 text-left">Nama</th>
                 <th class="p-3 text-left">Email</th>
