@@ -1,9 +1,14 @@
 <?php
 include '../../function/logic.php';
-$conn = koneksi();
+
+$conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
+
 $id = $_GET['id'];
 $status = $_GET['status'];
-$sql = "UPDATE users SET status='$status' WHERE id=$id";
+
+$sql = "UPDATE user SET status_akun='$status' WHERE id_user=$id";
 mysqli_query($conn, $sql);
+
 header("Location: pelamar.php");
 exit;
+?>
