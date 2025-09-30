@@ -45,7 +45,7 @@ if ($res) {
 // Lowongan saya
 $lowongan_saya = [];
 $id_perusahaan = isset($_SESSION['id_perusahaan']) ? $_SESSION['id_perusahaan'] : 0;
-$res = $conn->query("SELECT * FROM lowongan WHERE id_perusahaan='$id_perusahaan' ORDER BY tanggal_post DESC");
+$res = $conn->query("SELECT * FROM lowongan  ORDER BY tanggal_post DESC");
 if($res){
     while($row = $res->fetch_assoc()){
         $lowongan_saya[] = $row;
@@ -128,7 +128,7 @@ if($res){
                     <?php if(!empty($lowongan_saya)): ?>
                         <?php foreach($lowongan_saya as $l): ?>
                         <tr>
-                            <td class="px-4 py-2"><?= htmlspecialchars($l['posisi_pekerjaan']) ?></td>
+                            <td class="px-4 py-2"><?= htmlspecialchars($l['judul']) ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($l['batas_lamaran']) ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($l['gaji']) ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($l['lokasi']) ?></td>
