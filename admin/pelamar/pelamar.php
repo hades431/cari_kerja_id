@@ -112,9 +112,16 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <?php endforeach; ?>
               <?php else: ?>
                 <tr>
-                  <td colspan="6" class="px-4 py-6 text-center text-gray-500 italic">Belum ada user terdaftar.</td>
+                    <td colspan="6" class="px-4 py-6 text-center text-gray-500 italic">
+                    <?php if (!empty($keyword)): ?>
+                        User dengan kata kunci "<b><?= htmlspecialchars($keyword) ?></b>" tidak ditemukan.
+                    <?php else: ?>
+                        Belum ada user terdaftar.
+                    <?php endif; ?>
+                    </td>
                 </tr>
-              <?php endif; ?>
+                <?php endif; ?>
+
             </tbody>
           </table>
         </div>
