@@ -3,6 +3,39 @@ session_start();
 include '../../function/logic.php';
 $menuAktif = menu_aktif('transaksi');
 
+// Inisialisasi keyword
+$keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Ambil data perusahaan dengan filter search
+$transaksi = [];
+$sql = "SELECT nama_perusahaan, paket, bukti_pembayaran, verifikasi, waktu, created_at FROM perusahaan";
+if ($keyword !== '') {
+    $sql .= " WHERE nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
+}
+$sql .= " ORDER BY id_perusahaan DESC";
+$res = $conn->query($sql);
+if ($res) {
+    while ($row = $res->fetch_assoc()) {
+        // Durasi dari nama paket
+        $paket = strtolower(trim($row['paket']));
+        $durasi = 0;
+        if ($paket === 'bronze') $durasi = 15;
+        elseif ($paket === 'silver') $durasi = 30;
+        elseif ($paket === 'gold') $durasi = 45;
+        elseif ($paket === 'diamond') $durasi = 60;
+
+        $sisa_hari = '-';
+        // Hitung sisa hari hanya jika verifikasi sudah
+        if ($row['verifikasi'] === 'sudah' && !empty($row['created_at']) && $durasi > 0) {
+            $tanggal_mulai = strtotime($row['created_at']);
+            $tanggal_berakhir = $tanggal_mulai + ($durasi * 86400);
+            $sisa = ($tanggal_berakhir - time()) / 86400;
+            $sisa_hari = $sisa > 0 ? floor($sisa) . ' hari' : 'Expired';
+        }
+        $row['sisa_hari'] = $sisa_hari;
+        $transaksi[] = $row;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -88,13 +121,75 @@ $menuAktif = menu_aktif('transaksi');
         <div class="flex-1 flex flex-col bg-white min-h-screen ml-64">
         <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Riwayat Transaksi</h2>
-  </header>
+        </header>
 
-  
+        <!-- Tabel Transaksi -->
+        <div class="p-8">
+          <!-- Search Bar di atas tabel, terpisah dari tabel -->
+          <div class="flex items-center justify-between mb-4">
+            <form method="GET" class="flex gap-2 w-1/3">
+              <input 
+                type="text" 
+                name="search" 
+                placeholder="Cari perusahaan..." 
+                value="<?= htmlspecialchars($keyword) ?>" 
+                class="px-4 py-2 w-full rounded-lg border border-gray-300 
+                      focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              />
+              <button class="px-4 py-2 bg-teal-700 text-white rounded-lg hover:bg-teal-800">
+                Cari
+              </button>
+            </form>
+          </div>
+          <div class="bg-gradient-to-r from-teal-700 to-teal-500 rounded-t-2xl overflow-hidden">
+            <table class="min-w-full text-left">
+              <thead>
+                <tr class="text-white font-bold">
+                  <th class="py-3 px-4">No</th>
+                  <th class="py-3 px-4">Nama Perusahaan</th>
+                  <th class="py-3 px-4">Paket</th>
+                  <th class="py-3 px-4">Bukti Pembayaran</th>
+                  <th class="py-3 px-4">Verifikasi</th>
+                  <th class="py-3 px-4">Sisa Hari</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white rounded-b-2xl">
+                <?php if (empty($transaksi)): ?>
+                  <tr>
+                    <td colspan="6" class="py-8 text-center text-gray-500 italic">Belum ada data.</td>
+                  </tr>
+                <?php else: ?>
+                  <?php foreach ($transaksi as $i => $t): ?>
+                    <tr class="border-b">
+                      <td class="py-3 px-4"><?= $i+1 ?></td>
+                      <td class="py-3 px-4"><?= htmlspecialchars($t['nama_perusahaan']) ?></td>
+                      <td class="py-3 px-4"><?= htmlspecialchars($t['paket']) ?></td>
+                      <td class="py-3 px-4">
+                        <?php if (!empty($t['bukti_pembayaran'])): ?>
+                          <a href="../../<?= $t['bukti_pembayaran'] ?>" target="_blank" class="text-blue-600 underline">Lihat</a>
+                        <?php else: ?>
+                          <span class="text-gray-400">-</span>
+                        <?php endif; ?>
+                      </td>
+                      <td class="py-3 px-4">
+                        <?php if (strtolower($t['verifikasi']) === 'sudah'): ?>
+                          <span class="inline-block bg-green-600 text-white px-5 py-2 rounded-lg font-semibold">Sudah</span>
+                        <?php else: ?>
+                          <span class="inline-block bg-red-600 text-white px-5 py-2 rounded-lg font-semibold">Belum</span>
+                        <?php endif; ?>
+                      </td>
+                      <td class="py-3 px-4"><?= $t['sisa_hari'] ?></td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-  <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
+        <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
         <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
-      </footer>
+        </footer>
     </div>
   </div>
 </body>
