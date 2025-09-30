@@ -17,7 +17,7 @@ $alamat = $data['alamat'] ?? '';
 $website = $data['website'] ?? '';
 $deskripsi = $data['deskripsi'] ?? '';
 $paket = $data['paket'] ?? '';
-$logo = !empty($data['logo']) ? $data['logo'] : "../img/barber.jpg";
+$logo = "../img/default_profile.png";
 ?>
 <!DOCTYPE html>
 <html>

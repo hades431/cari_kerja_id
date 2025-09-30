@@ -1,10 +1,26 @@
 <?php
+session_start();
 include '../header.php';
 
 $koneksi = new mysqli("localhost", "root", "", "lowongan_kerja");
 
 if ($koneksi->connect_error) {
     die("Koneksi gagal: " . $koneksi->connect_error);
+}
+
+// Ambil data profil perusahaan untuk sidebar
+$email_user = $_SESSION['email'];
+$logo_perusahaan = '../img/default_profile.png';
+$nama_perusahaan = 'Perusahaan';
+$id_perusahaan = '';
+
+$res_perusahaan = $koneksi->query("SELECT id_perusahaan, logo, nama_perusahaan FROM perusahaan WHERE email_perusahaan = '$email_user' LIMIT 1");
+if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
+    $id_perusahaan = $row['id_perusahaan'];
+    if (!empty($row['logo'])) {
+        $logo_perusahaan = (strpos($row['logo'], 'uploads/') === 0) ? '../'.$row['logo'] : $row['logo'];
+    }
+    $nama_perusahaan = $row['nama_perusahaan'];
 }
 
 $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
@@ -39,10 +55,10 @@ if ($result && $result->num_rows > 0) {
  <aside class="w-64 bg-[#00646A] text-white flex flex-col justify-between min-h-screen">
     <div>
         <div class="flex flex-col items-center py-6">
-            <a href="../perusahaan/profile_perusahaan.php?id=<?= $_SESSION['id_perusahaan'] ?>" class="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg flex items-center justify-center">
-                <img src="<?= htmlspecialchars($_SESSION['logo'] ?? '../img/default_profile.png') ?>" alt="Logo Perusahaan" class="w-20 h-20 object-cover">
+            <a href="../perusahaan/profile_perusahaan.php?id=<?= htmlspecialchars($id_perusahaan) ?>" class="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg flex items-center justify-center">
+                <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan" class="w-20 h-20 object-cover">
             </a>
-            <h2 class="mt-3 text-lg font-semibold text-center"><?= htmlspecialchars($_SESSION['nama_perusahaan'] ?? 'Perusahaan') ?></h2>
+            <h2 class="mt-3 text-lg font-semibold text-center"><?= htmlspecialchars($nama_perusahaan) ?></h2>
         </div>
 
         <!-- Menu -->

@@ -14,8 +14,12 @@ $logo_perusahaan = '../img/default_profile.png';
 $nama_perusahaan = 'Perusahaan';
 
 // Perbaiki query: kolom email di database adalah email_perusahaan
-$res_perusahaan = $conn->query("SELECT logo, nama_perusahaan FROM perusahaan WHERE email_perusahaan = '$email_user' LIMIT 1");
+$res_perusahaan = $conn->query("SELECT id_perusahaan, logo, nama_perusahaan FROM perusahaan WHERE email_perusahaan = '$email_user' LIMIT 1");
 if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
+    // Set id_perusahaan ke session jika belum ada
+    if (!isset($_SESSION['id_perusahaan'])) {
+        $_SESSION['id_perusahaan'] = $row['id_perusahaan'];
+    }
     if (!empty($row['logo'])) {
         $logo_perusahaan = (strpos($row['logo'], 'uploads/') === 0) ? '../'.$row['logo'] : $row['logo'];
     }
@@ -38,36 +42,10 @@ if ($res) {
     }
 }
 
-// Artikel terbaru
-$artikelTerbaru = [];
-$res = $conn->query("SELECT * FROM artikel ORDER BY created_at DESC LIMIT 5");
-if ($res) {
-    while ($row = $res->fetch_assoc()) {
-        $artikelTerbaru[] = $row;
-    }
-}
-
-// Perusahaan baru
-$perusahaanBaru = [];
-$res = $conn->query("SELECT * FROM perusahaan ORDER BY created_at DESC LIMIT 5");
-if ($res) {
-    while ($row = $res->fetch_assoc()) {
-        $perusahaanBaru[] = $row;
-    }
-}
-
-// Notifikasi
-$notifikasi = [];
-$res = $conn->query("SELECT * FROM notifikasi ORDER BY id DESC LIMIT 5");
-if ($res) {
-    while ($row = $res->fetch_assoc()) {
-        $notifikasi[] = $row;
-    }
-}
-
 // Lowongan saya
 $lowongan_saya = [];
-$res = $conn->query("SELECT * FROM lowongan WHERE id_perusahaan='{$_SESSION['id_perusahaan']}' ORDER BY tanggal_post DESC");
+$id_perusahaan = isset($_SESSION['id_perusahaan']) ? $_SESSION['id_perusahaan'] : 0;
+$res = $conn->query("SELECT * FROM lowongan WHERE id_perusahaan='$id_perusahaan' ORDER BY tanggal_post DESC");
 if($res){
     while($row = $res->fetch_assoc()){
         $lowongan_saya[] = $row;
@@ -82,10 +60,10 @@ if($res){
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-<div class="flex h-screen">
+<div class="flex min-h-screen">
   <!-- Sidebar -->
-<aside class="w-64 bg-[#00646A] text-white flex flex-col justify-between">
-    <div>
+  <aside class="w-64 min-h-screen bg-[#00646A] text-white flex flex-col">
+    <div class="flex-1 flex flex-col justify-start">
       <div class="flex flex-col items-center py-6">
         <a href="../perusahaan/profile_perusahaan.php" class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
           <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan" class="w-full h-full object-cover">
@@ -104,8 +82,7 @@ if($res){
       </nav>
     </div>
     <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
-</aside>
-
+  </aside>
 
   <!-- Content -->
   <main class="flex-1 bg-gray-100 p-8">
@@ -158,8 +135,6 @@ if($res){
                             <td class="px-4 py-2">
                                 <?php if(!empty($l['logo'])): ?>
                                   <img src="../<?= htmlspecialchars($l['logo']) ?>" alt="Logo" class="w-16 h-16 object-cover rounded">
-
-
                                 <?php else: ?>
                                     -
                                 <?php endif; ?>
@@ -176,25 +151,9 @@ if($res){
         </div>
     </div>
 
-    <!-- Artikel Terbaru -->
-    <div class="bg-white p-4 rounded-lg shadow mb-8">
-      <h2 class="text-lg font-semibold mb-4">Artikel Terbaru</h2>
-      <ul class="list-disc pl-5">
-        <?php foreach ($artikelTerbaru as $art): ?>
-          <li><?= $art['judul'] ?> <span class="text-gray-500 text-sm">(<?= $art['created_at'] ?>)</span></li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
+   
 
-    <!-- Perusahaan Baru -->
-    <div class="bg-white p-4 rounded-lg shadow mb-8">
-      <h2 class="text-lg font-semibold mb-4">Perusahaan Baru</h2>
-      <ul class="list-disc pl-5">
-        <?php foreach ($perusahaanBaru as $p): ?>
-          <li><?= $p['nama_perusahaan'] ?> <span class="text-gray-500 text-sm">(<?= $p['created_at'] ?>)</span></li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
+  
 
     <!-- Notifikasi -->
     <div class="bg-white p-4 rounded-lg shadow">
