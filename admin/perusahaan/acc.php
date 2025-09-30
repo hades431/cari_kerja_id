@@ -4,7 +4,12 @@ $menuAktif = menu_aktif('perusahaan');
 
 // ambil keyword dari form search
 $keyword = $_GET['search'] ?? '';
-$result = getPerusahaanAcc($keyword);
+// Query hanya perusahaan dengan verifikasi 'sudah'
+$sql = "SELECT * FROM perusahaan WHERE verifikasi = 'sudah'";
+if ($keyword) {
+    $sql .= " AND nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
+}
+$result = mysqli_query($conn, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -122,12 +127,11 @@ $result = getPerusahaanAcc($keyword);
                             <td><?= $no++; ?></td>
                             <td><?= htmlspecialchars($row['nama_perusahaan']); ?></td>
                             <td><?= htmlspecialchars($row['email_perusahaan']); ?></td>
-                            <td><?= htmlspecialchars($row['verifikasi']); ?></td>
                             <td>
-                                <a href="bukti_pembayaran.php?id=<?= $row['id_perusahaan'] ?>">Lihat Bukti</a>
+                                <a href="bukti_pembayaran.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 underline">Lihat Bukti</a>
                             </td>
                             <td>
-                                <a href="deskripsi_perusahaan.php?id=<?= $row['id_perusahaan'] ?>">Lihat Deskripsi</a>
+                                <a href="deskripsi_perusahaan.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 underline">Lihat Deskripsi</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -136,7 +140,7 @@ $result = getPerusahaanAcc($keyword);
                         <td colspan="5" class="px-4 py-6 text-center text-gray-500 italic">Belum ada perusahaan terdaftar.</td>
                     </tr>
                 <?php endif; ?>
-                </tbody>
+            </tbody>
           </table>
         </div>
       </main>
