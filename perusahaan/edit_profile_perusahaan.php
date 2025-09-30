@@ -1,9 +1,10 @@
 <?php
+session_start();
 include __DIR__ . "/../config.php";
 // Ambil data perusahaan (contoh: dari session atau id login)
-$id_perusahaan = 1; // Ganti dengan id perusahaan yang login
+$id_perusahaan = $_SESSION["user"]["id"]; // Ganti dengan id perusahaan yang login
 $data = [];
-$res = $conn->query("SELECT * FROM perusahaan WHERE id_perusahaan='$id_perusahaan' LIMIT 1");
+$res = $conn->query("SELECT * FROM perusahaan WHERE id_user='$id_perusahaan' LIMIT 1");
 if ($res && $res->num_rows > 0) {
     $data = $res->fetch_assoc();
 }
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         website='$website',
         deskripsi='$deskripsi',
         logo='$logo'
-        WHERE id_perusahaan='$id_perusahaan'";
+        WHERE id_user='$id_perusahaan'";
 
     if ($conn->query($sql) === TRUE) {
         header("Location: profile_perusahaan.php?success=1");
@@ -69,11 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="bg-gray-100">
 <div class="max-w-xl mx-auto mt-10 bg-white p-8 rounded-xl shadow">
     <h1 class="text-2xl font-bold mb-6 text-[#009fa3]">Edit Profil Perusahaan</h1>
-    <?php if (isset($_GET['success'])): ?>
-        <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg font-semibold">
-            Profil berhasil diperbarui!
-        </div>
-    <?php endif; ?>
     <form method="POST" enctype="multipart/form-data" class="space-y-5" id="form-edit-profile">
         <div>
             <label class="block font-semibold mb-1">Nama Perusahaan</label>
@@ -89,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div>
             <label class="block font-semibold mb-1">Telepon</label>
-            <input type="text" name="telepon" value="<?= htmlspecialchars($data['no_telepon'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
+            <input type="number" name="telepon" value="<?= htmlspecialchars($data['no_telepon'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
         </div>
         <div>
             <label class="block font-semibold mb-1">Website</label>
@@ -97,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div>
             <label class="block font-semibold mb-1">Deskripsi</label>
-            <textarea name="deskripsi" rows="4" class="w-full p-3 border rounded-lg" required><?= htmlspecialchars($data['deskripsi'] ?? '') ?></textarea>
+            <textarea name="deskripsi" rows="4" class="w-full p-3 border rounded-lg" ><?= htmlspecialchars($data['deskripsi'] ?? '') ?></textarea>
         </div>
         <div>
             <label class="block font-semibold mb-1">Logo Perusahaan</label>
