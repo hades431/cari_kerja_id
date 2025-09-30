@@ -10,39 +10,45 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
   $result = $stmt->get_result();
   if($result && $result->num_rows > 0){
     $user = $result->fetch_assoc();
-    // Cek status akun
-    if($user['status_akun'] === 'nonaktif') {
-      $error2 = "Akun Anda telah dinonaktifkan. Silakan hubungi admin.";
-    } else {
-      // Ganti pengecekan password sesuai kebutuhan (hash atau plain)
-      if(password_verify($password,$user['password'])){
-        $_SESSION['login'] = true;
-        $_SESSION['id_user'] = $user['id_user'];
-        $_SESSION['email'] = $user['email'];
-        $_SESSION['role'] = $user['role'];
-        $_SESSION['status_akun'] = $user['status_akun'];
-        // Simpan data user lengkap ke session['user']
-        $_SESSION['user'] = [
-          'id' => $user['id_user'],
-          'email' => $user['email'],
-          'nama' => $user['nama'] ?? '',
-          'role' => $user['role'],
-          'status_akun' => $user['status_akun']
-        ];
-        if($user['role'] == 'admin'){
-          header('Location: ../admin/dashboard.php');
-        }elseif($user['role'] == 'pelamar'){
-          header('Location: ../landing/landing_page.php');
-        }else{
-          header('Location: ../dashboard/dashboard_perusahaan.php');
-        }
+    // Ganti pengecekan password sesuai kebutuhan (hash atau plain)
+    $dbPassword = $user['password'];
+    $isHashed = strlen($dbPassword) === 60 && preg_match('/^\$2y\$/', $dbPassword);
+    if(
+      ($isHashed && password_verify($password, $dbPassword)) ||
+      (!$isHashed && $password === $dbPassword)
+    ){
+      $_SESSION['login'] = true;
+      $_SESSION['id_user'] = $user['id_user'];
+      $_SESSION['email'] = $user['email'];
+      $_SESSION['role'] = $user['role'];
+      $_SESSION['status_akun'] = $user['status_akun'];
+      // Simpan data user lengkap ke session['user']
+      $_SESSION['user'] = [
+        'id' => $user['id_user'],
+        'email' => $user['email'],
+        'nama' => $user['nama'] ?? '',
+        'role' => $user['role'],
+        'status_akun' => $user['status_akun']
+      ];
+      if($user['role'] == 'admin'){
+        header('Location: ../admin/dashboard/dashboard.php');
         exit;
-      } else {
-        $error2 = "Password atau email salah";
+      }elseif($user['role'] == 'pelamar'){
+        header('Location: ../landing/landing_page.php');
+        exit;
+      }elseif($user['role'] == 'perusahaan'){
+        header('Location: ../landing/landing_page.php');
+        exit;
+      }else{
+        // Jika role tidak dikenali, bisa diarahkan ke halaman error atau landing
+        header('Location: ../landing/landing_page.php');
+        exit;
       }
+    } else {
+      $error2 = true;
     }
   } else {
-    $error2 = "Password atau email salah";
+    $error2 = true;
   }
 }
 ?>
@@ -97,7 +103,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             
             <?php if(isset($error2)): ?>
             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r">
-                <p class="font-medium"><?= htmlspecialchars($error2); ?></p>
+                <p class="font-medium">Password atau email salah</p>
             </div>
             <?php endif; ?>
 
