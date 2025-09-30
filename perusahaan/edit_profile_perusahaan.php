@@ -9,6 +9,30 @@ if ($res && $res->num_rows > 0) {
     $data = $res->fetch_assoc();
 }
 
+// === baru: tentukan logo_url untuk preview agar "disini" jelas ===
+$existingLogo = $data['logo'] ?? '';
+$logo_url = '';
+if (!empty($existingLogo)) {
+    if (preg_match('/^(https?:\/\/|\/|data:)/i', $existingLogo)) {
+        $logo_url = $existingLogo;
+    } else {
+        // cek beberapa lokasi kemungkinan file
+        $candidates = [
+            __DIR__ . '/' . $existingLogo => $existingLogo,
+            __DIR__ . '/../' . $existingLogo => '../' . $existingLogo,
+            __DIR__ . '/img/' . basename($existingLogo) => 'img/' . basename($existingLogo),
+            __DIR__ . '/../img/' . basename($existingLogo) => '../img/' . basename($existingLogo),
+        ];
+        foreach ($candidates as $path => $url) {
+            if (file_exists($path)) {
+                $logo_url = $url;
+                break;
+            }
+        }
+    }
+}
+// === end baru ===
+
 // Proses update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_perusahaan = $_POST['nama_perusahaan'];
@@ -22,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logo = $data['logo'] ?? '';
     if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         $target = "../img/" . basename($_FILES['logo']['name']);
+            if (!empty($logo) && file_exists($logo)) {
+                unlink($logo);
+            }
         if (move_uploaded_file($_FILES['logo']['tmp_name'], $target)) {
             $logo = $target;
         }
@@ -98,10 +125,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div>
             <label class="block font-semibold mb-1">Logo Perusahaan</label>
             <div>
-                <img id="preview-crop" src="<?= !empty($data['logo']) ? htmlspecialchars($data['logo']) : '' ?>" alt="Preview Logo">
+                <img id="preview-crop" src="<?= !empty($logo_url) ? htmlspecialchars($logo_url) : '' ?>" alt="Preview Logo" <?= !empty($logo_url) ? 'style="display:block;"' : '' ?> >
             </div>
             <input type="file" name="logo" accept="image/*" class="w-full" id="logo-input">
-            <div id="crop-info" class="text-sm text-gray-500 mt-2 hidden">Pastikan foto berbentuk bulat dan ukuran proporsional. Crop preview di bawah.</div>
+            <div id="crop-info" class="text-sm text-gray-500 mt-2 <?= !empty($logo_url) ? '' : 'hidden' ?>">
+                Disini maksudnya: area preview di atas akan menampilkan logo yang sudah ada atau yang baru dipilih. Pastikan foto berbentuk bulat dan proporsional; crop/resize sebelum upload jika perlu.
+            </div>
         </div>
         <div class="flex justify-between mt-6">
             <a href="profile_perusahaan.php" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400">Kembali</a>
@@ -120,7 +149,8 @@ document.getElementById('logo-input').addEventListener('change', function(e) {
             preview.src = ev.target.result;
             preview.style.display = 'block';
             info.classList.remove('hidden');
-            alert('Pastikan foto yang diupload berbentuk bulat dan proporsional. Jika belum, crop/resize terlebih dahulu sebelum upload.');
+            // non-blocking penjelasan: "disini" = preview area di atas
+            info.textContent = 'Disini maksudnya: preview menunjukkan gambar yang akan diupload. Jika perlu, crop/resize sebelum submit.';
         };
         reader.readAsDataURL(file);
     } else {

@@ -3,7 +3,6 @@ include '../header.php';
 // Ambil data dari database
 include __DIR__ . "/../config.php";
 $id_perusahaan = $_SESSION["user"]["id"]; // Ganti dengan id perusahaan yang login
-var_dump($id_perusahaan);
 $data = [];
 $res = $conn->query("SELECT * FROM perusahaan WHERE id_user='$id_perusahaan' LIMIT 1");
 if ($res && $res->num_rows > 0) {
@@ -17,7 +16,7 @@ $alamat = $data['alamat'] ?? '';
 $website = $data['website'] ?? '';
 $deskripsi = $data['deskripsi'] ?? '';
 $paket = $data['paket'] ?? '';
-$logo = "../img/default_profile.png";
+$logo = $data["logo"] ?? "knjt";
 ?>
 <!DOCTYPE html>
 <html>
