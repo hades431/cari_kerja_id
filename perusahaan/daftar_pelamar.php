@@ -10,9 +10,10 @@ if ($koneksi->connect_error) {
 
 // Ambil data profil perusahaan untuk sidebar
 $email_user = $_SESSION['email'];
-$logo_perusahaan = '../img/default_profile.png';
+$id_perusahaan = tampil("SELECT*FROM perusahaan where id_user = $user_id")[0]['id_perusahaan'] ?? 0;
+$logo_perusahaan = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan")[0]["logo"];
 $nama_perusahaan = 'Perusahaan';
-$id_perusahaan = '';
+
 
 $res_perusahaan = $koneksi->query("SELECT id_perusahaan, logo, nama_perusahaan FROM perusahaan WHERE email_perusahaan = '$email_user' LIMIT 1");
 if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {

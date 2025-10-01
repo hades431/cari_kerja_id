@@ -2,10 +2,9 @@
 include '../header.php';
 // Ambil data dari database
 include __DIR__ . "/../config.php";
-$id_perusahaan = 1; // Ganti dengan id perusahaan yang login
-
+$id_perusahaan = $_SESSION["user"]["id"]; // Ganti dengan id perusahaan yang login
 $data = [];
-$res = $conn->query("SELECT * FROM perusahaan WHERE id_perusahaan='$id_perusahaan' LIMIT 1");
+$res = $conn->query("SELECT * FROM perusahaan WHERE id_user='$id_perusahaan' LIMIT 1");
 if ($res && $res->num_rows > 0) {
     $data = $res->fetch_assoc();
 }
@@ -17,7 +16,7 @@ $alamat = $data['alamat'] ?? '';
 $website = $data['website'] ?? '';
 $deskripsi = $data['deskripsi'] ?? '';
 $paket = $data['paket'] ?? '';
-$logo = "../img/default_profile.png";
+$logo = $data["logo"] ?? "knjt";
 ?>
 <!DOCTYPE html>
 <html>
