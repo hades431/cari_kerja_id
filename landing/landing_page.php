@@ -10,21 +10,24 @@ $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null
 
 <!-- Notifikasi Berhasil Login -->
 <?php if ($nama_user): ?>
-<div id="login-success-alert" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-800 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 transition">
+<div id="login-success-alert"
+    class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-800 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 transition">
     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
     </svg>
     <div>
         <div class="font-bold">Berhasil Login!</div>
-        <div>Selamat datang, <span class="font-semibold"><?= htmlspecialchars($nama_user) ?></span> di CariKerjaID.</div>
+        <div>Selamat datang, <span class="font-semibold"><?= htmlspecialchars($nama_user) ?></span> di CariKerjaID.
+        </div>
     </div>
-    <button onclick="document.getElementById('login-success-alert').style.display='none'" class="ml-4 text-xl text-green-700 hover:text-green-900">&times;</button>
+    <button onclick="document.getElementById('login-success-alert').style.display='none'"
+        class="ml-4 text-xl text-green-700 hover:text-green-900">&times;</button>
 </div>
 <script>
-    setTimeout(function() {
-        var alert = document.getElementById('login-success-alert');
-        if(alert) alert.style.display = 'none';
-    }, 4000);
+setTimeout(function() {
+    var alert = document.getElementById('login-success-alert');
+    if (alert) alert.style.display = 'none';
+}, 4000);
 </script>
 <?php endif; ?>
 
@@ -37,7 +40,7 @@ $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null
         </h1>
 
         <div class="text-xl md:text-2xl text-center text-[#23395d] mb-6 font-normal">
-            Temukan loker Bandung terbaru bulan September 2025 dengan mudah di CariKerjaID.
+            Temukan loker Bandung terbaru bulan Oktober 2025 dengan mudah di CariKerjaID.
             <button type="button" id="toggle-info-btn"
                 class="ml-2 text-[#23395d] text-xl md:text-2xl font-normal hover:underline transition bg-transparent p-0 border-0 align-baseline"
                 onclick="toggleInfoCard()">
@@ -112,26 +115,27 @@ $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null
             </div>
         </div>
         <script>
-            function toggleInfoCard() {
-                const card = document.getElementById('info-card');
-                const btn = document.getElementById('toggle-info-btn');
-                const isHidden = card.classList.contains('hidden');
-                if (isHidden) {
-                    card.classList.remove('hidden');
-                    setTimeout(() => {
-                        card.classList.remove('scale-95', 'opacity-0');
-                        card.classList.add('scale-100', 'opacity-100');
-                    }, 10);
-                    btn.textContent = 'Minimalkan';
-                } else {
-                    card.classList.remove('scale-100', 'opacity-100');
-                    card.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        card.classList.add('hidden');
-                    }, 300);
-                    btn.textContent = 'Selengkapnya';gi
-                }
+        function toggleInfoCard() {
+            const card = document.getElementById('info-card');
+            const btn = document.getElementById('toggle-info-btn');
+            const isHidden = card.classList.contains('hidden');
+            if (isHidden) {
+                card.classList.remove('hidden');
+                setTimeout(() => {
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                btn.textContent = 'Minimalkan';
+            } else {
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    card.classList.add('hidden');
+                }, 300);
+                btn.textContent = 'Selengkapnya';
+                gi
             }
+        }
         </script>
     </div>
 </section>
@@ -139,19 +143,22 @@ $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null
 
 <section class="py-6 px-4">
     <div class="flex flex-wrap gap-4 justify-center">
-        <a href="card.php" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
+        <a href="card.php"
+            class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/images.jpg'); background-size: cover; background-position: center;">
             </div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
         </a>
-        <a href="detail_artikel.php?id=2" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
+        <a href="detail_artikel.php?id=2"
+            class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/montir.jpg'); background-size: cover; background-position: center;">
             </div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
         </a>
-        <a href="detail_artikel.php?id=3" class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
+        <a href="detail_artikel.php?id=3"
+            class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
             <div class="bg-gray-300 h-24 mb-2 rounded"
                 style="background-image: url('../img/barber.jpg'); background-size: cover; background-position: center;">
             </div>
@@ -162,10 +169,13 @@ $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null
 
 <section class="flex flex-col md:flex-row gap-6 px-4">
     <div class="flex-1 flex flex-col gap-4">
-        <a href="card.php" class="flex bg-white rounded-2xl shadow p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer items-center max-w-2xl">
+        <a href="card.php"
+            class="flex bg-white rounded-2xl shadow p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer items-center max-w-2xl">
             <div class="relative flex-shrink-0">
-                <img src="../img/montir.jpg" alt="Arka Corp" class="w-20 h-20 object-contain rounded-lg bg-white border" />
-                <span class="absolute -top-2 -left-2 text-white text-lg rounded-tr-lg rounded-bl-lg px-2 py-1 flex items-center">
+                <img src="../img/montir.jpg" alt="Arka Corp"
+                    class="w-20 h-20 object-contain rounded-lg bg-white border" />
+                <span
+                    class="absolute -top-2 -left-2 text-white text-lg rounded-tr-lg rounded-bl-lg px-2 py-1 flex items-center">
                     <i class="fa fa-thumbs-up"></i>
                 </span>
             </div>
@@ -202,7 +212,7 @@ $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null
             </div>
         </a>
     </div>
-            
+
 
     <aside class="bg-white rounded shadow p-4 w-full md:w-80">
         <form class="flex flex-col gap-4">
@@ -284,13 +294,13 @@ $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null
     </div>
 </div>
 <script>
-    document.getElementById('open-simpan-modal').onclick = function() {
-        document.getElementById('simpan-modal').classList.remove('hidden');
-    };
+document.getElementById('open-simpan-modal').onclick = function() {
+    document.getElementById('simpan-modal').classList.remove('hidden');
+};
 
-    function closeSimpanModal() {
-        document.getElementById('simpan-modal').classList.add('hidden');
-    }
+function closeSimpanModal() {
+    document.getElementById('simpan-modal').classList.add('hidden');
+}
 </script>
 
 
