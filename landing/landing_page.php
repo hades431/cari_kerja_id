@@ -2,6 +2,8 @@
 
 $judul_halaman = "Landing Page";
 include '../header.php';
+include '../function/sesi_role_aktif.pelamar.php';
+?>
 
 // Ambil nama user dari session jika sudah login
 $nama_user = '';

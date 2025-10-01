@@ -13,6 +13,7 @@ $statistik   = getStatistikBulanan();
 $perusahaan  = getPerusahaanBaru();
 $artikel     = getArtikelTerbaru();
 $notifikasi  = getNotifikasi();
+include '../../function/sesi_role_aktif_admin.php';
 ?>
 
 <!DOCTYPE html>
