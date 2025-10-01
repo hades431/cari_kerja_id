@@ -142,9 +142,10 @@ if (!empty($pelamar['keahlian'])) {
                     class="px-6 py-2 bg-[#00646A] text-white rounded-full shadow hover:bg-teal-800 transition">
                     Edit
                 </a>
-                <a href="logout.php" class="px-6 py-2 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition flex items-center gap-2">
+                <!-- Ganti link logout dengan tombol yang memunculkan modal -->
+                <button type="button" onclick="openLogoutModal()" class="px-6 py-2 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition flex items-center gap-2">
                     <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                </button>
             </div>
         </div>
         <!-- Section CV -->
@@ -207,6 +208,27 @@ if (!empty($pelamar['keahlian'])) {
         cardProfil.style.display = 'none';
         cardRiwayat.style.display = '';
     });
+
+    function openLogoutModal() {
+        document.getElementById('logout-modal').classList.remove('hidden');
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logout-modal').classList.add('hidden');
+    }
 </script>
+
+<!-- Modal Logout -->
+<div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+        <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+        <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
+        <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
+        <div class="flex justify-center gap-4">
+            <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+            <button onclick="window.location.href='logout.php'" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

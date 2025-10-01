@@ -10,7 +10,6 @@ include '../header.php';
 
 // Ambil data perusahaan berdasarkan email user yang login
 $email_user = $_SESSION['email'];
-$logo_perusahaan = '../img/default_profile.png';
 $nama_perusahaan = 'Perusahaan';
 
 // Perbaiki query: kolom email di database adalah email_perusahaan
@@ -26,9 +25,11 @@ if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
     $nama_perusahaan = $row['nama_perusahaan'];
 }
 
-
+$user_id =  $_SESSION["user"]["id"];
+$id_perusahaan = tampil("SELECT*FROM perusahaan where id_user = $user_id")[0]['id_perusahaan'] ?? 0;
+$logo_perusahaan = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan")[0]["logo"];
 // Statistik
-$jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan")->fetch_row()[0];
+$jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan where id_perusahaan = $id_perusahaan")->fetch_row()[0];
 $jmlPerusahaan  = $conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
 $jmlUser        = $conn->query("SELECT COUNT(*) FROM user")->fetch_row()[0];
 $jmlArtikel     = $conn->query("SELECT COUNT(*) FROM artikel")->fetch_row()[0];
@@ -45,7 +46,7 @@ if ($res) {
 // Lowongan saya
 $lowongan_saya = [];
 $id_perusahaan = isset($_SESSION['id_perusahaan']) ? $_SESSION['id_perusahaan'] : 0;
-$res = $conn->query("SELECT * FROM lowongan WHERE id_perusahaan='$id_perusahaan' ORDER BY tanggal_post DESC");
+$res = $conn->query("SELECT * FROM lowongan  ORDER BY tanggal_post DESC");
 if($res){
     while($row = $res->fetch_assoc()){
         $lowongan_saya[] = $row;
@@ -89,11 +90,15 @@ if($res){
     <h1 class="text-2xl font-bold text-[#00646A] mb-6">Dashboard</h1>
 
     <!-- Statistik -->
-    <div class="grid grid-cols-4 gap-4 mb-8">
-      <div class="bg-[#00646A] text-white p-4 rounded-lg shadow"><div>Total Lowongan</div><div class="text-3xl font-bold"><?= $jmlLowongan ?></div></div>
-      <div class="bg-[#00646A] text-white p-4 rounded-lg shadow"><div>Total Perusahaan</div><div class="text-3xl font-bold"><?= $jmlPerusahaan ?></div></div>
-      <div class="bg-[#00646A] text-white p-4 rounded-lg shadow"><div>Total User</div><div class="text-3xl font-bold"><?= $jmlUser ?></div></div>
-      <div class="bg-[#00646A] text-white p-4 rounded-lg shadow"><div>Total Artikel</div><div class="text-3xl font-bold"><?= $jmlArtikel ?></div></div>
+ <div class="grid grid-cols-2 gap-6 mb-8">
+      <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
+        <div class="text-lg mb-2">Total Lowongan</div>
+        <div class="text-4xl font-bold"><?= $jmlLowongan ?></div>
+      </div>
+      <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
+        <div class="text-lg mb-2">Total Pelamar</div>
+        <div class="text-4xl font-bold"><?= $jmlPerusahaan ?></div>
+      </div>
     </div>
 
     <!-- Aktivitas Terbaru -->
@@ -128,7 +133,7 @@ if($res){
                     <?php if(!empty($lowongan_saya)): ?>
                         <?php foreach($lowongan_saya as $l): ?>
                         <tr>
-                            <td class="px-4 py-2"><?= htmlspecialchars($l['posisi_pekerjaan']) ?></td>
+                            <td class="px-4 py-2"><?= htmlspecialchars($l['judul']) ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($l['batas_lamaran']) ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($l['gaji']) ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($l['lokasi']) ?></td>

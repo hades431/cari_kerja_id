@@ -5,6 +5,39 @@ include '../header.php';
 include '../function/sesi_role_aktif.pelamar.php';
 ?>
 
+// Ambil nama user dari session jika sudah login
+$nama_user = '';
+if (isset($_SESSION['user']['id'])) {
+    // Query database untuk ambil username
+    $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
+    $id_user = $_SESSION['user']['id'];
+    $result = mysqli_query($conn, "SELECT username FROM user WHERE id_user='$id_user' LIMIT 1");
+    if ($row = mysqli_fetch_assoc($result)) {
+        $nama_user = $row['username'];
+    }
+}
+?>
+
+<!-- Notifikasi Berhasil Login -->
+<?php if ($nama_user): ?>
+<div id="login-success-alert" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-800 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 transition">
+    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    <div>
+        <div class="font-bold">Berhasil Login!</div>
+        <div>Selamat datang, <span class="font-semibold"><?= htmlspecialchars($nama_user) ?></span> di CariKerjaID.</div>
+    </div>
+    <button onclick="document.getElementById('login-success-alert').style.display='none'" class="ml-4 text-xl text-green-700 hover:text-green-900">&times;</button>
+</div>
+<script>
+    setTimeout(function() {
+        var alert = document.getElementById('login-success-alert');
+        if(alert) alert.style.display = 'none';
+    }, 4000);
+</script>
+<?php endif; ?>
+
 
 <section class="bg-[#e6eef5] py-8 px-4 relative overflow-visible">
     <div class="max-w-7xl mx-auto flex flex-col items-center">

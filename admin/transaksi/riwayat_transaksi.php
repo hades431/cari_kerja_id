@@ -8,7 +8,7 @@ $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Ambil data perusahaan dengan filter search
 $transaksi = [];
-$sql = "SELECT nama_perusahaan, paket, bukti_pembayaran, verifikasi, waktu, created_at FROM perusahaan";
+$sql = "SELECT nama_perusahaan, paket, metode_pembayaran, bukti_pembayaran, verifikasi, waktu, created_at FROM perusahaan";
 if ($keyword !== '') {
     $sql .= " WHERE nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
 }
@@ -148,15 +148,17 @@ if ($res) {
                   <th class="py-3 px-4">No</th>
                   <th class="py-3 px-4">Nama Perusahaan</th>
                   <th class="py-3 px-4">Paket</th>
+                  <th class="py-3 px-4">Metode Pembayaran</th>
                   <th class="py-3 px-4">Bukti Pembayaran</th>
                   <th class="py-3 px-4">Verifikasi</th>
                   <th class="py-3 px-4">Sisa Hari</th>
+                  <th class="py-3 px-4">Aksi</th>
                 </tr>
               </thead>
               <tbody class="bg-white rounded-b-2xl">
                 <?php if (empty($transaksi)): ?>
                   <tr>
-                    <td colspan="6" class="py-8 text-center text-gray-500 italic">Belum ada data.</td>
+                    <td colspan="8" class="py-8 text-center text-gray-500 italic">Belum ada data.</td>
                   </tr>
                 <?php else: ?>
                   <?php foreach ($transaksi as $i => $t): ?>
@@ -164,6 +166,7 @@ if ($res) {
                       <td class="py-3 px-4"><?= $i+1 ?></td>
                       <td class="py-3 px-4"><?= htmlspecialchars($t['nama_perusahaan']) ?></td>
                       <td class="py-3 px-4"><?= htmlspecialchars($t['paket']) ?></td>
+                      <td class="py-3 px-4"><?= htmlspecialchars($t['metode_pembayaran'] ?? '-') ?></td>
                       <td class="py-3 px-4">
                         <?php if (!empty($t['bukti_pembayaran'])): ?>
                           <a href="../../<?= $t['bukti_pembayaran'] ?>" target="_blank" class="text-blue-600 underline">Lihat</a>
@@ -179,6 +182,17 @@ if ($res) {
                         <?php endif; ?>
                       </td>
                       <td class="py-3 px-4"><?= $t['sisa_hari'] ?></td>
+                      <td class="py-3 px-4">
+                        <?php
+                          // Tombol perpanjang hanya muncul jika sisa_hari 'Expired' atau '0 hari'
+                          $sisa = strtolower(trim($t['sisa_hari']));
+                          if ($sisa === 'expired' || $sisa === '0 hari' || $sisa === '0hari' || $sisa === '0') {
+                        ?>
+                          <a href="perpanjang.php" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold transition inline-block text-center">Perpanjang</a>
+                        <?php } else { ?>
+                          <span class="bg-gray-300 text-gray-500 px-4 py-2 rounded-lg font-semibold inline-block text-center cursor-not-allowed opacity-60">Perpanjang</span>
+                        <?php } ?>
+                      </td>
                     </tr>
                   <?php endforeach; ?>
                 <?php endif; ?>
