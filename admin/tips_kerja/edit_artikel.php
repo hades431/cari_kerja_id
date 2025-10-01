@@ -4,6 +4,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 include '../../function/logic.php'; 
+include '../../function/sesi_role_aktif_admin.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {

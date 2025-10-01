@@ -1,6 +1,8 @@
 <?php
 session_start();
 include '../../function/logic.php';
+include '../../function/sesi_role_aktif_admin.php';
+
 
 $menuAktif = menu_aktif('artikel');
 $keyword = $_GET['search'] ?? '';

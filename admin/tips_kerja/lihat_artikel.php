@@ -1,5 +1,7 @@
 <?php
 include '../../function/logic.php'; 
+include '../../function/sesi_role_aktif_admin.php';
+
 
 if (!isset($_GET['id'])) {
     header("Location: tips_kerja_artikel.php");

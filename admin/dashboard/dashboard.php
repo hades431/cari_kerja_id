@@ -1,6 +1,8 @@
 <?php
 session_start();
 include '../../function/logic.php';
+include '../../function/sesi_role_aktif_admin.php';
+
 $menuAktif = menu_aktif('dashboard');
 
 $jumlahLoker      = getJumlahLoker();
@@ -13,7 +15,6 @@ $statistik   = getStatistikBulanan();
 $perusahaan  = getPerusahaanBaru();
 $artikel     = getArtikelTerbaru();
 $notifikasi  = getNotifikasi();
-include '../../function/sesi_role_aktif_admin.php';
 ?>
 
 <!DOCTYPE html>
