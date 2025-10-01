@@ -72,6 +72,18 @@ if (isset($_POST['submit'])) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#00646A] min-h-screen">
+    <!-- Notifikasi Logout Modal -->
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+            <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+            <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
+            <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+                <button onclick="window.location.href='../public/logout.php'" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+            </div>
+        </div>
+    </div>
     <div class="max-w-2xl mx-auto mt-12 bg-white rounded-xl shadow-lg p-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Edit Profil</h2>
         <form action="#" method="post" enctype="multipart/form-data" class="space-y-5">
@@ -237,6 +249,15 @@ if (isset($_POST['submit'])) {
             if (btn) btn.parentElement.remove();
         }
     });
+
+    function openLogoutModal() {
+        document.getElementById('logout-modal').classList.remove('hidden');
+    }
+    function closeLogoutModal() {
+        document.getElementById('logout-modal').classList.add('hidden');
+    }
     </script>
+</body>
+</html>
 </body>
 </html>
