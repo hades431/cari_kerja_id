@@ -1,6 +1,8 @@
 <?php
 session_start();
 include '../../function/logic.php'; 
+include '../../function/sesi_role_aktif_admin.php';
+
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']); 
     $result = mysqli_query($conn, "SELECT gambar FROM artikel WHERE id='$id'");
