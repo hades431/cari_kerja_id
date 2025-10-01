@@ -80,6 +80,7 @@ if ($result && $result->num_rows > 0) {
 
     <!-- Main Content -->
     <main class="flex-1 p-8">
+        <!-- Hapus header profile bar di sini jika ada, hanya tampilkan judul -->
         <h2 class="text-2xl font-bold text-[#00646A] mb-6">Daftar Pelamar</h2>
 
         <!-- Search -->

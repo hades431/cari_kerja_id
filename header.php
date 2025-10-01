@@ -4,8 +4,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $is_logged_in = isset($_SESSION['pelamar_kerja']) || isset($_SESSION['user']);
-$is_profil_pelamar = basename($_SERVER['PHP_SELF']) === 'profil_pelamar.php';
 $is_dashboard_perusahaan = basename($_SERVER['PHP_SELF']) === 'dashboard_perusahaan.php';
+$is_tai = basename($_SERVER['PHP_SELF']) === "daftar_pelamar.php";
+$is_tai2 = basename($_SERVER['PHP_SELF']) === "profile_perusahaan.php";
 
 $foto_default = '../img/default_profile.png'; // pastikan file ini ada
 
@@ -61,7 +62,7 @@ if (!isset($_SESSION['user'])){
 
             <div class="flex flex-col items-end gap-1">
                 <!-- Profil -->
-                <?php if ($is_logged_in && !$is_profil_pelamar && !$is_dashboard_perusahaan && $nama_lengkap !== 'Nama Pengguna'): ?>
+                <?php if ($is_logged_in && !$is_tai2 && !$is_dashboard_perusahaan && !$is_tai && $nama_lengkap !== 'Nama Pengguna'): ?>
                     <?php
                         $profil_link = '../public/profil_pelamar.php';
                         if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'perusahaan') {
