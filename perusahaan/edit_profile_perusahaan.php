@@ -1,12 +1,37 @@
 <?php
+session_start();
 include __DIR__ . "/../config.php";
 // Ambil data perusahaan (contoh: dari session atau id login)
-$id_perusahaan = 1; // Ganti dengan id perusahaan yang login
+$id_perusahaan = $_SESSION["user"]["id"]; // Ganti dengan id perusahaan yang login
 $data = [];
-$res = $conn->query("SELECT * FROM perusahaan WHERE id_perusahaan='$id_perusahaan' LIMIT 1");
+$res = $conn->query("SELECT * FROM perusahaan WHERE id_user='$id_perusahaan' LIMIT 1");
 if ($res && $res->num_rows > 0) {
     $data = $res->fetch_assoc();
 }
+
+// === baru: tentukan logo_url untuk preview agar "disini" jelas ===
+$existingLogo = $data['logo'] ?? '';
+$logo_url = '';
+if (!empty($existingLogo)) {
+    if (preg_match('/^(https?:\/\/|\/|data:)/i', $existingLogo)) {
+        $logo_url = $existingLogo;
+    } else {
+        // cek beberapa lokasi kemungkinan file
+        $candidates = [
+            __DIR__ . '/' . $existingLogo => $existingLogo,
+            __DIR__ . '/../' . $existingLogo => '../' . $existingLogo,
+            __DIR__ . '/img/' . basename($existingLogo) => 'img/' . basename($existingLogo),
+            __DIR__ . '/../img/' . basename($existingLogo) => '../img/' . basename($existingLogo),
+        ];
+        foreach ($candidates as $path => $url) {
+            if (file_exists($path)) {
+                $logo_url = $url;
+                break;
+            }
+        }
+    }
+}
+// === end baru ===
 
 // Proses update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logo = $data['logo'] ?? '';
     if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         $target = "../img/" . basename($_FILES['logo']['name']);
+            if (!empty($logo) && file_exists($logo)) {
+                unlink($logo);
+            }
         if (move_uploaded_file($_FILES['logo']['tmp_name'], $target)) {
             $logo = $target;
         }
@@ -35,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         website='$website',
         deskripsi='$deskripsi',
         logo='$logo'
-        WHERE id_perusahaan='$id_perusahaan'";
+        WHERE id_user='$id_perusahaan'";
 
     if ($conn->query($sql) === TRUE) {
         header("Location: profile_perusahaan.php?success=1");
@@ -69,11 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="bg-gray-100">
 <div class="max-w-xl mx-auto mt-10 bg-white p-8 rounded-xl shadow">
     <h1 class="text-2xl font-bold mb-6 text-[#009fa3]">Edit Profil Perusahaan</h1>
-    <?php if (isset($_GET['success'])): ?>
-        <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg font-semibold">
-            Profil berhasil diperbarui!
-        </div>
-    <?php endif; ?>
     <form method="POST" enctype="multipart/form-data" class="space-y-5" id="form-edit-profile">
         <div>
             <label class="block font-semibold mb-1">Nama Perusahaan</label>
@@ -89,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div>
             <label class="block font-semibold mb-1">Telepon</label>
-            <input type="text" name="telepon" value="<?= htmlspecialchars($data['no_telepon'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
+            <input type="number" name="telepon" value="<?= htmlspecialchars($data['no_telepon'] ?? '') ?>" class="w-full p-3 border rounded-lg" required>
         </div>
         <div>
             <label class="block font-semibold mb-1">Website</label>
@@ -97,15 +120,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div>
             <label class="block font-semibold mb-1">Deskripsi</label>
-            <textarea name="deskripsi" rows="4" class="w-full p-3 border rounded-lg" required><?= htmlspecialchars($data['deskripsi'] ?? '') ?></textarea>
+            <textarea name="deskripsi" rows="4" class="w-full p-3 border rounded-lg" ><?= htmlspecialchars($data['deskripsi'] ?? '') ?></textarea>
         </div>
         <div>
             <label class="block font-semibold mb-1">Logo Perusahaan</label>
             <div>
-                <img id="preview-crop" src="<?= !empty($data['logo']) ? htmlspecialchars($data['logo']) : '' ?>" alt="Preview Logo">
+                <img id="preview-crop" src="<?= !empty($logo_url) ? htmlspecialchars($logo_url) : '' ?>" alt="Preview Logo" <?= !empty($logo_url) ? 'style="display:block;"' : '' ?> >
             </div>
             <input type="file" name="logo" accept="image/*" class="w-full" id="logo-input">
-            <div id="crop-info" class="text-sm text-gray-500 mt-2 hidden">Pastikan foto berbentuk bulat dan ukuran proporsional. Crop preview di bawah.</div>
+            <div id="crop-info" class="text-sm text-gray-500 mt-2 <?= !empty($logo_url) ? '' : 'hidden' ?>">
+                Disini maksudnya: area preview di atas akan menampilkan logo yang sudah ada atau yang baru dipilih. Pastikan foto berbentuk bulat dan proporsional; crop/resize sebelum upload jika perlu.
+            </div>
         </div>
         <div class="flex justify-between mt-6">
             <a href="profile_perusahaan.php" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400">Kembali</a>
@@ -124,7 +149,8 @@ document.getElementById('logo-input').addEventListener('change', function(e) {
             preview.src = ev.target.result;
             preview.style.display = 'block';
             info.classList.remove('hidden');
-            alert('Pastikan foto yang diupload berbentuk bulat dan proporsional. Jika belum, crop/resize terlebih dahulu sebelum upload.');
+            // non-blocking penjelasan: "disini" = preview area di atas
+            info.textContent = 'Disini maksudnya: preview menunjukkan gambar yang akan diupload. Jika perlu, crop/resize sebelum submit.';
         };
         reader.readAsDataURL(file);
     } else {

@@ -106,6 +106,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 <p class="font-medium">Password atau email salah</p>
             </div>
             <?php endif; ?>
+            <?php
+            $pesan = isset($_GET['pesan']) ? $_GET['pesan'] : '';
+            if(isset($pesan)): ?>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r">
+                <p class="font-medium">Password atau email salah</p>
+            </div>
+            <?php endif; ?>
 
             <form class="space-y-6" method="post">
                 <div class="input-container">
