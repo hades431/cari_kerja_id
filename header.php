@@ -8,22 +8,19 @@ $is_dashboard_perusahaan = basename($_SERVER['PHP_SELF']) === 'dashboard_perusah
 $is_tai = basename($_SERVER['PHP_SELF']) === "daftar_pelamar.php";
 $is_tai2 = basename($_SERVER['PHP_SELF']) === "profile_perusahaan.php";
 
-$foto_default = '../img/default_profile.png'; // pastikan file ini ada
+$foto_default = '../img/default_profile.png'; 
 
 $nama_lengkap = 'Nama Pengguna';
 $foto_profil = $foto_default;
 
 if ($is_logged_in) {
-    // Ambil data dari session pelamar_kerja jika ada
     if (isset($_SESSION['pelamar_kerja'])) {
         $nama_lengkap = $_SESSION['pelamar_kerja']['nama_lengkap'] ?: ($_SESSION['user']['email'] ?? 'Nama Pengguna');
         $foto_profil = $_SESSION['pelamar_kerja']['foto'] ?: $foto_default;
-        // Jika path sudah mengandung 'uploads/', tambahkan '../' di depannya
         if (strpos($foto_profil, 'uploads/') === 0) {
             $foto_profil = '../' . $foto_profil;
         }
     }
-    // Jika hanya user, ambil data dari database pelamar_kerja
     elseif (isset($_SESSION['user'])) {
         require_once '../function/logic.php';
         $user_id = $_SESSION['user']['id'] ?? null;
@@ -52,16 +49,14 @@ if (!isset($_SESSION['user'])){
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body class="bg-gray-100 flex flex-col min-h-screen pt-28">
 
-    <!-- Header -->
-    <header class="bg-[#00646A] px-4 py-3 flex flex-col gap-1">
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#00646A] px-4 py-3 flex flex-col gap-1 shadow-lg">
         <div class="flex flex-row items-center justify-between">
             <a href="../landing/landing_page.php"><img src="../img/carikerja.png" alt="Logo"
                     class="px-2 py-0 rounded w-48 h-20 object-contain"></a>
 
             <div class="flex flex-col items-end gap-1">
-                <!-- Profil -->
                 <?php if ($is_logged_in && !$is_tai2 && !$is_dashboard_perusahaan && !$is_tai && $nama_lengkap !== 'Nama Pengguna'): ?>
                     <?php
                         $profil_link = '../public/profil_pelamar.php';
