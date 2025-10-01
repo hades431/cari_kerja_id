@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         header('Location: ../landing/landing_page.php');
         exit;
       }elseif($user['role'] == 'perusahaan'){
-        header('Location: ../landing/landing_page.php');
+        header('Location: ../perusahaan/dashboard_perusahaan.php');
         exit;
       }else{
         // Jika role tidak dikenali, bisa diarahkan ke halaman error atau landing
@@ -106,7 +106,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 <p class="font-medium">Password atau email salah</p>
             </div>
             <?php endif; ?>
-            
+
 
             <form class="space-y-6" method="post">
                 <div class="input-container">
