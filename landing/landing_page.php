@@ -3,7 +3,41 @@
 $judul_halaman = "Landing Page";
 include '../header.php';
 include '../function/sesi_role_aktif.pelamar.php';
+function formatWaktuLalu($timestamp) {
+    $waktu_lalu = new DateTime($timestamp);
+    $sekarang = new DateTime();
+    $selisih = $sekarang->diff($waktu_lalu);
+
+    if ($selisih->y > 0) {
+        return $selisih->y . ' tahun lalu';
+    }
+    if ($selisih->m > 0) {
+        return $selisih->m . ' bulan lalu';
+    }
+    if ($selisih->d > 0) {
+        if ($selisih->d == 1) {
+            return 'Kemarin';
+        }
+        return $selisih->d . ' hari lalu';
+    }
+    if ($selisih->h > 0) {
+        return $selisih->h . ' jam lalu';
+    }
+    if ($selisih->i > 0) {
+        return $selisih->i . ' menit lalu';
+    }
+    if ($selisih->s > 0) {
+        return $selisih->s . ' detik lalu';
+    }
+    return 'Baru saja';
+}
 $nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null;
+$data = tampil("SELECT 
+    lowongan.*, 
+    perusahaan.nama_perusahaan 
+FROM lowongan 
+JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
+ORDER BY lowongan.tanggal_post DESC");
 ?>
 
 
@@ -168,11 +202,12 @@ setTimeout(function() {
 
 
 <section class="flex flex-col md:flex-row gap-6 px-4">
+    <?php foreach($data as $row):  ?>
     <div class="flex-1 flex flex-col gap-4">
-        <a href="card.php"
+        <a href="card.php?id=<?php echo $row["id_lowongan"] ?>"
             class="flex bg-white rounded-2xl shadow p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer items-center max-w-2xl">
             <div class="relative flex-shrink-0">
-                <img src="../img/montir.jpg" alt="Arka Corp"
+                <img src="<?php echo $row["banner"] ?>" alt="Arka Corp"
                     class="w-20 h-20 object-contain rounded-lg bg-white border" />
                 <span
                     class="absolute -top-2 -left-2 text-white text-lg rounded-tr-lg rounded-bl-lg px-2 py-1 flex items-center">
@@ -184,34 +219,34 @@ setTimeout(function() {
                     <span class="text-gray-400 text-base font-medium">Dibutuhkan</span>
                     <span class="flex items-center gap-1 text-gray-400 text-sm">
                         <i class="fa fa-clock"></i>
-                        2 hari lalu
+                        <?php echo formatWaktuLalu($row["created_at"]) ?>
                     </span>
                 </div>
-                <div class="text-2xl font-bold text-[#23395d] leading-tight mb-1">Montir</div>
+                <div class="text-2xl font-bold text-[#23395d] leading-tight mb-1"><?php echo $row["posisi"] ?></div>
                 <div class="flex items-center gap-2 text-[#23395d] mb-1">
                     <i class="fa fa-building"></i>
-                    <span class="font-medium">PT. Arka Mega Nusantara</span>
+                    <span class="font-medium"><?php echo $row["nama_perusahaan"] ?></span>
                     <i class="fa fa-money-bill text-gray-400 ml-3"></i>
-                    <span class="text-gray-600">Kompetitif</span>
                 </div>
                 <div class="border-b my-2"></div>
                 <div class="flex flex-wrap gap-4 text-gray-600 text-base items-center">
                     <span class="flex items-center gap-1">
                         <i class="fa fa-graduation-cap"></i>
-                        SMA/K - S1/D4
+                        <?php echo $row["pendidikan"] ?>
                     </span>
                     <span class="flex items-center gap-1">
                         <i class="fa fa-briefcase"></i>
-                        1 - 2 Tahun
+                        <?php echo str_replace(',', ' - ', $row["pengalaman"]  . " Tahun"); ?>
                     </span>
                     <span class="flex items-center gap-1">
                         <i class="fa fa-map-marker-alt"></i>
-                        Kota Bandung
+                        <?php echo $row["lokasi"] ?>
                     </span>
                 </div>
             </div>
         </a>
     </div>
+    <?php endforeach; ?>
 
 
     <aside class="bg-white rounded shadow p-4 w-full md:w-80">
