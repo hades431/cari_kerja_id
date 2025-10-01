@@ -3,20 +3,10 @@
 $judul_halaman = "Landing Page";
 include '../header.php';
 include '../function/sesi_role_aktif.pelamar.php';
+$nama_user = isset($_SESSION['user']["nama"]) ? $_SESSION['user']["nama"] : null;
 ?>
 
-// Ambil nama user dari session jika sudah login
-$nama_user = '';
-if (isset($_SESSION['user']['id'])) {
-    // Query database untuk ambil username
-    $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
-    $id_user = $_SESSION['user']['id'];
-    $result = mysqli_query($conn, "SELECT username FROM user WHERE id_user='$id_user' LIMIT 1");
-    if ($row = mysqli_fetch_assoc($result)) {
-        $nama_user = $row['username'];
-    }
-}
-?>
+
 
 <!-- Notifikasi Berhasil Login -->
 <?php if ($nama_user): ?>
