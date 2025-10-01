@@ -1,8 +1,9 @@
 <?php
 
 $judul_halaman = "Landing Page";
-include '../header.php'; ?>
-
+include '../header.php';
+include '../function/sesi_role_aktif.pelamar.php';
+?>
 
 
 <section class="bg-[#e6eef5] py-8 px-4 relative overflow-visible">
