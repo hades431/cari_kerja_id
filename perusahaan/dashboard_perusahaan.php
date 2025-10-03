@@ -110,21 +110,6 @@ if($res){
     </div>
 
 
-        <!-- Content: beri margin-left agar tidak tertutup sidebar -->
-        <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
-            <!-- Hapus <h1>Dashboard</h1> di sini -->
-            <!-- Statistik -->
-            <div class="grid grid-cols-2 gap-6 mb-8">
-                <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
-                    <div class="text-lg mb-2">Total Lowongan</div>
-                    <div class="text-4xl font-bold"><?= $jmlLowongan ?></div>
-                </div>
-                <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
-                    <div class="text-lg mb-2">Total Pelamar</div>
-                    <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
-                </div>
-            </div>
-
             <!-- Aktivitas Terbaru -->
             <div class="bg-white p-4 rounded-lg shadow mb-8">
                 <h2 class="text-lg font-semibold mb-4">Aktivitas Terbaru</h2>
