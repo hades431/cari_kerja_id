@@ -26,8 +26,12 @@ if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
 }
 
 $user_id =  $_SESSION["user"]["id"];
-$id_perusahaan = tampil("SELECT*FROM perusahaan where id_user = $user_id")[0]['id_perusahaan'] ?? 0;
-$logo_perusahaan = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan")[0]["logo"];
+$id_perusahaan_arr = tampil("SELECT*FROM perusahaan where id_user = $user_id");
+$id_perusahaan = isset($id_perusahaan_arr[0]['id_perusahaan']) ? $id_perusahaan_arr[0]['id_perusahaan'] : 0;
+
+$logo_perusahaan_arr = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan");
+$logo_perusahaan = isset($logo_perusahaan_arr[0]["logo"]) ? $logo_perusahaan_arr[0]["logo"] : "";
+
 // Statistik
 $jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan where id_perusahaan = $id_perusahaan")->fetch_row()[0];
 $jmlPerusahaan  = $conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
@@ -60,10 +64,15 @@ if($res){
   <title>Dashboard Perusahaan</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-<div class="flex min-h-screen">
-  <!-- Sidebar -->
-  <aside class="w-64 min-h-screen bg-[#00646A] text-white flex flex-col">
+<body class="bg-[#00646A] h-screen">
+<!-- Header fixed di atas -->
+<header class="fixed top-0 left-0 w-full bg-[#00646A] text-white py-5 px-8 text-2xl font-bold shadow z-20">
+  Dashboard
+</header>
+<!-- Container utama dengan padding top sesuai tinggi header -->
+<div class="flex h-screen" style="padding-top:68px">
+  <!-- Sidebar: gunakan fixed dan top sama dengan header agar menempel -->
+  <aside class="fixed top-[68px] left-0 w-64 bg-[#00646A] text-white flex flex-col h-[calc(100vh-68px)] z-10">
     <div class="flex-1 flex flex-col justify-start">
       <div class="flex flex-col items-center py-6">
         <a href="../perusahaan/profile_perusahaan.php" class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
@@ -85,10 +94,9 @@ if($res){
     <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
   </aside>
 
-  <!-- Content -->
-  <main class="flex-1 bg-gray-100 p-8">
-    <h1 class="text-2xl font-bold text-[#00646A] mb-6">Dashboard</h1>
-
+  <!-- Content: beri margin-left agar tidak tertutup sidebar -->
+  <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
+    <!-- Hapus <h1>Dashboard</h1> di sini -->
     <!-- Statistik -->
  <div class="grid grid-cols-2 gap-6 mb-8">
       <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
