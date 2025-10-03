@@ -115,7 +115,7 @@ setTimeout(function() {
                     </div>
                     <div class="flex-1 flex justify-end mt-6 md:mt-0">
                         <button type="submit"
-                            class="flex items-center gap-2 bg-white rounded-[32px] px-10 py-4 text-xl font-normal shadow">
+                            class="flex items-center gap-2 bg-white rounded-[32px] px-10 py-4 text-xl font-normal shadow hover:bg-gray-300 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-black" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor">
                                 <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none" />
