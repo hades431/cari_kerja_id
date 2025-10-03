@@ -8,7 +8,7 @@ $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Ambil data perusahaan dengan filter search
 $transaksi = [];
-$sql = "SELECT nama_perusahaan, paket, metode_pembayaran, bukti_pembayaran, verifikasi, waktu, created_at FROM perusahaan";
+$sql = "SELECT nama_perusahaan, paket, metode_pembayaran, bukti_pembayaran, verifikasi, created_at FROM perusahaan";
 if ($keyword !== '') {
     $sql .= " WHERE nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
 }
