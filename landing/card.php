@@ -70,7 +70,7 @@ $data = tampil($sql);
         </div>
         <div class="flex gap-4 mt-4">
             <button
-                class="flex items-center gap-2 bg-[#23395d] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#00646A] transition">
+                class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
                 <i class="fa fa-paper-plane"></i> Lamar
             </button>
             <button
