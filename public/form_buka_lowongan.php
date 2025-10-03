@@ -8,10 +8,10 @@ if (mysqli_connect_errno()) {
     echo "Koneksi database gagal : " . mysqli_connect_error();
     exit;
 }
-
+$id = $_SESSION["user"]["id"];
 // Tangkap paket dari query string
 $paket = isset($_GET['paket']) ? $_GET['paket'] : '';
-
+var_dump($paket);
 // Mapping harga paket
 $harga_paket = [
     'bronze' => 25000,
@@ -45,19 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Simpan ke database
-    $sql = "INSERT INTO perusahaan (nama_perusahaan, alamat, email_perusahaan, no_telepon, website, paket, metode_pembayaran, bukti_pembayaran, verifikasi, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'belum', NOW())";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-red-100 border border-red-300 rounded text-red-800 text-center">Query error: ' . htmlspecialchars($conn->error) . '</div>';
-    } else {
-        $stmt->bind_param("ssssssss", $nama_perusahaan, $alamat_perusahaan, $email_perusahaan, $telepon_perusahaan, $website_perusahaan, $paket, $metode_pembayaran, $bukti_pembayaran);
-        if ($stmt->execute()) {
-            echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-green-100 border border-green-300 rounded text-green-800 text-center">Data perusahaan berhasil dikirim!<br>Tunggu email dari kami.</div>';
-        } else {
-            echo '<div class="max-w-xl mx-auto mt-6 p-4 bg-red-100 border border-red-300 rounded text-red-800 text-center">Gagal menyimpan data perusahaan.</div>';
-        }
-    }
+  $sql = "INSERT INTO perusahaan 
+        (nama_perusahaan, id_user ,alamat, email_perusahaan, no_telepon, website, bukti_pembayaran, deskripsi, paket, verifikasi, waktu) VALUES
+        ('$nama_perusahaan', $id , '$alamat_perusahaan', '$email_perusahaan', '$telepon_perusahaan', '$website_perusahaan', '$bukti_pembayaran', 'tai', '$paket', 'belum' , '15')";
+    $sql_user = "UPDATE user SET role = 'perusahaan' WHERE id_user = $id";
+    mysqli_query($conn, $sql_user);
+    mysqli_query($conn, $sql);
+    header('Location: ../public/logout.php');
+    exit;
+
 }
 ?>
 
@@ -84,12 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mb-4">
             <label for="telepon_perusahaan" class="block mb-1 font-medium">Telepon Perusahaan</label>
-            <input type="text" id="telepon_perusahaan" name="telepon_perusahaan" class="w-full border rounded px-3 py-2"
+            <input type="number" id="telepon_perusahaan" name="telepon_perusahaan" class="w-full border rounded px-3 py-2"
                 required>
         </div>
         <div class="mb-4">
             <label for="website_perusahaan" class="block mb-1 font-medium">Website Perusahaan (opsional)</label>
-            <input type="url" id="website_perusahaan" name="website_perusahaan" class="w-full border rounded px-3 py-2">
+            <input type="text" id="website_perusahaan" name="website_perusahaan" class="w-full border rounded px-3 py-2">
         </div>
 
         <!-- Paket -->

@@ -35,9 +35,7 @@ $logo_perusahaan = isset($logo_perusahaan_arr[0]["logo"]) ? $logo_perusahaan_arr
 // Statistik
 $jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan where id_perusahaan = $id_perusahaan")->fetch_row()[0];
 $jmlPerusahaan  = $conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
-$jmlUser        = $conn->query("SELECT COUNT(*) FROM user")->fetch_row()[0];
-$jmlArtikel     = $conn->query("SELECT COUNT(*) FROM artikel")->fetch_row()[0];
-
+$jmlpelamar =$conn->query("SELECT COUNT(*) FROM pelamar_kerja")->fetch_row()[0];
 // Aktivitas terbaru
 $aktivitasTerbaru = [];
 $res = $conn->query("SELECT * FROM aktivitas ORDER BY tanggal DESC LIMIT 5");
@@ -105,7 +103,7 @@ if($res){
       </div>
       <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
         <div class="text-lg mb-2">Total Pelamar</div>
-        <div class="text-4xl font-bold"><?= $jmlPerusahaan ?></div>
+        <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
       </div>
     </div>
 
