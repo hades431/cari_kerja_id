@@ -1,29 +1,50 @@
 <?php
-// Data dummy
-include '../header.php';
-$riwayat = [
-    ["perusahaan" => "PT Maju Jaya", "posisi" => "Frontend Developer", "tanggal" => "2025-09-01", "status" => "Menunggu"],
-    ["perusahaan" => "CV Kreatifindo", "posisi" => "UI/UX Designer", "tanggal" => "2025-09-05", "status" => "Diproses"],
-    ["perusahaan" => "PT Sukses Makmur", "posisi" => "Backend Developer", "tanggal" => "2025-09-10", "status" => "Ditolak"],
-    ["perusahaan" => "PT Teknologi Hebat", "posisi" => "Mobile Developer", "tanggal" => "2025-08-28", "status" => "Diterima"],
-];
-
-// Filter status
-$filtered = $riwayat;
-if (!empty($_GET['status'])) {
-    $filtered = array_filter($filtered, fn($r) => $r['status'] == $_GET['status']);
+session_start();
+if (!isset($_SESSION['id_pelamar'])) {
+    exit;
 }
 
-// Urutkan tanggal
-if (!empty($_GET['sort'])) {
-    usort($filtered, function($a, $b) {
-        if ($_GET['sort'] == "lama") {
-            return strtotime($a['tanggal']) <=> strtotime($b['tanggal']);
-        }
-        return strtotime($b['tanggal']) <=> strtotime($a['tanggal']);
-    });
+$id_pelamar = $_SESSION['id_pelamar'];
+
+// Koneksi ke database
+$conn = mysqli_connect("localhost", "root", "", "cari_kerja_id");
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+
+// Filter dan sort
+$where = "WHERE lam.id_pelamar = $id_pelamar";
+if (!empty($_GET['status'])) {
+    $status = mysqli_real_escape_string($conn, $_GET['status']);
+    $where .= " AND lam.status_lamaran = '$status'";
+}
+$order = "ORDER BY lam.tanggal_lamar DESC";
+if (!empty($_GET['sort']) && $_GET['sort'] == "lama") {
+    $order = "ORDER BY lam.tanggal_lamar ASC";
+}
+
+// Query ambil riwayat lamaran dari tabel lowongan dan relasi
+$sql = "SELECT 
+            p.nama_perusahaan AS perusahaan,
+            l.posisi AS posisi,
+            lam.tanggal_lamar AS tanggal,
+            lam.status_lamaran AS status
+        FROM lamaran lam
+        JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
+        JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
+        $where
+        $order";
+
+$result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+
+$filtered = [];
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $filtered[] = $row;
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>

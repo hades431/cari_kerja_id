@@ -47,13 +47,22 @@ if ($res) {
 
 // Lowongan saya
 $lowongan_saya = [];
-$tampil = tampil("SELECT*FROM perusahaan WHERE id_user = $user_id")[0]["id_perusahaan"];
+// var_dump($user_id);die;
+$tampil = tampil("SELECT*FROM perusahaan WHERE id_user = $user_id")[0]["id_perusahaan"] ?? false;
+
+if(!$tampil){
+    include '../perusahaan/belumpilihpaket.php';
+  echo ""; die;
+  
+}
 $res = $conn->query("SELECT * FROM lowongan WHERE id_perusahaan = $tampil ORDER BY tanggal_post DESC");
 if($res){
     while($row = $res->fetch_assoc()){
         $lowongan_saya[] = $row;
     }
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
