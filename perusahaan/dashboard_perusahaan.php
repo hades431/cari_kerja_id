@@ -203,7 +203,7 @@ if($res){
                 </ul>
             </div>
 
-        </main>
+
     </div>
 </body>
 
