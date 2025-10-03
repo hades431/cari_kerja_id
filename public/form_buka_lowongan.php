@@ -9,9 +9,20 @@ if (mysqli_connect_errno()) {
     exit;
 }
 $id = $_SESSION["user"]["id"];
+
+// Cek status verifikasi perusahaan
+$cek_perusahaan = mysqli_query($conn, "SELECT verifikasi FROM perusahaan WHERE id_user = $id ORDER BY id_perusahaan DESC LIMIT 1");
+if ($cek_perusahaan && mysqli_num_rows($cek_perusahaan) > 0) {
+    $row = mysqli_fetch_assoc($cek_perusahaan);
+    if ($row['verifikasi'] !== 'acc') {
+        header('Location: menunggu_verifikasi.php');
+        exit;
+    }
+}
+
 // Tangkap paket dari query string
 $paket = isset($_GET['paket']) ? $_GET['paket'] : '';
-var_dump($paket);
+
 // Mapping harga paket
 $harga_paket = [
     'bronze' => 25000,

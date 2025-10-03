@@ -7,7 +7,7 @@ include '../header.php';
     <p class="mb-4">Data perusahaan Anda telah berhasil dikirim.<br>
     Silakan menunggu proses verifikasi oleh admin sebelum akun perusahaan Anda aktif.</p>
     <p class="mb-6 text-gray-600">Anda akan mendapatkan notifikasi melalui email jika sudah diverifikasi.</p>
-    <a href="login.php" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+    <a href="../login/login.php" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
         Kembali ke Login
     </a>
 </div>
