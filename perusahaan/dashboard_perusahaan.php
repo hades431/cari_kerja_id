@@ -49,8 +49,8 @@ if ($res) {
 
 // Lowongan saya
 $lowongan_saya = [];
-$id_perusahaan = isset($_SESSION['id_perusahaan']) ? $_SESSION['id_perusahaan'] : 0;
-$res = $conn->query("SELECT * FROM lowongan  ORDER BY tanggal_post DESC");
+$tampil = tampil("SELECT*FROM perusahaan WHERE id_user = $user_id")[0]["id_perusahaan"];
+$res = $conn->query("SELECT * FROM lowongan WHERE id_perusahaan = $tampil ORDER BY tanggal_post DESC");
 if($res){
     while($row = $res->fetch_assoc()){
         $lowongan_saya[] = $row;
