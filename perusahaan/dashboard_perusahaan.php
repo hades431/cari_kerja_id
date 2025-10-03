@@ -65,41 +65,50 @@ if($res){
 </head>
 
 <body class="bg-[#00646A] h-screen">
-    <!-- Header fixed di atas -->
-    <header class="fixed top-0 left-0 w-full bg-[#00646A] text-white py-5 px-8 text-2xl font-bold shadow z-20">
-        Dashboard
-    </header>
-    <!-- Container utama dengan padding top sesuai tinggi header -->
-    <div class="flex h-screen" style="padding-top:68px">
-        <!-- Sidebar: gunakan fixed dan top sama dengan header agar menempel -->
-        <aside class="fixed top-[68px] left-0 w-64 bg-[#00646A] text-white flex flex-col h-[calc(100vh-68px)] z-10">
-            <div class="flex-1 flex flex-col justify-start">
-                <div class="flex flex-col items-center py-6">
-                    <a href="../perusahaan/profile_perusahaan.php"
-                        class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
-                        <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan"
-                            class="w-full h-full object-cover">
-                    </a>
-                    <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
-                </div>
-                <!-- Menu -->
-                <nav class="mt-6 space-y-2 px-4">
-                    <a href="dashboard_perusahaan.php"
-                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
-                    <a href="../perusahaan/daftar_pelamar.php"
-                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
-                    <a href="../perusahaan/form_pasang_lowongan.php"
-                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
-                    <a href="../landing/landing_page.php"
-                        class="block py-2 px-4 rounded-lg bg-gray-200 text-[#00797a] font-semibold hover:bg-gray-300 transition mt-4">Kembali</a>
-                    <form action="../logout.php" method="post" class="mt-2">
-                        <button type="submit"
-                            class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
-                    </form>
-                </nav>
-            </div>
-            <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
-        </aside>
+<!-- Header fixed di atas -->
+<header class="fixed top-0 left-0 w-full bg-[#00646A] text-white py-5 px-8 text-2xl font-bold shadow z-20">
+  Dashboard
+</header>
+<!-- Container utama dengan padding top sesuai tinggi header -->
+<div class="flex h-screen" style="padding-top:68px">
+  <!-- Sidebar: gunakan fixed dan top sama dengan header agar menempel -->
+  <aside class="fixed top-[68px] left-0 w-64 bg-[#00646A] text-white flex flex-col h-[calc(100vh-68px)] z-10">
+    <div class="flex-1 flex flex-col justify-start">
+      <div class="flex flex-col items-center py-6">
+        <a href="../perusahaan/profile_perusahaan.php" class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
+          <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan" class="w-full h-full object-cover">
+        </a>
+        <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
+      </div>
+      <!-- Menu -->
+      <nav class="mt-6 space-y-2 px-4">
+        <a href="dashboard_perusahaan.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
+        <a href="../perusahaan/daftar_pelamar.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
+        <a href="../perusahaan/form_pasang_lowongan.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
+        <a href="../landing/landing_page.php" class="block py-2 px-4 rounded-lg bg-gray-200 text-[#00797a] font-semibold hover:bg-gray-300 transition mt-4">Kembali</a>
+        <form action="../logout.php" method="post" class="mt-2">
+          <button type="submit" class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
+        </form>
+      </nav>
+    </div>
+    <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
+  </aside>
+
+  <!-- Content: beri margin-left agar tidak tertutup sidebar -->
+  <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
+    <!-- Hapus <h1>Dashboard</h1> di sini -->
+    <!-- Statistik -->
+ <div class="grid grid-cols-2 gap-6 mb-8">
+      <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
+        <div class="text-lg mb-2">Total Lowongan</div>
+        <div class="text-4xl font-bold"><?= $jmlLowongan ?></div>
+      </div>
+      <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
+        <div class="text-lg mb-2">Total Pelamar</div>
+        <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
+      </div>
+    </div>
+
 
         <!-- Content: beri margin-left agar tidak tertutup sidebar -->
         <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
