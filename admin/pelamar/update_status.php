@@ -1,6 +1,5 @@
 <?php
 include '../../function/logic.php';
-include '../../function/sesi_role_aktif_admin.php';
 
 
 $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
