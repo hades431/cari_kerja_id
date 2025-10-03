@@ -45,13 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Simpan ke database
-  $sql = "INSERT INTO perusahaan 
+    $sql = "INSERT INTO perusahaan 
         (nama_perusahaan, id_user ,alamat, email_perusahaan, no_telepon, website, bukti_pembayaran, deskripsi, paket, verifikasi, waktu) VALUES
         ('$nama_perusahaan', $id , '$alamat_perusahaan', '$email_perusahaan', '$telepon_perusahaan', '$website_perusahaan', '$bukti_pembayaran', 'tai', '$paket', 'belum' , '15')";
-    $sql_user = "UPDATE user SET role = 'perusahaan' WHERE id_user = $id";
-    mysqli_query($conn, $sql_user);
+    // Jangan update role user di sini, tunggu sampai verifikasi admin
+    // $sql_user = "UPDATE user SET role = 'perusahaan' WHERE id_user = $id";
+    // mysqli_query($conn, $sql_user);
     mysqli_query($conn, $sql);
-    header('Location: ../public/logout.php');
+    // Redirect ke halaman info menunggu verifikasi
+    header('Location: ../public/menunggu_verifikasi.php');
     exit;
 
 }
