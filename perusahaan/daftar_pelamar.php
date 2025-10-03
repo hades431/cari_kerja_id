@@ -26,18 +26,19 @@ if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
 
 $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
 
-if ($q === "") {
-    $sql = "SELECT * FROM pelamar_kerja";
-} else {
-    $sql = "SELECT * FROM pelamar_kerja WHERE LOWER(posisi) LIKE '%$q%'";
-}
-
-$result = $koneksi->query($sql);
-
-$pelamar = [];
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $pelamar[] = $row;
+// Ambil pelamar yang melamar ke perusahaan ini saja
+$pelamar_perusahaan = [];
+$res_pelamar_kerja = $koneksi->query("
+    SELECT p.*, u.username, u.email, u.role, l.id_perusahaan 
+    FROM pelamar_kerja p
+    JOIN user u ON p.id_user = u.id_user
+    JOIN lowongan l ON p.id_pelamar = l.id_lowongan
+    WHERE l.id_perusahaan = $id_perusahaan
+    ORDER BY p.no_hp DESC
+");
+if ($res_pelamar_kerja) {
+    while ($row = $res_pelamar_kerja->fetch_assoc()) {
+        $pelamar_perusahaan[] = $row;
     }
 }
 ?>
@@ -117,8 +118,8 @@ if ($result && $result->num_rows > 0) {
         </thead>
         <tbody>
 
-                    <?php if (count($pelamar) > 0): ?>
-                        <?php foreach ($pelamar as $p): ?>
+                    <?php if (count($pelamar_perusahaan) > 0): ?>
+                        <?php foreach ($pelamar_perusahaan as $p): ?>
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3"><?= htmlspecialchars($p['nama_lengkap']) ?></td>
                                 <td class="p-3"><?= htmlspecialchars($p['email']) ?></td>
