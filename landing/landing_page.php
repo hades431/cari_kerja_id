@@ -202,52 +202,63 @@ setTimeout(function() {
 
 
 <section class="flex flex-col md:flex-row gap-6 px-4">
-    <?php foreach($data as $row):  ?>
-    <div class="flex-1 flex flex-col gap-4">
-        <a href="card.php?id=<?php echo $row["id_lowongan"] ?>"
-            class="flex bg-white rounded-2xl shadow p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer items-center max-w-2xl">
-            <div class="relative flex-shrink-0">
-                <img src="<?php echo $row["banner"] ?>" alt="Arka Corp"
-                    class="w-20 h-20 object-contain rounded-lg bg-white border" />
-                <span
-                    class="absolute -top-2 -left-2 text-white text-lg rounded-tr-lg rounded-bl-lg px-2 py-1 flex items-center">
-                    <i class="fa fa-thumbs-up"></i>
-                </span>
-            </div>
-            <div class="flex-1 ml-6">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-base font-medium">Dibutuhkan</span>
-                    <span class="flex items-center gap-1 text-gray-400 text-sm">
-                        <i class="fa fa-clock"></i>
-                        <?php echo formatWaktuLalu($row["created_at"]) ?>
-                    </span>
+    <div class="flex-1 flex flex-col gap-6">
+        <?php foreach($data as $row): ?>
+        <a href="card.php?id=<?php echo $row['id_lowongan'] ?>"
+            class="w-full max-w-3xl bg-white rounded-2xl shadow p-6 hover:shadow-lg transition-transform duration-200 ease-out transform hover:-translate-y-2 mx-auto block">
+            <div class="flex items-start gap-6">
+                <!-- small thumbnail image on the left (kept ukuran seperti sebelumnya) -->
+                <?php if (!empty($row['banner'])): ?>
+                <div class="flex-shrink-0">
+                    <img src="<?php echo $row['banner'] ?>" alt="" class="w-20 h-20 md:w-24 md:h-24 object-contain" />
                 </div>
-                <div class="text-2xl font-bold text-[#23395d] leading-tight mb-1"><?php echo $row["posisi"] ?></div>
-                <div class="flex items-center gap-2 text-[#23395d] mb-1">
-                    <i class="fa fa-building"></i>
-                    <span class="font-medium"><?php echo $row["nama_perusahaan"] ?></span>
-                    <i class="fa fa-money-bill text-gray-400 ml-3"></i>
-                </div>
-                <div class="border-b my-2"></div>
-                <div class="flex flex-wrap gap-4 text-gray-600 text-base items-center">
-                    <span class="flex items-center gap-1">
-                        <i class="fa fa-graduation-cap"></i>
-                        <?php echo $row["pendidikan"] ?>
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <i class="fa fa-briefcase"></i>
-                        <?php echo str_replace(',', ' - ', $row["pengalaman"]  . " Tahun"); ?>
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <i class="fa fa-map-marker-alt"></i>
-                        <?php echo $row["lokasi"] ?>
-                    </span>
+                <?php endif; ?>
+
+                <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                        <div class="text-sm text-gray-400">Dibutuhkan</div>
+                        <div class="text-sm text-gray-400 flex items-center gap-2">
+                            <i class="fa fa-clock"></i>
+                            <?php echo formatWaktuLalu($row['created_at']) ?>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl md:text-3xl font-bold text-[#23395d] mt-1 mb-1">
+                        <?php echo $row['posisi'] ?>
+                    </h3>
+
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="flex items-center gap-2 text-[#23395d]">
+                            <i class="fa fa-building"></i>
+                            <span class="font-medium"><?php echo $row['nama_perusahaan'] ?></span>
+                        </div>
+                        <div class="ml-auto text-sm text-gray-500 flex items-center gap-2">
+                            <i class="fa fa-money-bill"></i>
+                            <span><?php echo $row['gaji'] ?></span>
+                        </div>
+                    </div>
+
+                    <div class="border-t my-2"></div>
+
+                    <div class="flex flex-wrap gap-4 text-gray-600 text-base items-center mt-2">
+                        <span class="flex items-center gap-2">
+                            <i class="fa fa-graduation-cap"></i>
+                            <?php echo $row['pendidikan'] ?>
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <i class="fa fa-briefcase"></i>
+                            <?php echo str_replace(',', ' - ', $row['pengalaman']  . " Tahun"); ?>
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <i class="fa fa-map-marker-alt"></i>
+                            <?php echo $row['lokasi'] ?>
+                        </span>
+                    </div>
                 </div>
             </div>
         </a>
+        <?php endforeach; ?>
     </div>
-    <?php endforeach; ?>
-
 
     <aside class="bg-white rounded shadow p-4 w-full md:w-80">
         <form class="flex flex-col gap-4">
