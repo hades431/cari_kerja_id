@@ -541,7 +541,10 @@ function cari($data){
     // pendidikan (select pertama punya label "Pendidikan" tanpa value)
     if (!empty($data['pendidikan']) && $data['pendidikan'] !== 'Pendidikan') {
         $pendidikan = mysqli_real_escape_string($conn, $data['pendidikan']);
-        $where[] = "l.pendidikan = '$pendidikan'";
+        // Jika kolom l.pendidikan berisi beberapa nilai dipisah koma (mis. "SMK,D3"),
+        // maka cari apakah $pendidikan termasuk di antaranya.
+        // REPLACE digunakan untuk menghilangkan spasi agar FIND_IN_SET bekerja juga pada "SMK, D3".
+        $where[] = "(FIND_IN_SET('$pendidikan', REPLACE(l.pendidikan, ' ', '')) OR l.pendidikan LIKE '%$pendidikan%')";
     }
 
     // pengalaman dari select (aside) atau checkbox (header)
