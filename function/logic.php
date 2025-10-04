@@ -523,4 +523,66 @@ function getPerusahaanPending() {
     }
     return $data;
 }
+function cari($data){
+    global $conn;
+    $where = [];
+    // search text
+    if (!empty($data['search'])) {
+        $keyword = mysqli_real_escape_string($conn, $data['search']);
+        $where[] = "(p.nama_perusahaan LIKE '%$keyword%' OR l.posisi LIKE '%$keyword%' OR l.deskripsi LIKE '%$keyword%')";
+    }
+
+    // lokasi (select pertama di form punya label "Lokasi" tanpa value)
+    if (!empty($data['lokasi']) && $data['lokasi'] !== 'Lokasi') {
+        $lokasi = mysqli_real_escape_string($conn, $data['lokasi']);
+        $where[] = "l.lokasi LIKE '%$lokasi%'";
+    }
+
+    // pendidikan (select pertama punya label "Pendidikan" tanpa value)
+    if (!empty($data['pendidikan']) && $data['pendidikan'] !== 'Pendidikan') {
+        $pendidikan = mysqli_real_escape_string($conn, $data['pendidikan']);
+        $where[] = "l.pendidikan = '$pendidikan'";
+    }
+
+    // pengalaman dari select (aside) atau checkbox (header)
+    $pengConditions = [];
+    // select pengalaman
+    if (!empty($data['pengalaman']) && $data['pengalaman'] !== 'Pengalaman') {
+        if ($data['pengalaman'] === 'tanpa') {
+            $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0')";
+        } elseif ($data['pengalaman'] === '1-5') {
+            $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) BETWEEN 1 AND 5)";
+        } elseif ($data['pengalaman'] === '>5') {
+            $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) > 5)";
+        }
+    }
+
+    // checkbox alternatif dari header form
+    if (isset($data['tanpa_pengalaman'])) {
+        $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0')";
+    }
+    if (isset($data['satu_lima_tahun'])) {
+        $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) BETWEEN 1 AND 5)";
+    }
+    if (isset($data['lima_lebih_tahun'])) {
+        $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) > 5)";
+    }
+
+    if (!empty($pengConditions)) {
+        // gabungkan OR antar opsi pengalaman, lalu jadikan satu kondisi AND dengan kondisi lain
+        $where[] = '(' . implode(' OR ', array_unique($pengConditions)) . ')';
+    }
+
+    $sql = "SELECT l.*, p.nama_perusahaan 
+            FROM lowongan l 
+            JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan";
+
+    if (!empty($where)) {
+        $sql .= " WHERE " . implode(' AND ', $where);
+    }
+
+    $sql .= " ORDER BY l.tanggal_post DESC";
+
+    return tampil($sql);
+}
 ?>

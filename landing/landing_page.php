@@ -38,6 +38,9 @@ $data = tampil("SELECT
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
 ORDER BY lowongan.tanggal_post DESC");
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    $data = cari($_POST);
+}
 ?>
 
 
@@ -84,7 +87,7 @@ setTimeout(function() {
 
         <div
             class="bg-[#00646A] rounded-[48px] px-8 py-12 flex flex-col items-center mb-8 w-full max-w-4xl shadow-lg z-10 relative">
-            <form class="w-full flex flex-col gap-8">
+            <form method="post" class="w-full flex flex-col gap-8">
                 <div class="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
                     <input type="text" placeholder="Search..."
                         class="bg-white rounded-xl px-4 py-3 w-full md:w-[340px] text-gray-700 text-base font-semibold border-2 border-[#00646A] focus:ring-2 focus:ring-[#00646A] focus:border-[#00646A] transition">
@@ -261,12 +264,12 @@ setTimeout(function() {
     </div>
 
     <aside class="bg-white rounded shadow p-4 w-full md:w-80">
-        <form class="flex flex-col gap-4">
-            <input
+        <form method="post" class="flex flex-col gap-4">
+            <input name="search" type="text"
                 class="border rounded-xl px-4 py-3 w-full text-lg font-semibold placeholder-gray-400 shadow-sm focus:outline-none focus:border-[#00646A]"
                 placeholder="Searchbar..." />
             <div class="flex gap-3">
-                <select
+                <select name="lokasi"
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
                     <option>Lokasi</option>
                     <option value="bandung">Kab.Bandung</option>
@@ -276,7 +279,7 @@ setTimeout(function() {
                     <option value="cicalengka">Sumedang</option>
                 </select>
 
-                <select
+                <select name="pendidikan"
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
                     <option>Pendidikan</option>
                     <option value="sma">SMA/SMK</option>
@@ -285,7 +288,7 @@ setTimeout(function() {
                     <option value="s2">S2</option>
                 </select>
             </div>
-            <select
+            <select name="pengalaman"
                 class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
                 <option>Pengalaman</option>
                 <option value="tanpa">Tanpa Pengalaman</option>

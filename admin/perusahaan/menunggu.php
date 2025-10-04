@@ -11,7 +11,7 @@ if (isset($_POST['verifikasi']) && isset($_POST['id'])) {
     exit;
 }
 
-$perusahaanList = getPerusahaanPending();
+$perusahaanList = tampil("SELECT * FROM perusahaan WHERE verifikasi = 'belum'");
 $result = getPerusahaanMenunggu();
 ?>
 
