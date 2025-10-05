@@ -3,6 +3,24 @@
 $judul_halaman = "Landing Page";
 include '../header.php';
 include '../function/sesi_role_aktif.pelamar.php';
+include 'delete_save.php';
+$lowongan_simpan = tampil("SELECT 
+        l.*, 
+        p.nama_perusahaan,
+        s.save_lowongan_id
+    FROM save_lowongan s
+    JOIN lowongan l ON s.lowongan_id = l.id_lowongan
+    JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
+    WHERE s.user_id = '{$user_id}'
+    ORDER BY s.save_lowongan_id DESC");
+    if(isset($_POST["hapus_semua"])){
+        $hapus_berhasil = hapus_semua_save();
+        if($hapus_berhasil < 0){
+            echo "<script>alert('Gagal menghapus semua lowongan tersimpan');</script>";
+        } else {
+            $sukses = true;
+        } 
+    }
 function formatWaktuLalu($timestamp) {
     $waktu_lalu = new DateTime($timestamp);
     $sekarang = new DateTime();
@@ -43,6 +61,42 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 ?>
 
+<?php 
+if (isset($sukses)): ?>
+<div id="success-popup" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
+    <div class="rounded-md border border-gray-300 bg-white p-4 shadow-sm relative max-w-md w-full">
+        <div class="flex items-start gap-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6 text-green-600">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+
+            <div class="flex-1">
+                <strong class="font-medium text-gray-900"> Berhasil! </strong>
+            </div>
+
+            <button onclick="closeSuccessPopup()"
+                class="-m-3 rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
+                type="button" aria-label="Dismiss alert">
+                <span class="sr-only">Dismiss popup</span>
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+function closeSuccessPopup() {
+    const popup = document.getElementById('success-popup');
+    if (popup) popup.style.display = 'none';
+
+}
+</script>
+<?php endif ?>
 
 
 <!-- Notifikasi Berhasil Login -->
@@ -104,7 +158,8 @@ setTimeout(function() {
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="tanpa-pengalaman" name="tanpa_pengalaman"
                             class="accent-[#00646A] w-5 h-5 rounded-full">
-                        <label for="tanpa-pengalaman" class="text-white text-sm font-normal">Tanpa pengalaman</label>
+                        <label for="tanpa-pengalaman" class="text-white text-sm font-normal">Tanpa
+                            pengalaman</label>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="satu-lima-tahun" name="satu_lima_tahun"
@@ -170,7 +225,6 @@ setTimeout(function() {
                     card.classList.add('hidden');
                 }, 300);
                 btn.textContent = 'Selengkapnya';
-                gi
             }
         }
         </script>
@@ -324,32 +378,154 @@ setTimeout(function() {
 </section>
 
 
-<div id="simpan-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 hidden">
-    <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8 relative">
-        <button onclick="closeSimpanModal()"
+<!-- Improved Save Modal -->
+<div id="simpan-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+    <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 relative mx-4">
+        <button id="simpan-modal-close"
             class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-700 font-bold focus:outline-none">&times;</button>
-        <div class="text-2xl md:text-3xl font-semibold text-center text-[#00646A] mb-2">
-            <span class="font-bold">Lowongan</span> Tersimpan
+
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="text-2xl font-semibold text-[#00646A]">Lowongan Tersimpan</h3>
+                <p id="simpan-count" class="text-sm text-gray-500 mt-1">
+                    <?php echo (isset($lowongan_simpan) && count($lowongan_simpan) > 0) ? count($lowongan_simpan) . " item" : "Belum ada lowongan tersimpan"; ?>
+                </p>
+            </div>
+            <form action="" method="post">
+                <button name="hapus_semua" id="hapus-semua-btn"
+                    class="text-sm bg-red-50 text-red-700 border border-red-200 px-3 py-2 rounded hover:bg-red-100 transition disabled:opacity-60 mr-4"
+                    <?php echo (isset($lowongan_simpan) && count($lowongan_simpan) > 0) ? '' : 'disabled'; ?>>
+                    Hapus Semua
+                </button>
+            </form>
         </div>
-        <div class="text-center text-gray-500 text-lg mb-10">
-            <em>Belum ada lowongan yang disimpan</em>
+
+        <div id="simpan-list" class="max-h-72 overflow-y-auto space-y-3 pr-2">
+            <?php if(isset($lowongan_simpan) && count($lowongan_simpan) > 0): ?>
+            <?php foreach($lowongan_simpan as $index): ?>
+            <div class="flex items-center gap-4 rounded-lg p-3 border hover:shadow-sm transition"
+                data-id="<?php echo $index['save_lowongan_id']; ?>">
+                <?php if(!empty($index['banner'])): ?>
+                <img src="<?php echo $index['banner']; ?>" alt="" class="w-16 h-12 object-cover rounded">
+                <?php else: ?>
+                <div class="w-16 h-12 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-400">No
+                    Image</div>
+                <?php endif; ?>
+
+                <div class="flex-1">
+                    <a href="card.php?id=<?php echo $index['id_lowongan'] ?>"
+                        class="block text-sm font-semibold text-[#23395d] hover:underline">
+                        <?php echo htmlspecialchars($index['judul'] ?? $index['posisi'] ?? '-'); ?>
+                    </a>
+                    <div class="text-xs text-gray-500 mt-1">
+                        <?php echo htmlspecialchars($index['nama_perusahaan']); ?> &middot;
+                        <?php echo htmlspecialchars($index['lokasi'] ?? '-'); ?>
+                    </div>
+                </div>
+
+                <div class="flex flex-row items-center gap-2">
+                    <a href="hapus.php?id=<?php echo $index['save_lowongan_id']; ?>"
+                        class="remove-simpan-btn text-xs text-red-600 border border-red-100 bg-red-50 px-2 py-1 rounded hover:bg-red-100 transition">
+                        Hapus
+                    </a>
+                    <a href="card.php?id=<?php echo $index['id_lowongan'] ?>"
+                        class="text-xs text-[#00646A] hover:underline">Lihat</a>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            <?php else: ?>
+            <div id="simpan-empty" class="text-center text-gray-500 py-8">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline w-12 h-12 mb-3 text-gray-300" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M3 7h18M5 7v12a1 1 0 001 1h12a1 1 0 001-1V7M10 11v6M14 11v6" />
+                </svg>
+                <div class="text-lg font-medium">Belum ada lowongan yang disimpan</div>
+                <div class="text-sm mt-2">Simpan lowongan untuk melihatnya nanti.</div>
+            </div>
+            <?php endif; ?>
         </div>
-        <div class="flex justify-center">
-            <button
-                class="border border-[#b03a2e] text-[#b03a2e] px-6 py-2 rounded-lg hover:bg-[#f9ebea] transition font-medium">
-                Hapus Semua
-            </button>
+
+        <div class="mt-5 flex justify-end gap-3">
+            <button id="simpan-modal-close-cta"
+                class="px-4 py-2 rounded bg-[#00646A] text-white hover:bg-black transition">Tutup</button>
         </div>
     </div>
 </div>
-<script>
-document.getElementById('open-simpan-modal').onclick = function() {
-    document.getElementById('simpan-modal').classList.remove('hidden');
-};
 
-function closeSimpanModal() {
-    document.getElementById('simpan-modal').classList.add('hidden');
-}
+<script>
+(function() {
+    const openBtn = document.getElementById('open-simpan-modal');
+    const modal = document.getElementById('simpan-modal');
+    const closeBtn = document.getElementById('simpan-modal-close');
+    const closeCta = document.getElementById('simpan-modal-close-cta');
+    const list = document.getElementById('simpan-list');
+    const countEl = document.getElementById('simpan-count');
+
+    function updateCount() {
+        const items = list.querySelectorAll('[data-id]');
+        if (items.length === 0) {
+            countEl.textContent = 'Belum ada lowongan tersimpan';
+            hapusSemuaBtn.setAttribute('disabled', 'disabled');
+            // show empty UI if present
+            const empty = document.getElementById('simpan-empty');
+            if (!empty) {
+                const emptyHtml =
+                    '<div id="simpan-empty" class="text-center text-gray-500 py-8"><svg xmlns="http://www.w3.org/2000/svg" class="inline w-12 h-12 mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h18M5 7v12a1 1 0 001 1h12a1 1 0 001-1V7M10 11v6M14 11v6" /></svg><div class="text-lg font-medium">Belum ada lowongan yang disimpan</div><div class="text-sm mt-2">Simpan lowongan untuk melihatnya nanti.</div></div>';
+                list.innerHTML = emptyHtml;
+            }
+        } else {
+            countEl.textContent = items.length + ' item';
+            hapusSemuaBtn.removeAttribute('disabled');
+            const empty = document.getElementById('simpan-empty');
+            if (empty) empty.remove();
+        }
+    }
+
+    openBtn && openBtn.addEventListener('click', function() {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    });
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    closeBtn && closeBtn.addEventListener('click', closeModal);
+    closeCta && closeCta.addEventListener('click', closeModal);
+
+    // close on backdrop click (but not when clicking inside content)
+    modal && modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    // delegate remove buttons
+    list && list.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-simpan-btn')) {
+            const item = e.target.closest('[data-id]');
+            if (!item) return;
+            // Optionally: send fetch to server to delete saved item by id
+            // const id = item.getAttribute('data-id');
+            // fetch('/path/to/delete', { method: 'POST', body: new URLSearchParams({ id }) });
+
+            item.remove();
+            updateCount();
+        }
+    });
+
+    hapusSemuaBtn && hapusSemuaBtn.addEventListener('click', function() {
+        if (!confirm('Hapus semua lowongan tersimpan? Tindakan ini tidak dapat dibatalkan.')) return;
+
+        // remove all items client-side
+        const items = list.querySelectorAll('[data-id]');
+        items.forEach(i => i.remove());
+        updateCount();
+    });
+
+    // initial count update
+    updateCount();
+})();
 </script>
 
 
