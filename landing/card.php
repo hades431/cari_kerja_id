@@ -3,13 +3,17 @@
 
 $judul_halaman = "Detail Card";
 include '../header.php';
+if(isset($_SESSION['user'])){
 $id_user = $_SESSION['user']['id'];
+}
 $id = $_GET['id'] ?? 0;
 $sql = "SELECT l.*, p.nama_perusahaan, p.alamat, p.logo 
         FROM lowongan AS l
         LEFT JOIN perusahaan AS p ON l.id_perusahaan = p.id_perusahaan
         WHERE l.id_lowongan = $id";
+
 $data = tampil($sql);
+
 ?>
 
 <div class="max-w-3xl mx-auto mt-10 mb-10">
