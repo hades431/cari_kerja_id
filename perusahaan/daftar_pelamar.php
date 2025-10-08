@@ -8,7 +8,7 @@ if ($koneksi->connect_error) {
     die("Koneksi gagal: " . $koneksi->connect_error);
 }
 
-// Ambil data profil perusahaan untuk sidebar
+
 $email_user = $_SESSION['email'];
 $id_perusahaan = tampil("SELECT*FROM perusahaan where id_user = $user_id")[0]['id_perusahaan'] ?? 0;
 $logo_perusahaan = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan")[0]["logo"];
@@ -26,10 +26,18 @@ if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
 
 $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
 
+
+$res_perusahaan = $koneksi->query("SELECT id_perusahaan FROM perusahaan WHERE email_perusahaan = '$email_user' LIMIT 1");
+$row_perusahaan = $res_perusahaan->fetch_assoc();
+$id_perusahaan = $row_perusahaan['id_perusahaan'] ?? 0;
+
+
 if ($q === "") {
-    $sql = "SELECT * FROM pelamar_kerja";
+    $sql = "SELECT * FROM pelamar_kerja WHERE id_perusahaan = $id_perusahaan";
 } else {
-    $sql = "SELECT * FROM pelamar_kerja WHERE LOWER(posisi) LIKE '%$q%'";
+    $sql = "SELECT * FROM pelamar_kerja 
+            WHERE id_perusahaan = $id_perusahaan 
+            AND LOWER(jabatan) LIKE '%$q%'";
 }
 
 $result = $koneksi->query($sql);
@@ -40,6 +48,7 @@ if ($result && $result->num_rows > 0) {
         $pelamar[] = $row;
     }
 }
+
 ?>
 
 <!DOCTYPE html>
