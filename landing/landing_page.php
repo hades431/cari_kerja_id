@@ -328,11 +328,11 @@ setTimeout(function() {
                 <select name="lokasi"
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
                     <option>Lokasi</option>
-                    <option value="bandung">Kab.Bandung</option>
-                    <option value="baleendah">Kota Bandung</option>
-                    <option value="cimahi">Cimahi</option>
-                    <option value="cileunyi">Bandung Barat</option>
-                    <option value="cicalengka">Sumedang</option>
+                    <option value="bandung">Baleendah</option>
+                    <option value="baleendah">Banjaran</option>
+                    <option value="cimahi">Bojongsoang</option>
+                    <option value="cileunyi">Cileunyi</option>
+                    <option value="cicalengka">Dayeuhkolot</option>
                 </select>
 
                 <select name="pendidikan"
