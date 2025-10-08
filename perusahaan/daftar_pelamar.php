@@ -8,7 +8,7 @@ if ($koneksi->connect_error) {
     die("Koneksi gagal: " . $koneksi->connect_error);
 }
 
-// Ambil data profil perusahaan untuk sidebar
+
 $email_user = $_SESSION['email'];
 $id_perusahaan = tampil("SELECT*FROM perusahaan where id_user = $user_id")[0]['id_perusahaan'] ?? 0;
 $logo_perusahaan = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan")[0]["logo"];
@@ -39,8 +39,10 @@ $res_pelamar_kerja = $koneksi->query("
 if ($res_pelamar_kerja) {
     while ($row = $res_pelamar_kerja->fetch_assoc()) {
         $pelamar_perusahaan[] = $row;
+
     }
 }
+
 ?>
 
 <!DOCTYPE html>
