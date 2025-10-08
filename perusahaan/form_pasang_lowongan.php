@@ -139,7 +139,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label class="block text-gray-700 font-semibold mb-1">Lokasi Kerja</label>
-                <input type="text" name="lokasi_kerja" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
+                <select name="lokasi_kerja" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
+                    <option value="">-- Pilih Lokasi --</option>
+                    <option value="baleendah">Baleendah</option>
+                    <option value="banjaran">Banjaran</option>
+                    <option value="bojongsoang">Bojongsoang</option>
+                    <option value="cileunyi">Cileunyi</option>
+                    <option value="dayeuhkolot">Dayeuhkolot</option>
+                </select>
             </div>
             <div>
                 <label class="block text-gray-700 font-semibold mb-1">Besaran Gaji</label>
