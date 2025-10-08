@@ -3,12 +3,17 @@
 
 $judul_halaman = "Detail Card";
 include '../header.php';
+if(isset($_SESSION['user'])){
+$id_user = $_SESSION['user']['id'];
+}
 $id = $_GET['id'] ?? 0;
 $sql = "SELECT l.*, p.nama_perusahaan, p.alamat, p.logo 
         FROM lowongan AS l
         LEFT JOIN perusahaan AS p ON l.id_perusahaan = p.id_perusahaan
         WHERE l.id_lowongan = $id";
+
 $data = tampil($sql);
+
 ?>
 
 <div class="max-w-3xl mx-auto mt-10 mb-10">
@@ -20,6 +25,9 @@ $data = tampil($sql);
     <section class="bg-white rounded-xl shadow-lg p-8">
         <div class="flex justify-between items-start">
             <div>
+                <?php if(isset($_GET["error"])): ?>
+                <div class="text-red-500 mb-4"><?php echo $_GET["error"] ?></div>
+                <?php endif ?>
                 <div class="text-2xl font-semibold text-[#00646A]"><?php echo $data[0]["nama_perusahaan"] ?></div>
                 <div class="text-[#7b8ca0] text-base mb-2">membuka lowongan</div>
                 <div class="text-3xl md:text-4xl font-bold text-[#00646A] leading-tight mb-4">
@@ -73,11 +81,11 @@ $data = tampil($sql);
                 class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
                 <i class="fa fa-paper-plane"></i> Lamar
             </button>
-            <button
+            <a href="save.php?id=<?php echo $data[0]["id_lowongan"] ?>"
                 class="flex items-center gap-2 border-2 border-[#d1d5db] text-[#23395d] font-semibold px-8 py-3 rounded-lg bg-white hover:bg-gray-100 transition">
                 <span class="text-yellow-400"><i class="fa fa-star"></i></span>
                 Simpan
-            </button>
+            </a>
         </div>
     </section>
 </div>
