@@ -4,6 +4,7 @@ $judul_halaman = "Landing Page";
 include '../header.php';
 include '../function/sesi_role_aktif.pelamar.php';
 include 'delete_save.php';
+if(isset($_SESSION['user'])){
 $lowongan_simpan = tampil("SELECT 
         l.*, 
         p.nama_perusahaan,
@@ -13,6 +14,7 @@ $lowongan_simpan = tampil("SELECT
     JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
     WHERE s.user_id = '{$user_id}'
     ORDER BY s.save_lowongan_id DESC");
+}
     if(isset($_POST["hapus_semua"])){
         $hapus_berhasil = hapus_semua_save();
         if($hapus_berhasil < 0){
@@ -424,8 +426,8 @@ setTimeout(function() {
                 </div>
 
                 <div class="flex flex-row items-center gap-2">
-                    <a href="hapus.php?id=<?php echo $index['save_lowongan_id']; ?>"
-                        class="remove-simpan-btn text-xs text-red-600 border border-red-100 bg-red-50 px-2 py-1 rounded hover:bg-red-100 transition">
+                    <a href="hapus.php?id_save=<?php echo $index["save_lowongan_id"]  ?>" class="remove-simpan-btn text-xs text-red-600 border border-red-100 bg-red-50 px-2 py-1
+                        rounded hover:bg-red-100 transition">
                         Hapus
                     </a>
                     <a href="card.php?id=<?php echo $index['id_lowongan'] ?>"

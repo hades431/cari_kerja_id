@@ -1,9 +1,7 @@
 <?php 
-$id = $_GET["id"];
-function hapus_save($id) {
-    global $conn;
+include '../function/logic.php';
+$id = (int) $_GET["id_save"];
     $query = "DELETE FROM save_lowongan WHERE save_lowongan_id = $id";
     mysqli_query($conn, $query);
-    return mysqli_affected_rows($conn);
-}
+    header("LOCATION: landing_page.php?sukses=berhasil");
 ?>

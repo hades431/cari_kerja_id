@@ -1,6 +1,10 @@
 <?php
 session_start();
 include "../function/logic.php";
+if(!isset($_SESSION["user"])){
+    header("LOCATION: ../login/login.php?error=Silahkan login terlebih dahulu");
+    exit;
+}
 $id_lowongan = $_GET["id"];
 $id_user = (int) $_SESSION["user"]["id"];
 $stmt = $conn->prepare("SELECT 1 FROM save_lowongan WHERE user_id = ? AND lowongan_id = ? LIMIT 1");
