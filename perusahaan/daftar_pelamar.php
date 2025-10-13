@@ -54,14 +54,14 @@ if ($res_pelamar_kerja) {
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
     <!-- Sidebar -->
- <aside class="w-64 bg-[#00646A] text-white flex flex-col justify-between min-h-screen">
-    <div>
-        <div class="flex flex-col items-center py-6">
-            <a href="../perusahaan/profile_perusahaan.php?id=<?= htmlspecialchars($id_perusahaan) ?>" class="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg flex items-center justify-center">
-                <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan" class="w-20 h-20 object-cover">
-            </a>
-            <h2 class="mt-3 text-lg font-semibold text-center"><?= htmlspecialchars($nama_perusahaan) ?></h2>
-        </div>
+ <aside class="fixed top-[68px] left-0 w-64 bg-[#00646A] text-white flex flex-col h-[calc(100vh-68px)] z-10">
+    <div class="flex-1 flex flex-col justify-start">
+      <div class="flex flex-col items-center py-6">
+        <a href="../perusahaan/profile_perusahaan.php" class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
+          <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan" class="w-full h-full object-cover">
+        </a>
+        <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
+      </div>
 
         <!-- Menu -->
         <nav class="mt-6 space-y-2 px-4">
@@ -81,7 +81,7 @@ if ($res_pelamar_kerja) {
 
 
     <!-- Main Content -->
-    <main class="flex-1 p-8">
+    <main class="flex-1 p-8 ml-64">
         <!-- Hapus header profile bar di sini jika ada, hanya tampilkan judul -->
         <h2 class="text-2xl font-bold text-[#00646A] mb-6">Daftar Pelamar</h2>
 
