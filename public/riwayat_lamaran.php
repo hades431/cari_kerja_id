@@ -1,5 +1,6 @@
 <?php
 session_start();
+include '../header.php';
 
 // sementara buat ngetes tampilan aja
 if (!isset($_SESSION['id_pelamar'])) {
