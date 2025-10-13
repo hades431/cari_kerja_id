@@ -1,27 +1,46 @@
 <?php
 session_start();
 $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
+if (!$conn) {
+    die("Koneksi DB gagal: " . mysqli_connect_error());
+}
 
-// Ambil id lowongan dari URL
-$id_lowongan = $_GET['id_lowongan'] ?? null;
 
-// Ambil data lowongan
-$lowongan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lowongan WHERE id_lowongan = '$id_lowongan'"));
-
-// Ambil id pelamar dari session (misal udah login)
-$id_pelamar = $_SESSION['id_pelamar'] ?? 1; // sementara statis kalau belum login
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $deskripsi_diri = $_POST['deskripsi_diri'];
-    $pengalaman = $_POST['pengalaman'];
-
-    $query = "INSERT INTO lamaran (id_pelamar, id_lowongan, tanggal_lamar, deskripsi_diri, pengalaman, status_lamaran)
-              VALUES ('$id_pelamar', '$id_lowongan', NOW(), '$deskripsi_diri', '$pengalaman', 'Menunggu')";
-    mysqli_query($conn, $query);
-
-    header("Location: riwayat_lamaran.php");
+$id_lowongan = isset($_GET['id_lowongan']) ? (int) $_GET['id_lowongan'] : 0;
+if ($id_lowongan <= 0) {
+   
+    header("Location: ../landing/landing_page.php");
     exit;
 }
+
+
+$sql = "SELECT l.*, p.nama_perusahaan 
+        FROM lowongan l
+        LEFT JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
+        WHERE l.id_lowongan = ?";
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, "i", $id_lowongan);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+$lowongan = mysqli_fetch_assoc($res);
+
+
+if (!$lowongan) {
+    header("Location: ../landing/landing_page.php?error=lowongan_tidak_ditemukan");
+    exit;
+}
+
+
+$company_name = $lowongan['nama_perusahaan'] ?? ($lowongan['company_name'] ?? 'Perusahaan');
+$position_name = $lowongan['posisi_pekerjaan'] ?? $lowongan['posisi'] ?? $lowongan['title'] ?? 'Posisi';
+
+
+$id_user = $_SESSION['id_user'] ?? null;
+if (!$id_user) {
+   
+    $id_user = 1;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -55,63 +74,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
 
       <!-- Ringkasan Lowongan -->
-      <div class="bg-gray-50 p-4 rounded-lg border mb-6">
-        <h3 class="text-lg font-bold brand-green">PT Maju Jaya</h3>
-        <p class="text-gray-600">Posisi: <span class="font-medium">Montir</span></p>
-        <p class="text-gray-600">Lokasi: <span class="font-medium">Bandung</span></p>
-        <p class="text-gray-600">Gaji: <span class="font-medium">Rp 2.000.000</span></p>
-      </div>
+  <div class="bg-gray-50 p-4 rounded-lg border mb-6">
+  <h3 class="text-lg font-bold brand-green"><?= htmlspecialchars($company_name) ?></h3>
+  <p class="text-gray-600">Posisi: <span class="font-medium"><?= htmlspecialchars($position_name) ?></span></p>
+  <p class="text-gray-600">Lokasi: <span class="font-medium"><?= htmlspecialchars($lowongan['lokasi'] ?? '-') ?></span></p>
+  <p class="text-gray-600">Gaji: <span class="font-medium"><?= htmlspecialchars($lowongan['gaji'] ?? '-') ?></span></p>
+</div>
+
+
 
       <!-- Form -->
-      <form action="proses_lamaran.php" method="POST" enctype="multipart/form-data" class="space-y-5">
+     <form action="proses_lamaran.php" method="POST">
+    <input type="hidden" name="id_lowongan" value="<?php echo $_GET['id_lowongan']; ?>">
+
+
+      <input type="hidden" name="id_pelamar" value="<?= htmlspecialchars($id_user) ?>">
 
         <!-- Nama -->
         <div>
           <label class="block font-medium text-gray-700 mb-1">Nama Lengkap</label>
-          <input type="text" name="nama_pelamar" placeholder="Masukkan nama lengkap"
+          <input type="text" name="nama_pelamar" required placeholder="Masukkan nama lengkap"
             class="w-full border rounded-lg px-3 py-2 brand-green-focus">
         </div>
 
         <!-- Email -->
         <div>
           <label class="block font-medium text-gray-700 mb-1">Email</label>
-          <input type="email" name="email" placeholder="contoh@email.com"
+          <input type="email" name="email" required placeholder="contoh@email.com"
             class="w-full border rounded-lg px-3 py-2 brand-green-focus">
         </div>
 
         <!-- No HP -->
         <div>
           <label class="block font-medium text-gray-700 mb-1">Nomor HP</label>
-          <input type="text" name="no_hp" placeholder="08xxxxxxxxxx"
+          <input type="text" name="no_hp" required placeholder="08xxxxxxxxxx"
             class="w-full border rounded-lg px-3 py-2 brand-green-focus">
         </div>
 
         <!-- Upload CV -->
         <div>
           <label class="block font-medium text-gray-700 mb-1">Upload CV</label>
-          <input type="file" name="cv" accept=".pdf,.doc,.docx"
-            class="w-full border rounded-lg px-3 py-2">
+          <input type="file" name="cv" required accept=".pdf,.doc,.docx"
+  class="w-full border rounded-lg px-3 py-2">
+
           <p class="text-sm text-gray-500 mt-1">* Format PDF/DOC, maksimal 2MB</p>
         </div>
 
         <!-- Tombol -->
-        <div class="flex justify-end space-x-3 pt-4">
-          <button type="reset"
-            class="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
-            Reset
-          </button>
-          <button type="submit"
-            class="px-5 py-2 rounded-lg brand-green-bg text-white hover:opacity-90">
-            Lamar Sekarang
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+        <div class="flex justify-end items-center gap-4 mt-6">
+  <a href="../landing/card.php?id=<?= $id_lowongan; ?>"
+     class="border border-gray-300 text-gray-700 px-5 py-2 rounded-md hover:bg-gray-100 transition">
+     Kembali
+  </a>
+  <button type="submit"
+     class="bg-[#00646A] text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-[#0d7c82] transition">
+     Lamar Sekarang
+  </button>
+</div>
 
-</body>
-</html>
-        </div>
       </form>
     </div>
   </div>

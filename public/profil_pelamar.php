@@ -54,17 +54,17 @@ if (!empty($pelamar['keahlian'])) {
 
 <!-- Tabs Card Profil -->
 <div class="max-w-4xl mx-auto mt-6 mb-6 flex justify-center">
-    <div class="flex rounded-full overflow-hidden w-fit shadow" style="background:#00646A;">
-        <button id="tab-profil" type="button"
-            class="px-8 py-2 font-semibold text-white bg-[#00646A] focus:outline-none"
-            style="background:#00646A;">
-            Profil
-        </button>
-        <button id="tab-riwayat" type="button"
-            class="px-8 py-2 font-semibold text-white bg-[#024B4F] hover:bg-[#00646A] focus:outline-none">
-            Riwayat Lamaran
-        </button>
-    </div>
+   <div class="flex rounded-full overflow-hidden w-fit shadow" style="background:#00646A;">
+    <a href="profil_pelamar.php"
+       class="px-8 py-2 font-semibold text-white <?= basename($_SERVER['PHP_SELF']) == 'profil_pelamar.php' ? 'bg-[#00646A]' : 'bg-[#024B4F] hover:bg-[#00646A]' ?> focus:outline-none inline-block text-center">
+       Profil
+    </a>
+    <a href="riwayat_lamaran.php"
+       class="px-8 py-2 font-semibold text-white <?= basename($_SERVER['PHP_SELF']) == 'riwayat_lamaran.php' ? 'bg-[#00646A]' : 'bg-[#024B4F] hover:bg-[#00646A]' ?> focus:outline-none inline-block text-center">
+       Riwayat Lamaran
+    </a>
+</div>
+
 </div>
 
 <!-- Card Profil -->

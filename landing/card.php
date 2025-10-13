@@ -77,10 +77,11 @@ $data = tampil($sql);
             </div>
         </div>
         <div class="flex gap-4 mt-4">
-            <button
-                class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
-                <i class="fa fa-paper-plane"></i> Lamar
-            </button>
+            <a href="../public/form_lamaran.php?id_lowongan=<?= $data[0]['id_lowongan']; ?>"
+   class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
+   <i class="fa fa-paper-plane"></i> Lamar
+</a>
+
             <a href="save.php?id=<?php echo $data[0]["id_lowongan"] ?>"
                 class="flex items-center gap-2 border-2 border-[#d1d5db] text-[#23395d] font-semibold px-8 py-3 rounded-lg bg-white hover:bg-gray-100 transition">
                 <span class="text-yellow-400"><i class="fa fa-star"></i></span>
