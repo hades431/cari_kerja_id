@@ -3,11 +3,11 @@ session_start();
 include '../../function/logic.php';
 $menuAktif = menu_aktif('perusahaan');
 
-if (isset($_POST['verifikasi']) && isset($_POST['id'])) {
+if (isset($_POST['submit'])) {
     $id = $_POST['id'];
     $aksi = $_POST['verifikasi'];
     verifikasiPerusahaan($id, $aksi);
-    header("Location: perusahaan_menunggu.php");
+    header("Location: perusahaan.php");
     exit;
 }
 
@@ -137,12 +137,14 @@ $result = getPerusahaanMenunggu();
                     </td>
                     <td class="px-4 py-3 flex gap-2">
                       <form method="POST">
+                        <input type="hidden" name="verifikasi" value="sudah">
                         <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
-                        <button type="submit" name="verifikasi" value="setujui" class="px-3 py-1 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Setujui</button>
+                        <button type="submit" name="submit"  class="px-3 py-1 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Setujui</button>
                       </form>
                       <form method="POST">
                         <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
-                        <button type="submit" name="verifikasi" value="tolak" class="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Tolak</button>
+                        <input type="hidden" name="verifikasi" value="ditolak">
+                        <button type="submit" name="submit" class="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Tolak</button>
                       </form>
                     </td>
                   </tr>

@@ -2,17 +2,14 @@
 include '../../function/logic.php';
 $menuAktif = menu_aktif('perusahaan');
 
-$qAcc = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE verifikasi='sudah'") or die(mysqli_error($conn));
-$rowAcc = mysqli_fetch_assoc($qAcc);
-$acc = $rowAcc['total'] ?? 0;
-
-$qBelum = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE verifikasi='belum'") or die(mysqli_error($conn));
-$rowBelum = mysqli_fetch_assoc($qBelum);
-$belum = $rowBelum['total'] ?? 0;
-
-$qDitolak = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE verifikasi='ditolak'") or die(mysqli_error($conn));
-$rowDitolak = mysqli_fetch_assoc($qDitolak);
-$ditolak = $rowDitolak['total'] ?? 0;
+// ambil keyword dari form search
+$keyword = $_GET['search'] ?? '';
+// Query hanya perusahaan dengan verifikasi 'sudah'
+$sql = "SELECT * FROM perusahaan WHERE verifikasi = 'ditolak'";
+if ($keyword) {
+    $sql .= " AND nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
+}
+$result = mysqli_query($conn, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -100,82 +97,44 @@ $ditolak = $rowDitolak['total'] ?? 0;
         <h2 class="text-2xl font-bold tracking-wide">Daftar Perusahaan</h2>
       </header>
 
-      <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <a href="acc.php" class="block">
-          <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl shadow-lg p-8 text-white border-2 border-transparent hover:border-white/40 transform hover:-translate-y-1 active:scale-95 transition duration-200 text-center">
-            <h3 class="text-xl font-semibold">Perusahaan ACC</h3>
-            <p class="text-5xl font-extrabold mt-3"><?= $acc ?></p>
-            <p class="text-sm opacity-90">Sudah disetujui</p>
-          </div>
-        </a>
+      <main class="p-8 flex-1 space-y-8">
+        <h3 class="text-xl font-bold text-gray-700">Daftar Perusahaan Ditolak</h3>
+        <form method="GET" class="mb-6">
+          <input type="text" name="search" value="<?= htmlspecialchars($keyword) ?>" 
+                 placeholder="Cari perusahaan..." 
+                 class="px-4 py-2 border rounded-lg w-80 focus:ring-2 focus:ring-teal-500 focus:outline-none" />
+          <button type="submit" 
+                  class="ml-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">Cari</button>
+        </form>
 
-        <a href="menunggu.php" class="block">
-          <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl shadow-lg p-8 text-white border-2 border-transparent hover:border-white/40 transform hover:-translate-y-1 active:scale-95 transition duration-200 text-center">
-            <h3 class="text-xl font-semibold">Menunggu ACC</h3>
-            <p class="text-5xl font-extrabold mt-3"><?= $belum ?></p>
-            <p class="text-sm opacity-90">Belum disetujui</p>
-          </div>
-        </a>
-
-        <a href="ditolak.php" class="block">
-          <div class="bg-gradient-to-br from-red-400 to-red-600 rounded-2xl shadow-lg p-8 text-white border-2 border-transparent hover:border-white/40 transform hover:-translate-y-1 active:scale-95 transition duration-200 text-center">
-            <h3 class="text-xl font-semibold">Ditolak</h3>
-            <p class="text-5xl font-extrabold mt-3"><?= $ditolak ?></p>
-            <p class="text-sm opacity-90">Status ditolak</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="px-8 pb-8">
-        <h3 class="text-xl font-bold mb-4">Aktivitas Terbaru</h3>
-        <div class="space-y-3">
-          <?php
-          $qNotif = mysqli_query($conn, "SELECT nama_perusahaan, logo, verifikasi, created_at 
-                                         FROM perusahaan 
-                                         ORDER BY created_at DESC LIMIT 5");
-
-          if (mysqli_num_rows($qNotif) > 0) {
-              while ($n = mysqli_fetch_assoc($qNotif)) {
-                  echo '
-                  <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 shadow-sm">
-                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">';
-                  if (!empty($n['logo'])) {
-                      echo '<img src="../../uploads/logo/'.htmlspecialchars($n['logo']).'" 
-                                 alt="Logo '.htmlspecialchars($n['nama_perusahaan']).'" 
-                                 class="w-full h-full object-cover">';
-                  } else {
-                      echo '<span class="text-gray-400">🏢</span>';
-                  }
-                  echo '</div>
-                    <div>
-                      <p class="text-sm">
-                        Perusahaan <span class="font-semibold text-gray-800">'.htmlspecialchars($n['nama_perusahaan']).'</span> ';
-
-                  if ($n['verifikasi'] === 'sudah') {
-                      echo '<span class="text-green-600 font-medium">sudah di ACC</span>';
-                  } else {
-                      echo '<span class="text-yellow-600 font-medium">menunggu ACC</span>';
-                  }
-
-                  echo '</p>
-                      <span class="text-xs text-gray-500">'.date("d/m/Y", strtotime($n['created_at'])).'</span>
-                    </div>
-                  </div>';
-              }
-          } else {
-              echo '
-              <div class="bg-gray-50 rounded-xl p-4 text-center text-gray-500 shadow-sm">
-                Belum ada pembaruan
-              </div>';
-          }
-          ?>
+        <div class="overflow-x-auto">
+          <table class="w-full border border-gray-200 rounded-lg overflow-hidden shadow">
+            <thead class="bg-teal-700 text-white">
+              <tr>
+                <th class="px-4 py-3 text-left">No</th>
+                <th class="px-4 py-3 text-left">Nama Perusahaan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <?php 
+              $no = 1;
+                if (mysqli_num_rows($result) > 0): 
+                    while ($row = mysqli_fetch_assoc($result)): ?>
+                        <tr>
+                            <td><?= $no++; ?></td>
+                            <td><?= htmlspecialchars($row['nama_perusahaan']); ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500 italic">Belum ada perusahaan terdaftar.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+          </table>
         </div>
+      </main>
       </div>
-
-      <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
-        <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
-      </footer>
-    </div>
   </div>
 </body>
 </html>
