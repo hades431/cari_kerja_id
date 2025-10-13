@@ -499,10 +499,10 @@ function getPerusahaanById($id_perusahaan) {
 function verifikasiPerusahaan($id_perusahaan, $aksi) {
     global $conn;
 
-    if ($aksi === "setujui") {
-        $verifikasi = "setuju";
+    if ($aksi === "sudah") {
+        $verifikasi = "sudah";
     } else {
-        $verifikasi = "tolak";
+        $verifikasi = "ditolak";
     }
 
     $sql = "UPDATE perusahaan SET verifikasi=? WHERE id_perusahaan=?";
