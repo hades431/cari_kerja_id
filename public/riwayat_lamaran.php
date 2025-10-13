@@ -1,13 +1,16 @@
 <?php
 session_start();
+
+// sementara buat ngetes tampilan aja
 if (!isset($_SESSION['id_pelamar'])) {
-    exit;
+    $_SESSION['id_pelamar'] = 1; // ganti ID ini sesuai yang ada di tabel pelamar kamu
 }
 
 $id_pelamar = $_SESSION['id_pelamar'];
 
+
 // Koneksi ke database
-$conn = mysqli_connect("localhost", "root", "", "cari_kerja_id");
+$conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
 if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
