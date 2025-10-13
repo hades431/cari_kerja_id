@@ -1,3 +1,28 @@
+<?php
+session_start();
+$conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
+
+// Ambil id lowongan dari URL
+$id_lowongan = $_GET['id_lowongan'] ?? null;
+
+// Ambil data lowongan
+$lowongan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lowongan WHERE id_lowongan = '$id_lowongan'"));
+
+// Ambil id pelamar dari session (misal udah login)
+$id_pelamar = $_SESSION['id_pelamar'] ?? 1; // sementara statis kalau belum login
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $deskripsi_diri = $_POST['deskripsi_diri'];
+    $pengalaman = $_POST['pengalaman'];
+
+    $query = "INSERT INTO lamaran (id_pelamar, id_lowongan, tanggal_lamar, deskripsi_diri, pengalaman, status_lamaran)
+              VALUES ('$id_pelamar', '$id_lowongan', NOW(), '$deskripsi_diri', '$pengalaman', 'Menunggu')";
+    mysqli_query($conn, $query);
+
+    header("Location: riwayat_lamaran.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
