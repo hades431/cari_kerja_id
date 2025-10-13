@@ -166,12 +166,12 @@ setTimeout(function() {
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="satu-lima-tahun" name="satu_lima_tahun"
                             class="accent-[#00646A] w-5 h-5 rounded-full">
-                        <label for="satu-lima-tahun" class="text-white text-sm font-normal">1-5 Tahun</label>
+                        <label for="satu-lima-tahun" class="text-white text-sm font-normal">1-4 Tahun</label>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="lima-lebih-tahun" name="lima_lebih_tahun"
                             class="accent-[#00646A] w-5 h-5 rounded-full">
-                        <label for="lima-lebih-tahun" class="text-white text-sm font-normal">5 Tahun Lebih</label>
+                        <label for="lima-lebih-tahun" class="text-white text-sm font-normal">4 Tahun Lebih</label>
                     </div>
                     <div class="flex-1 flex justify-end mt-6 md:mt-0">
                         <button type="submit"
@@ -348,8 +348,8 @@ setTimeout(function() {
                 class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
                 <option>Pengalaman</option>
                 <option value="tanpa">Tanpa Pengalaman</option>
-                <option value="1-5">1-5 Tahun</option>
-                <option value=">5">5 Tahun Lebih</option>
+                <option value="1-5">1-4 Tahun</option>
+                <option value=">5">4 Tahun Lebih</option>
             </select>
             <button type="submit"
                 class="flex items-center justify-center gap-2 bg-[#00646A] text-white rounded-xl px-4 py-3 w-full text-lg font-semibold shadow">
