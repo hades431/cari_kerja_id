@@ -156,35 +156,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         bronze: `<ul class="list-disc pl-5">
                     <li>Dapat memposting 1 lowongan kerja</li>
                     <li>Durasi tayang 15 hari</li>
-                    <li>Posisi lowongan hanya tampil di halaman list</li>
-                    <li>Akses ke dashboard perusahaan</li>
-                    <li>Notifikasi email untuk setiap lamaran</li>
+                    <li>Posisi lowongan hanya tampil di halaman list (tidak di-highlight)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
+                    <li>Notifikasi email untuk setiap lamaran yang masuk</li>
                 </ul>`,
         silver: `<ul class="list-disc pl-5">
                     <li>Dapat memposting 3 lowongan kerja</li>
                     <li>Durasi tayang 30 hari</li>
-                    <li>Highlight listing</li>
+                    <li>Highlight listing (lowongan lebih menonjol di daftar list)</li>
                     <li>Logo perusahaan tampil di listing</li>
-                    <li>Fitur filter pelamar</li>
-                    <li>Akses ke dashboard perusahaan</li>
+                    <li>Fitur filter pelamar (misalnya berdasarkan pendidikan/skill dasar)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
                     <li>Notifikasi via email & dashboard</li>
                 </ul>`,
         gold: `<ul class="list-disc pl-5">
                     <li>Dapat memposting 7 lowongan kerja</li>
                     <li>Durasi tayang 45 hari</li>
-                    <li>Lowongan tampil di posisi atas</li>
-                    <li>Logo & profil perusahaan tampil di halaman khusus</li>
-                    <li>Fitur filter pelamar</li>
-                    <li>Publikasi di media sosial</li>
+                    <li>Lowongan tampil di posisi atas (priority list)</li>
+                    <li>Logo dan profil perusahaan tampil di halaman khusus</li>
+                    <li>Fitur filter pelamar (misalnya berdasarkan pendidikan/skill dasar)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
+                    <li>Publikasi di semua platform media sosial (Story)</li>
                     <li>Notifikasi via email & dashboard</li>
                 </ul>`,
         diamond: `<ul class="list-disc pl-5">
-                    <li>Unlimited posting lowongan kerja</li>
+                    <li>unlimited posting lowongan kerja</li>
                     <li>Durasi tayang 60 hari</li>
-                    <li>Lowongan tampil di top priority</li>
-                    <li>Profil perusahaan premium</li>
-                    <li>Akses ke dashboard perusahaan</li>
-                    <li>Publikasi di media sosial (Story & Postingan)</li>
+                    <li>Lowongan tampil di top priority (paling atas di homepage)</li>
+                    <li>Logo dan profil perusahaan tampil di halaman khusus</li>
+                    <li>Fitur filter pelamar (misalnya berdasarkan pendidikan/skill dasar)</li>
+                    <li>Profil perusahaan premium (banner, link website, dll)</li>
+                    <li>Akses ke dashboard perusahaan (edit & kelola lowongan)</li>
+                    <li>Publikasi di semua platform media sosial (Story & Postingan)</li>
                     <li>Notifikasi via email & dashboard</li>
                 </ul>`
     };
