@@ -84,11 +84,9 @@ if (!$id_user) {
 
 
       <!-- Form -->
-     <form action="proses_lamaran.php" method="POST">
-    <input type="hidden" name="id_lowongan" value="<?php echo $_GET['id_lowongan']; ?>">
+    <form action="/cari_kerja_id/public/proses_lamaran.php" method="POST" enctype="multipart/form-data" class="space-y-5" onsubmit="console.log('id_lowongan:', document.querySelector('[name=id_lowongan]').value);">
+    <input type="hidden" name="id_lowongan" value="<?= $id_lowongan ?>">
 
-
-      <input type="hidden" name="id_pelamar" value="<?= htmlspecialchars($id_user) ?>">
 
         <!-- Nama -->
         <div>

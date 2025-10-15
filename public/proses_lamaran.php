@@ -14,8 +14,18 @@ if (!$id_user) {
     exit;
 }
 
+// Ambil id_pelamar dari tabel pelamar_kerja
+$id_pelamar = null;
+$get_pelamar = mysqli_query($conn, "SELECT id_pelamar FROM pelamar_kerja WHERE id_user='$id_user' LIMIT 1");
+if ($get_pelamar && mysqli_num_rows($get_pelamar) > 0) {
+    $row = mysqli_fetch_assoc($get_pelamar);
+    $id_pelamar = $row['id_pelamar'];
+} else {
+    die("Error: Data pelamar tidak ditemukan.");
+}
+
 // Ambil id lowongan dari POST
-$id_lowongan = $_POST['id_user'] ?? null;
+$id_lowongan = $_POST['id_lowongan'] ?? null;
 if (!$id_lowongan) {
     die("Error: ID lowongan tidak ditemukan.");
 }
@@ -46,7 +56,7 @@ $query = "INSERT INTO lamaran (id_lowongan, id_pelamar, tanggal_lamar, status_la
 $result = mysqli_query($conn, $query);
 
 if ($result) {
-    header("Location: ../pelamar/riwayat_lamaran.php?success=1");
+    header("Location: lamaran_berhasil.php");
     exit;
 } else {
     echo "Gagal menyimpan lamaran: " . mysqli_error($conn);
