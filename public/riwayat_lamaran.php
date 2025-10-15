@@ -2,9 +2,8 @@
 session_start();
 include '../header.php';
 
-// sementara buat ngetes tampilan aja
 if (!isset($_SESSION['id_pelamar'])) {
-    $_SESSION['id_pelamar'] = 1; // ganti ID ini sesuai yang ada di tabel pelamar kamu
+    $_SESSION['id_pelamar'] = 1; 
 }
 
 $id_pelamar = $_SESSION['id_pelamar'];
