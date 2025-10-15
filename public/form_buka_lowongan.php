@@ -93,51 +93,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mb-4">
             <label for="telepon_perusahaan" class="block mb-1 font-medium">Telepon Perusahaan</label>
-            <input type="number" id="telepon_perusahaan" name="telepon_perusahaan" class="w-full border rounded px-3 py-2"
-                required>
+            <input type="number" id="telepon_perusahaan" name="telepon_perusahaan"
+                class="w-full border rounded px-3 py-2" required>
         </div>
         <div class="mb-4">
             <label for="website_perusahaan" class="block mb-1 font-medium">Website Perusahaan (opsional)</label>
-            <input type="text" id="website_perusahaan" name="website_perusahaan" class="w-full border rounded px-3 py-2">
+            <input type="text" id="website_perusahaan" name="website_perusahaan"
+                class="w-full border rounded px-3 py-2">
         </div>
 
         <!-- Paket -->
         <h4 class="text-lg font-semibold mt-6 mb-2">Paket yang Dipilih</h4>
         <?php if ($paket && $harga > 0): ?>
-            <input type="hidden" name="paket" value="<?= htmlspecialchars($paket) ?>">
-            <div class="p-4 bg-blue-50 border border-blue-200 rounded text-blue-900 text-sm">
-                <strong>Paket <?= ucfirst($paket) ?>:</strong>
-                <div id="benefit-paket" class="mt-2"></div>
-                <p class="mt-2 font-semibold">Harga: Rp<?= number_format($harga, 0, ',', '.') ?></p>
-                <input type="hidden" name="harga" value="<?= $harga ?>">
-            </div>
+        <input type="hidden" name="paket" value="<?= htmlspecialchars($paket) ?>">
+        <div class="p-4 bg-blue-50 border border-blue-200 rounded text-blue-900 text-sm">
+            <strong>Paket <?= ucfirst($paket) ?>:</strong>
+            <div id="benefit-paket" class="mt-2"></div>
+            <p class="mt-2 font-semibold">Harga: Rp<?= number_format($harga, 0, ',', '.') ?></p>
+            <input type="hidden" name="harga" value="<?= $harga ?>">
+        </div>
         <?php else: ?>
-            <p class="text-red-600">Belum ada paket yang dipilih. Silakan kembali ke halaman paket.</p>
+        <p class="text-red-600">Belum ada paket yang dipilih. Silakan kembali ke halaman paket.</p>
         <?php endif; ?>
 
         <!-- Metode Pembayaran -->
         <?php if ($paket && $harga > 0): ?>
-            <div class="mb-6 mt-4">
-                <label class="block mb-1 font-medium">Metode Pembayaran</label>
-                <select name="metode_pembayaran" id="metode_pembayaran" class="w-full border rounded px-3 py-2" required>
-                    <option value="">-- Pilih Metode Pembayaran --</option>
-                    <option value="transfer_bank">Transfer Bank (BCA, BNI, Mandiri)</option>
-                    <option value="ewallet">E-Wallet (OVO, GoPay, Dana, ShopeePay)</option>
-                    <option value="qris">QRIS</option>
-                </select>
-            </div>
+        <div class="mb-6 mt-4">
+            <label class="block mb-1 font-medium">Metode Pembayaran</label>
+            <select name="metode_pembayaran" id="metode_pembayaran" class="w-full border rounded px-3 py-2" required>
+                <option value="">-- Pilih Metode Pembayaran --</option>
+                <option value="transfer_bank">Transfer Bank (BCA, BNI, Mandiri)</option>
+                <option value="ewallet">E-Wallet (OVO, GoPay, Dana, ShopeePay)</option>
+                <option value="qris">QRIS</option>
+            </select>
+        </div>
 
-            <!-- Tutorial Pembayaran -->
-            <div id="tutorial-pembayaran"
-                class="hidden p-4 bg-green-50 border border-green-200 rounded text-sm text-green-900"></div>
+        <!-- Tutorial Pembayaran -->
+        <div id="tutorial-pembayaran"
+            class="hidden p-4 bg-green-50 border border-green-200 rounded text-sm text-green-900"></div>
 
-            <!-- Upload Bukti Pembayaran -->
-            <div class="mb-6 mt-4">
-                <label for="bukti_pembayaran" class="block mb-1 font-medium">Upload Bukti Pembayaran</label>
-                <input type="file" id="bukti_pembayaran" name="bukti_pembayaran" class="w-full border rounded px-3 py-2"
-                    accept="image/*,application/pdf" required>
-                <p class="text-xs text-gray-500 mt-1">Format yang diperbolehkan: JPG, PNG, PDF (maks. 2MB)</p>
-            </div>
+        <!-- Upload Bukti Pembayaran -->
+        <div class="mb-6 mt-4">
+            <label for="bukti_pembayaran" class="block mb-1 font-medium">Upload Bukti Pembayaran</label>
+            <input type="file" id="bukti_pembayaran" name="bukti_pembayaran" class="w-full border rounded px-3 py-2"
+                accept="image/*,application/pdf" required>
+            <p class="text-xs text-gray-500 mt-1">Format yang diperbolehkan: JPG, PNG, PDF (maks. 2MB)</p>
+        </div>
         <?php endif; ?>
 
         <button type="submit"
@@ -152,15 +153,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-    const benefitData = {
-        bronze: `<ul class="list-disc pl-5">
+const benefitData = {
+    bronze: `<ul class="list-disc pl-5">
                     <li>Dapat memposting 1 lowongan kerja</li>
                     <li>Durasi tayang 15 hari</li>
                     <li>Posisi lowongan hanya tampil di halaman list</li>
                     <li>Akses ke dashboard perusahaan</li>
                     <li>Notifikasi email untuk setiap lamaran</li>
                 </ul>`,
-        silver: `<ul class="list-disc pl-5">
+    silver: `<ul class="list-disc pl-5">
                     <li>Dapat memposting 3 lowongan kerja</li>
                     <li>Durasi tayang 30 hari</li>
                     <li>Highlight listing</li>
@@ -169,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li>Akses ke dashboard perusahaan</li>
                     <li>Notifikasi via email & dashboard</li>
                 </ul>`,
-        gold: `<ul class="list-disc pl-5">
+    gold: `<ul class="list-disc pl-5">
                     <li>Dapat memposting 7 lowongan kerja</li>
                     <li>Durasi tayang 45 hari</li>
                     <li>Lowongan tampil di posisi atas</li>
@@ -178,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li>Publikasi di media sosial</li>
                     <li>Notifikasi via email & dashboard</li>
                 </ul>`,
-        diamond: `<ul class="list-disc pl-5">
+    diamond: `<ul class="list-disc pl-5">
                     <li>Unlimited posting lowongan kerja</li>
                     <li>Durasi tayang 60 hari</li>
                     <li>Lowongan tampil di top priority</li>
@@ -187,16 +188,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li>Publikasi di media sosial (Story & Postingan)</li>
                     <li>Notifikasi via email & dashboard</li>
                 </ul>`
-    };
+};
 
-    const selectedPaket = "<?= $paket ?>";
-    if (selectedPaket && benefitData[selectedPaket]) {
-        document.getElementById('benefit-paket').innerHTML = benefitData[selectedPaket];
-    }
+const selectedPaket = "<?= $paket ?>";
+if (selectedPaket && benefitData[selectedPaket]) {
+    document.getElementById('benefit-paket').innerHTML = benefitData[selectedPaket];
+}
 
-    // Tutorial pembayaran
-    const tutorialPembayaran = {
-        transfer_bank: `
+// Tutorial pembayaran
+const tutorialPembayaran = {
+    transfer_bank: `
             <strong>Tutorial Transfer Bank:</strong>
             <ol class="list-decimal pl-5">
                 <li>Pilih menu Transfer di ATM / Mobile Banking</li>
@@ -206,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <li>Simpan bukti pembayaran lalu upload di form</li>
             </ol>
         `,
-        ewallet: `
+    ewallet: `
             <strong>Tutorial E-Wallet:</strong>
             <ol class="list-decimal pl-5">
                 <li>Buka aplikasi OVO / GoPay / Dana / ShopeePay</li>
@@ -217,27 +218,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <li>Simpan bukti pembayaran lalu upload di form</li>
             </ol>
         `,
-        qris: `
+    qris: `
             <strong>Bayar dengan QRIS:</strong>
             <p>Scan kode QR di bawah ini menggunakan aplikasi e-wallet atau mobile banking Anda.</p>
             <div class="flex justify-center mt-2">
-                <img src="../img/qris_new.jpg" alt="QRIS" class="w-48 h-48 border rounded shadow">
+                <img src="../img/qiris.jpeg" alt="QRIS" class="w-48 h-48 border rounded shadow">
             </div>
             <p class="mt-2 text-sm">Setelah pembayaran berhasil, simpan bukti transfer lalu upload di form.</p>
         `
-    };
+};
 
-    document.getElementById('metode_pembayaran')?.addEventListener('change', function () {
-        const tutorialDiv = document.getElementById('tutorial-pembayaran');
-        const metode = this.value;
-        if (tutorialPembayaran[metode]) {
-            tutorialDiv.innerHTML = tutorialPembayaran[metode];
-            tutorialDiv.classList.remove('hidden');
-        } else {
-            tutorialDiv.innerHTML = '';
-            tutorialDiv.classList.add('hidden');
-        }
-    });
+document.getElementById('metode_pembayaran')?.addEventListener('change', function() {
+    const tutorialDiv = document.getElementById('tutorial-pembayaran');
+    const metode = this.value;
+    if (tutorialPembayaran[metode]) {
+        tutorialDiv.innerHTML = tutorialPembayaran[metode];
+        tutorialDiv.classList.remove('hidden');
+    } else {
+        tutorialDiv.innerHTML = '';
+        tutorialDiv.classList.add('hidden');
+    }
+});
 </script>
 </body>
 <?php
