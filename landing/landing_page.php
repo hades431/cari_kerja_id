@@ -1,6 +1,4 @@
 <?php
-
-$judul_halaman = "Landing Page";
 include '../header.php';
 include '../function/sesi_role_aktif.pelamar.php';
 include 'delete_save.php';
@@ -57,7 +55,29 @@ $data = tampil("SELECT
     perusahaan.nama_perusahaan 
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
-ORDER BY lowongan.tanggal_post DESC");
+WHERE perusahaan.paket IN ('gold', 'silver', 'bronze')
+ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC");
+$jumlah_data_halaman = 4; // Number of articles per page
+$jumlah_data = count(tampil("SELECT 
+    lowongan.*, 
+    perusahaan.nama_perusahaan 
+FROM lowongan 
+JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
+WHERE perusahaan.paket IN ('diamond')
+ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC"));
+$jumlah_halaman = ceil($jumlah_data / $jumlah_data_halaman);
+$halaman_aktif = (isset($_GET["halaman"])) ? (int)$_GET["halaman"] : 1;
+$awal_halaman = ($jumlah_data_halaman * $halaman_aktif) - $jumlah_data_halaman;
+
+$diamond = tampil("SELECT 
+    lowongan.*, 
+    perusahaan.nama_perusahaan 
+FROM lowongan 
+JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
+WHERE perusahaan.paket IN ('diamond')
+ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC
+LIMIT $awal_halaman, $jumlah_data_halaman
+");
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $data = cari($_POST);
 }
@@ -234,28 +254,69 @@ setTimeout(function() {
 </section>
 
 
-<section class="py-6 px-4">
-    <div class="flex flex-wrap gap-4 justify-center">
-        <a href="card.php"
-            class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
-            <div class="bg-gray-300 h-24 mb-2 rounded"
-                style="background-image: url('../img/images.jpg'); background-size: cover; background-position: center;">
-            </div>
-            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+<section class="py-6 px-4 relative">
+    <div class="relative max-w-[90rem] mx-auto overflow-hidden">
+        <!-- Previous Button -->
+        <?php if($halaman_aktif > 1): ?>
+        <a href="?halaman=<?php echo $halaman_aktif - 1 ?>"
+            class="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur rounded-full p-3 shadow-lg hover:bg-white hover:scale-110 transition-all duration-300 ease-out group">
+            <i
+                class="fas fa-chevron-left text-[#00646A] text-xl transition-transform duration-300 group-hover:-translate-x-1"></i>
         </a>
-        <a href="detail_artikel.php?id=2"
-            class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
-            <div class="bg-gray-300 h-24 mb-2 rounded"
-                style="background-image: url('../img/montir.jpg'); background-size: cover; background-position: center;">
-            </div>
-            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <?php endif; ?>
+
+        <!-- Next Button -->
+        <?php if($halaman_aktif < $jumlah_halaman): ?>
+        <a href="?halaman=<?php echo $halaman_aktif + 1 ?>"
+            class="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur rounded-full p-3 shadow-lg hover:bg-white hover:scale-110 transition-all duration-300 ease-out group">
+            <i
+                class="fas fa-chevron-right text-[#00646A] text-xl transition-transform duration-300 group-hover:translate-x-1"></i>
         </a>
-        <a href="detail_artikel.php?id=3"
-            class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
-            <div class="bg-gray-300 h-24 mb-2 rounded"
-                style="background-image: url('../img/barber.jpg'); background-size: cover; background-position: center;">
+        <?php endif; ?>
+
+        <!-- Cards Container with smooth transition -->
+        <div class="px-16 transition-all duration-500 ease-out">
+            <div class="flex flex-wrap gap-4 justify-center">
+                <?php foreach($diamond as $index => $row): ?>
+                <a href="card.php?id=<?php echo $row['id_lowongan'] ?>"
+                    class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
+                    <?php if(!empty($row["banner"])): ?>
+                    <div class="bg-gray-300 h-24 mb-2 rounded"
+                        style="background-image: url('<?php echo $row["banner"] ?>'); background-size: cover; background-position: center;">
+                    </div>
+                    <?php else: ?>
+                    <div class="bg-gray-300 h-24 mb-2 rounded flex items-center justify-center text-gray-500">
+                        No Image
+                    </div>
+                    <?php endif; ?>
+                    <h3 class="text-lg font-semibold text-[#23395d]"><?php echo $row["judul"] ?></h3>
+                    <p class="text-sm text-gray-500"><?php echo $row["nama_perusahaan"] ?></p>
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mt-2">
+                        <i class="fa fa-graduation-cap"></i>
+                        <?php echo strtoupper(str_replace(' ', ' - ', $row["pendidikan"])) ?>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                        <i class="fa fa-briefcase"></i>
+                        <?php echo str_replace(',', ' - ', $row["pengalaman"] . " Tahun"); ?>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                        <i class="fa fa-map-marker-alt"></i>
+                        <?php echo $row["lokasi"] ?>
+                    </div>
+                </a>
+                <?php endforeach; ?>
             </div>
-        </a>
+        </div>
+
+        <!-- Optional: Small page indicator -->
+        <?php if($jumlah_halaman > 1): ?>
+        <div class="flex justify-center items-center gap-2 mt-4">
+            <?php for($i = 1; $i <= $jumlah_halaman; $i++): ?>
+            <span
+                class="h-2 w-2 rounded-full <?php echo $i == $halaman_aktif ? 'bg-[#00646A]' : 'bg-gray-300' ?>"></span>
+            <?php endfor; ?>
+        </div>
+        <?php endif; ?>
     </div>
 </section>
 
@@ -275,7 +336,7 @@ setTimeout(function() {
 
                 <div class="flex-1">
                     <div class="flex justify-between items-start">
-                        <div class="text-sm text-gray-400">Dibutuhkan</div>
+                        <div class="text-sm text-gray-400">dibutuhkan</div>
                         <div class="text-sm text-gray-400 flex items-center gap-2">
                             <i class="fa fa-clock"></i>
                             <?php echo formatWaktuLalu($row['created_at']) ?>
@@ -293,7 +354,7 @@ setTimeout(function() {
                         </div>
                         <div class="ml-auto text-sm text-gray-500 flex items-center gap-2">
                             <i class="fa fa-money-bill"></i>
-                            <span><?php echo $row['gaji'] ?></span>
+                            <span><?php echo 'Rp ' . number_format($row['gaji'], 0, ',', '.') ?></span>
                         </div>
                     </div>
 
@@ -302,7 +363,7 @@ setTimeout(function() {
                     <div class="flex flex-wrap gap-4 text-gray-600 text-base items-center mt-2">
                         <span class="flex items-center gap-2">
                             <i class="fa fa-graduation-cap"></i>
-                            <?php echo $row['pendidikan'] ?>
+                            <?php echo strtoupper(str_replace(',','-', $row["pendidikan"] )) ?>
                         </span>
                         <span class="flex items-center gap-2">
                             <i class="fa fa-briefcase"></i>
