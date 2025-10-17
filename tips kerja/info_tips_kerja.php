@@ -2,9 +2,24 @@
 
 $judul_halaman = "Info & Tips Kerja";
 include '../header.php';
+$jumlah_data_halaman = 6; // Number of articles per page
+$jumlah_data = count(tampil("SELECT * FROM artikel"));
+$jumlah_halaman = ceil($jumlah_data / $jumlah_data_halaman);
+$halaman_aktif = (isset($_GET["halaman"])) ? (int)$_GET["halaman"] : 1;
+$awal_halaman = ($jumlah_data_halaman * $halaman_aktif) - $jumlah_data_halaman;
+
 $data = tampil("SELECT artikel.*, user.username, user.email
 FROM artikel
-JOIN user ON artikel.id_user = user.id_user")
+JOIN user ON artikel.id_user = user.id_user
+LIMIT $awal_halaman, $jumlah_data_halaman");
+if(isset($_POST['keyword'])) {
+    $keyword = $_POST['keyword'];
+    $data = tampil("SELECT artikel.*, user.username, user.email
+    FROM artikel
+    JOIN user ON artikel.id_user = user.id_user
+    WHERE artikel.judul LIKE '%$keyword%' OR artikel.isi LIKE '%$keyword%'
+    LIMIT $awal_halaman, $jumlah_data_halaman");
+}
 ?>
 
 <section class="bg-[#e6eef5] py-8 px-4 relative overflow-visible">
@@ -16,8 +31,11 @@ JOIN user ON artikel.id_user = user.id_user")
             Temukan berbagai info dan tips kerja terbaru untuk mendukung karir Anda.
         </p>
         <div class="w-full max-w-5xl mx-auto">
-            <input type="text" placeholder="Cari artikel..."
-                class="w-full rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00646A] mb-8" />
+            <form action="" method="post">
+                <?php //aqil ganteng ?>
+                <input name="keyword" type="text" placeholder="Cari artikel..."
+                    class="w-full rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00646A] mb-8" />
+            </form>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php foreach($data as $row) : ?>
                 <div
@@ -45,9 +63,12 @@ JOIN user ON artikel.id_user = user.id_user")
                 <?php endforeach; ?>
             </div>
             <div class="flex justify-center space-x-2 pt-8">
-                <button
-                    class="bg-white hover:bg-[#e6eef5] text-[#00646A] font-semibold px-4 py-2 rounded shadow transition-colors duration-150 border border-[#00646A]">1</button>
-                <!-- Tambahkan tombol pagination lain jika diperlukan -->
+                <?php for($i = 1; $i <= $jumlah_halaman; $i++) : ?>
+                <a href="?halaman=<?php echo $i ?>"
+                    class="bg-white hover:bg-[#e6eef5] text-[#00646A] font-semibold px-4 py-2 rounded shadow transition-colors duration-150 border border-[#00646A] <?php echo $i === $halaman_aktif ? 'bg-[#00646A] text-white' : '' ?>">
+                    <?php echo $i ?>
+                </a>
+                <?php endfor; ?>
             </div>
         </div>
     </div>

@@ -47,6 +47,7 @@ if (!isset($_SESSION['user'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $judul_halaman ?? 'Cari Kerja ID' ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body class="bg-gray-100 flex flex-col min-h-screen pt-28">
@@ -58,20 +59,20 @@ if (!isset($_SESSION['user'])){
 
             <div class="flex flex-col items-end gap-1">
                 <?php if ($is_logged_in && !$is_tai2 && !$is_dashboard_perusahaan && !$is_tai && $nama_lengkap !== 'Nama Pengguna'): ?>
-                    <?php
+                <?php
                         $profil_link = '../public/profil_pelamar.php';
                         if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'perusahaan') {
                             $profil_link = '../perusahaan/dashboard_perusahaan.php';
                         }
                     ?>
-                    <a href="<?= $profil_link ?>" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
-                        <img src="<?= htmlspecialchars($foto_profil) ?>" alt="Profil"
-                            class="w-10 h-10 rounded-full border-2 border-white shadow object-cover"
-                            onerror="this.onerror=null;this.src='<?= $foto_default ?>';">
-                        <span class="text-white font-semibold">
-                            <?= htmlspecialchars($nama_lengkap) ?>
-                        </span>
-                    </a>
+                <a href="<?= $profil_link ?>" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
+                    <img src="<?= htmlspecialchars($foto_profil) ?>" alt="Profil"
+                        class="w-10 h-10 rounded-full border-2 border-white shadow object-cover"
+                        onerror="this.onerror=null;this.src='<?= $foto_default ?>';">
+                    <span class="text-white font-semibold">
+                        <?= htmlspecialchars($nama_lengkap) ?>
+                    </span>
+                </a>
                 <?php endif; ?>
                 <div class="flex gap-3 mt-2">
                     <a href="../tips kerja/info_tips_kerja.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
@@ -83,10 +84,10 @@ if (!isset($_SESSION['user'])){
                         Buka Lowongan
                     </a>
                     <?php if (!isset($_SESSION['user'])): ?>
-                        <a href="../login/login.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
+                    <a href="../login/login.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
                       text-white px-6 py-2 rounded-full font-bold shadow transition">
-                            Login
-                        </a>
+                        Login
+                    </a>
                     <?php endif; ?>
                 </div>
             </div>
