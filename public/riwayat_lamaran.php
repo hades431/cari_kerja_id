@@ -9,13 +9,13 @@ if (!isset($_SESSION['id_pelamar'])) {
 $id_pelamar = $_SESSION['id_pelamar'];
 
 
-// Koneksi ke database
+
 $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
 if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-// Filter dan sort
+
 $where = "WHERE lam.id_pelamar = $id_pelamar";
 if (!empty($_GET['status'])) {
     $status = mysqli_real_escape_string($conn, $_GET['status']);
@@ -26,7 +26,7 @@ if (!empty($_GET['sort']) && $_GET['sort'] == "lama") {
     $order = "ORDER BY lam.tanggal_lamar ASC";
 }
 
-// Query ambil riwayat lamaran dari tabel lowongan dan relasi
+
 $sql = "SELECT 
             p.nama_perusahaan AS perusahaan,
             l.posisi AS posisi,
@@ -45,6 +45,14 @@ if ($result && mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         $filtered[] = $row;
     }
+}
+
+// tentukan URL profil pelamar (cek keberadaan file, fallback ke beranda)
+$profile_file = __DIR__ . '/profil_pelamar.php';
+if (file_exists($profile_file)) {
+    $profile_url = 'profil_pelamar.php';
+} else {
+    $profile_url = '../'; // fallback jika file profil tidak ada
 }
 ?>
 
@@ -67,14 +75,23 @@ if ($result && mysqli_num_rows($result) > 0) {
   <div class="w-full px-6 mt-10">
     <h1 class="text-3xl font-bold mb-6 primary-text">📄 Riwayat Lamaran</h1>
 
+    <!-- Tombol kembali ke profil pelamar -->
+    <!-- Button Kembali -->
+<div class="max-w-4xl mt-4 px-4 flex justify-start">
+    <a href="../public/profil_pelamar.php"
+        class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition mb-4">
+        <i class="fas fa-arrow-left mr-2"></i> Kembali
+    </a>
+</div>
+
     <!-- Filter Form -->
     <form method="GET" class="flex flex-wrap gap-3 mb-6">
       <select name="status" class="px-4 py-2 border rounded-lg primary-border">
         <option value="">Semua Status</option>
-        <option value="Menunggu" <?= (($_GET['status'] ?? '')=="Menunggu")?"selected":""; ?>>Menunggu</option>
-        <option value="Diproses" <?= (($_GET['status'] ?? '')=="Diproses")?"selected":""; ?>>Diproses</option>
-        <option value="Diterima" <?= (($_GET['status'] ?? '')=="Diterima")?"selected":""; ?>>Diterima</option>
-        <option value="Ditolak" <?= (($_GET['status'] ?? '')=="Ditolak")?"selected":""; ?>>Ditolak</option>
+       <option value="di proses">Di Proses</option>
+<option value="di terima">Di Terima</option>
+<option value="di tolak">Di Tolak</option>
+
       </select>
 
       <select name="sort" class="px-4 py-2 border rounded-lg primary-border">
@@ -92,7 +109,7 @@ if ($result && mysqli_num_rows($result) > 0) {
           <tr>
             <th class="py-3 px-4 text-left">Perusahaan</th>
             <th class="py-3 px-4 text-left">Posisi</th>
-            <th class="py-3 px-4 text-left">Tanggal</th>
+            <th class="py-3 px-4 text-left">Tanggal </th>
             <th class="py-3 px-4 text-left">Status</th>
           </tr>
         </thead>
@@ -104,15 +121,14 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <td class="py-3 px-4"><?= $r["posisi"]; ?></td>
                 <td class="py-3 px-4"><?= $r["tanggal"]; ?></td>
                 <td class="py-3 px-4">
-                  <?php if($r["status"] == "Menunggu"): ?>
-                    <span class="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-700"><?= $r["status"]; ?></span>
-                  <?php elseif($r["status"] == "Diproses"): ?>
-                    <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"><?= $r["status"]; ?></span>
-                  <?php elseif($r["status"] == "Diterima"): ?>
-                    <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700"><?= $r["status"]; ?></span>
-                  <?php else: ?>
-                    <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700"><?= $r["status"]; ?></span>
-                  <?php endif; ?>
+                  <?php if($r["status"] == "di proses"): ?>
+    <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"><?= ucfirst($r["status"]); ?></span>
+<?php elseif($r["status"] == "di terima"): ?>
+    <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700"><?= ucfirst($r["status"]); ?></span>
+<?php elseif($r["status"] == "di tolak"): ?>
+    <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700"><?= ucfirst($r["status"]); ?></span>
+<?php endif; ?>
+
                 </td>
               </tr>
             <?php endforeach; ?>
