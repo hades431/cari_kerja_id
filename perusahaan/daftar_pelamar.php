@@ -1,5 +1,10 @@
 <?php
 session_start();
+if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'perusahaan') {
+    header('Location: ../login/login.php');
+    exit;
+}
+
 include '../header.php';
 
 $koneksi = new mysqli("localhost", "root", "", "lowongan_kerja");
@@ -29,13 +34,22 @@ $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
 // Ambil pelamar yang melamar ke perusahaan ini saja
 $pelamar_perusahaan = [];
 $res_pelamar_kerja = $koneksi->query("
-    SELECT p.*, u.username, u.email, u.role, l.id_perusahaan 
-    FROM pelamar_kerja p
-    JOIN user u ON p.id_user = u.id_user
-    JOIN lowongan l ON p.id_pelamar = l.id_lowongan
+    SELECT 
+        pk.nama_lengkap,
+        pk.no_hp,
+        pk.cv,
+        u.email,
+        l.posisi AS jabatan,
+        lam.status_lamaran,
+        lam.tanggal_lamar
+    FROM lamaran lam
+    JOIN pelamar_kerja pk ON lam.id_pelamar = pk.id_pelamar
+    JOIN user u ON pk.id_user = u.id_user
+    JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
     WHERE l.id_perusahaan = $id_perusahaan
-    ORDER BY p.no_hp DESC
+    ORDER BY lam.tanggal_lamar DESC
 ");
+
 if ($res_pelamar_kerja) {
     while ($row = $res_pelamar_kerja->fetch_assoc()) {
         $pelamar_perusahaan[] = $row;

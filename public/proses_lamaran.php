@@ -20,6 +20,9 @@ $get_pelamar = mysqli_query($conn, "SELECT id_pelamar FROM pelamar_kerja WHERE i
 if ($get_pelamar && mysqli_num_rows($get_pelamar) > 0) {
     $row = mysqli_fetch_assoc($get_pelamar);
     $id_pelamar = $row['id_pelamar'];
+
+    // ✅ Tambahkan baris ini
+    $_SESSION['id_pelamar'] = $id_pelamar;
 } else {
     die("Error: Data pelamar tidak ditemukan.");
 }
