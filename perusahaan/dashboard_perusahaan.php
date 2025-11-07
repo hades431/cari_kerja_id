@@ -41,14 +41,6 @@ $jmlpelamar = $conn->query("SELECT COUNT(*)
     JOIN lowongan l ON pk.id_pelamar = l.id_lowongan
     WHERE l.id_perusahaan = $id_perusahaan
 ")->fetch_row()[0];
-// Aktivitas terbaru
-$aktivitasTerbaru = [];
-$res = $conn->query("SELECT * FROM aktivitas ORDER BY tanggal DESC LIMIT 5");
-if ($res) {
-    while ($row = $res->fetch_assoc()) {
-        $aktivitasTerbaru[] = $row;
-    }
-}
 
 // Lowongan saya
 $lowongan_saya = [];
@@ -116,9 +108,22 @@ if ($res_pelamar_kerja) {
         <a href="../perusahaan/form_pasang_lowongan.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
         <a href="../landing/landing_page.php" class="block py-2 px-4 rounded-lg bg-gray-200 text-[#00797a] font-semibold hover:bg-gray-300 transition mt-4">Kembali</a>
         <form action="../logout.php" method="post" class="mt-2">
-          <button type="submit" class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
+          <!-- Ubah type submit jadi button agar tidak langsung submit; JS akan buka modal -->
+          <button type="button" id="logout-btn" class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
         </form>
       </nav>
+      <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+        <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+        <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
+        <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
+        <div class="flex justify-center gap-4">
+            <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+            <!-- Tambahkan id untuk tombol konfirmasi -->
+            <button id="confirm-logout" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+        </div>
+    </div>
+</div>
     </div>
     <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
   </aside>
@@ -137,23 +142,6 @@ if ($res_pelamar_kerja) {
         <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
       </div>
     </div>
-
-
-            <!-- Aktivitas Terbaru -->
-            <div class="bg-white p-4 rounded-lg shadow mb-8">
-                <h2 class="text-lg font-semibold mb-4">Aktivitas Terbaru</h2>
-                <ul class="space-y-2">
-                    <?php if (!empty($aktivitasTerbaru)): ?>
-                    <?php foreach ($aktivitasTerbaru as $a): ?>
-                    <li class="flex justify-between"><span><?= isset($a['icon']) ? $a['icon'] : '' ?>
-                            <?= $a['pesan'] ?></span><span class="text-gray-500 text-sm"><?= $a['tanggal'] ?></span>
-                    </li>
-                    <?php endforeach; ?>
-                    <?php else: ?>
-                    <li class="text-gray-400">Belum ada aktivitas</li>
-                    <?php endif; ?>
-                </ul>
-            </div>
 
             <!-- Lowongan Saya -->
             <div class="bg-white p-6 rounded-2xl shadow mb-8">
@@ -248,6 +236,31 @@ if ($res_pelamar_kerja) {
 
 
     </div>
+    
 </body>
 
 </html>
+<script>
+  function openLogoutModal(){
+    document.getElementById('logout-modal').classList.remove('hidden');
+  }
+  function closeLogoutModal(){
+    document.getElementById('logout-modal').classList.add('hidden');
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('logout-btn');
+    if(btn) btn.addEventListener('click', openLogoutModal);
+
+    var confirmBtn = document.getElementById('confirm-logout');
+    if(confirmBtn) confirmBtn.addEventListener('click', function(){
+      // Redirect ke logout script (sesuaikan path)
+      window.location.href = '../logout.php';
+    });
+
+    // optional: tutup modal saat tekan Escape
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeLogoutModal();
+    });
+  });
+</script>
