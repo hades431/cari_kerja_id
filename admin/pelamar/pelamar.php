@@ -103,12 +103,22 @@ if ($result && mysqli_num_rows($result) > 0) {
                       <span class="px-2 py-1 rounded-full text-xs font-semibold <?= $row['status_akun'] == 'aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>"><?= $row['status_akun']; ?></span>
                     </td>
                     <td class="px-4 py-3 text-center">
-                      <?php if ($row['status_akun'] == 'aktif'): ?>
-                        <a href="update_status.php?id=<?= $row['id_user']; ?>&status=nonaktif" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Nonaktifkan</a>
+                      <?php if ($row['role'] == 'admin'): ?>
+                        <span class="text-gray-500 italic">-</span>
                       <?php else: ?>
-                        <a href="update_status.php?id=<?= $row['id_user']; ?>&status=aktif" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Aktifkan</a>
+                        <?php if ($row['status_akun'] == 'aktif'): ?>
+                          <a href="update_status.php?id=<?= $row['id_user']; ?>&status=nonaktif" 
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">
+                            Nonaktifkan
+                          </a>
+                        <?php else: ?>
+                          <a href="update_status.php?id=<?= $row['id_user']; ?>&status=aktif" 
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">
+                            Aktifkan
+                          </a>
+                        <?php endif; ?>
                       <?php endif; ?>
-                    </td>
+                    </td> 
                   </tr>
                 <?php endforeach; ?>
               <?php else: ?>

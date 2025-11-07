@@ -246,7 +246,7 @@ if (!function_exists('getJumlahLoker')) {
 if (!function_exists('getJumlahPerusahaan')) {
     function getJumlahPerusahaan() {
         global $conn;
-        $sql = "SELECT COUNT(*) as total FROM perusahaan";
+        $sql = "SELECT COUNT(*) as total FROM user WHERE role = 'perusahaan'";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
         return $row['total'] ?? 0;
@@ -256,7 +256,7 @@ if (!function_exists('getJumlahPerusahaan')) {
 if (!function_exists('getJumlahUser')) {
     function getJumlahUser() {
         global $conn;
-        $sql = "SELECT COUNT(*) as total FROM user"; 
+        $sql = "SELECT COUNT(*) as total FROM user WHERE role = 'pelamar'"; 
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
         return $row['total'] ?? 0;
