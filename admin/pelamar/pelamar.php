@@ -9,7 +9,7 @@ $keyword = $_GET['search'] ?? '';
 $sql = "SELECT id_user, username AS nama, email, role, status_akun, created_at FROM user";
 if (!empty($keyword)) {
     $safeKeyword = mysqli_real_escape_string($conn, $keyword);
-    $sql .= " WHERE username LIKE '%$safeKeyword%' OR email LIKE '%$safeKeyword%' OR role LIKE '%$safeKeyword%' OR status_akun LIKE '%$safeKeyword%'";
+    $sql .= " WHERE username LIKE '%$safeKeyword%'";
 }
 $sql .= " ORDER BY id_user ASC";
 
