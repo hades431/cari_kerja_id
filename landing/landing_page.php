@@ -80,6 +80,7 @@ LIMIT $awal_halaman, $jumlah_data_halaman
 ");
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $data = cari($_POST);
+    $diamond = cari_diamond($_POST);
 }
 ?>
 
@@ -303,6 +304,16 @@ setTimeout(function() {
                         <i class="fa fa-map-marker-alt"></i>
                         <?php echo $row["lokasi"] ?>
                     </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                        <i class="fa fa-money-bill"></i>
+                        <?php  echo 'Rp ' . number_format($row['gaji'], 0, ',', '.') ?>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                        <i class="fa fa-clock"></i>
+                        <?php 
+                        $tanggal = date('Y-m-d', strtotime($row["created_at"]));
+                        echo $tanggal ?>
+                    </div>
                 </a>
                 <?php endforeach; ?>
             </div>
@@ -339,7 +350,9 @@ setTimeout(function() {
                         <div class="text-sm text-gray-400">dibutuhkan</div>
                         <div class="text-sm text-gray-400 flex items-center gap-2">
                             <i class="fa fa-clock"></i>
-                            <?php echo formatWaktuLalu($row['created_at']) ?>
+                            <?php 
+                            $tanggal = date('Y-m-d', strtotime($row["created_at"])); 
+                            echo $tanggal ?>
                         </div>
                     </div>
 
@@ -382,18 +395,19 @@ setTimeout(function() {
 
     <aside class="bg-white rounded shadow p-4 w-full md:w-80">
         <form method="post" class="flex flex-col gap-4">
-            <input name="search" type="text"
+            <input autocomplete="off" name="search" type="text"
                 class="border rounded-xl px-4 py-3 w-full text-lg font-semibold placeholder-gray-400 shadow-sm focus:outline-none focus:border-[#00646A]"
                 placeholder="Searchbar..." />
             <div class="flex gap-3">
                 <select name="lokasi"
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
                     <option>Lokasi</option>
-                    <option value="bandung">Baleendah</option>
-                    <option value="baleendah">Banjaran</option>
-                    <option value="cimahi">Bojongsoang</option>
+                    <option value="baleendah">Baleendah</option>
+                    <option value="banjaran">Banjaran</option>
+                    <option value="bojongsoang">Bojongsoang</option>
                     <option value="cileunyi">Cileunyi</option>
-                    <option value="cicalengka">Dayeuhkolot</option>
+                    <option value="dayeuhkolot">Dayeuhkolot</option>
+                    <option value="Kab.Bandung">Kab.Bandung</option>
                 </select>
 
                 <select name="pendidikan"
@@ -409,8 +423,8 @@ setTimeout(function() {
                 class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
                 <option>Pengalaman</option>
                 <option value="tanpa">Tanpa Pengalaman</option>
-                <option value="1-5">1-4 Tahun</option>
-                <option value=">5">4 Tahun Lebih</option>
+                <option value="1-4">1-4 Tahun</option>
+                <option value=">4">4 Tahun Lebih</option>
             </select>
             <button type="submit"
                 class="flex items-center justify-center gap-2 bg-[#00646A] text-white rounded-xl px-4 py-3 w-full text-lg font-semibold shadow">
