@@ -4,8 +4,8 @@ $menuAktif = menu_aktif('perusahaan');
 
 // ambil keyword dari form search
 $keyword = $_GET['search'] ?? '';
-// Query hanya perusahaan dengan verifikasi 'sudah'
-$sql = "SELECT * FROM perusahaan WHERE verifikasi = 'sudah'";
+// Query hanya perusahaan dengan verifikasi 'setuju'
+$sql = "SELECT * FROM perusahaan WHERE verifikasi = 'setuju'";
 if ($keyword) {
     $sql .= " AND nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
 }

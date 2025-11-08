@@ -153,6 +153,8 @@ $ditolak = $rowDitolak['total'] ?? 0;
 
                   if ($n['verifikasi'] === 'sudah') {
                       echo '<span class="text-green-600 font-medium">sudah di ACC</span>';
+                  } elseif ($n['verifikasi'] === 'ditolak') {
+                      echo '<span class="text-red-600 font-medium">ditolak</span>';
                   } else {
                       echo '<span class="text-yellow-600 font-medium">menunggu ACC</span>';
                   }
