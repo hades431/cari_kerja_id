@@ -36,7 +36,7 @@ if ($result && mysqli_num_rows($result) > 0) {
       </div>
       <nav class="flex-1 flex flex-col gap-1 px-2 mt-4">
         <a href="../dashboard/dashboard.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition <?= $menuAktif['dashboard'] ? 'bg-teal-900 text-white' : 'text-teal-100 hover:bg-teal-900 hover:text-white' ?>">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V10" /><path d="M9 21V3" /><path d="M15 21v-6" /><path d="M20 21v-4" /></svg>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 21V10" /><path d="M9 21V3" /><path d="M15 21v-6" /><path d="M20 21v-4" /></svg>
           <span>Dashboard</span>
         </a>
         <a href="../pelamar/pelamar.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition <?= $menuAktif['pelamar'] ? 'bg-teal-900 text-white' : 'text-teal-100 hover:bg-teal-900 hover:text-white' ?>">
@@ -66,11 +66,11 @@ if ($result && mysqli_num_rows($result) > 0) {
       </nav>
     </aside>
 
-
     <div class="flex-1 flex flex-col bg-white min-h-screen ml-64">
       <header class="bg-teal-800 flex items-center justify-between px-12 py-4 text-white shadow">
         <h2 class="text-2xl font-bold tracking-wide">Daftar User</h2>
       </header>
+
       <div class="flex-1 p-8 bg-gray-50">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-bold text-gray-700">List User Terdaftar</h2>
@@ -79,6 +79,7 @@ if ($result && mysqli_num_rows($result) > 0) {
             <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg shadow">Cari</button>
           </form>
         </div>
+
         <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
           <table class="w-full text-left border-collapse">
             <thead class="bg-gradient-to-r from-teal-600 to-teal-700 text-white">
@@ -89,6 +90,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <th class="px-4 py-3">Email</th>
                 <th class="px-4 py-3">Status Akun</th>
                 <th class="px-4 py-3 text-center">Aksi</th>
+                <th class="px-4 py-3 text-center">Detail</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -107,23 +109,23 @@ if ($result && mysqli_num_rows($result) > 0) {
                         <span class="text-gray-500 italic">-</span>
                       <?php else: ?>
                         <?php if ($row['status_akun'] == 'aktif'): ?>
-                          <a href="update_status.php?id=<?= $row['id_user']; ?>&status=nonaktif" 
-                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">
-                            Nonaktifkan
-                          </a>
+                          <a href="update_status.php?id=<?= $row['id_user']; ?>&status=nonaktif" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Nonaktifkan</a>
                         <?php else: ?>
-                          <a href="update_status.php?id=<?= $row['id_user']; ?>&status=aktif" 
-                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">
-                            Aktifkan
-                          </a>
+                          <a href="update_status.php?id=<?= $row['id_user']; ?>&status=aktif" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Aktifkan</a>
                         <?php endif; ?>
                       <?php endif; ?>
-                    </td> 
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                      <a href="detail_pelamar.php?id=<?= $row['id_user']; ?>" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">
+                        Lihat Detail
+                      </a>
+                    </td>
                   </tr>
                 <?php endforeach; ?>
               <?php else: ?>
                 <tr>
-                    <td colspan="6" class="px-4 py-6 text-center text-gray-500 italic">
+                    <td colspan="7" class="px-4 py-6 text-center text-gray-500 italic">
                     <?php if (!empty($keyword)): ?>
                         User dengan kata kunci "<b><?= htmlspecialchars($keyword) ?></b>" tidak ditemukan.
                     <?php else: ?>
@@ -131,12 +133,12 @@ if ($result && mysqli_num_rows($result) > 0) {
                     <?php endif; ?>
                     </td>
                 </tr>
-                <?php endif; ?>
-
+              <?php endif; ?>
             </tbody>
           </table>
         </div>
       </div>
+
       <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t">
         <p>&copy; <?= date("Y"); ?> CariKerjaID. All rights reserved.</p>
       </footer>

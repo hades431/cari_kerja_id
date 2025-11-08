@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <button type="submit"
             class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-            Kirim Lowongan
+            Kirim Pengajuan
         </button>
         <a href="buka_lowongan.php"
             class="block w-full mt-3 bg-gray-300 hover:bg-gray-400 text-black font-semibold py-2 px-4 rounded text-center transition">
