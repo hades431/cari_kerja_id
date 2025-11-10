@@ -1,92 +1,121 @@
 <?php
+session_start();
 include '../../function/logic.php';
+include '../../function/sesi_role_aktif_admin.php';
 
 if (!isset($_GET['id'])) {
-    header("Location: detail_pelamar.php");
+    header("Location: pelamar.php");
     exit;
 }
 
-$id = intval($_GET['id']);
-$query = mysqli_query($conn, "SELECT * FROM pelamar_kerja WHERE id='$id'");
-$pelamar = mysqli_fetch_assoc($query);
+$id_user = intval($_GET['id']);
 
-if (!$pelamar) {
-    $_SESSION['error'] = "Data pelamar tidak ditemukan!";
-    header("Location: detail_pelamar.php");
-    exit;
+$query = mysqli_prepare($conn, "SELECT * FROM pelamar_kerja WHERE id_user = ?");
+mysqli_stmt_bind_param($query, "i", $id_user);
+mysqli_stmt_execute($query);
+$result = mysqli_stmt_get_result($query);
+$pelamar = mysqli_fetch_assoc($result);
+
+// Tentukan path foto secara fleksibel: URL, root-relative, path yang sudah berisi 'uploads/', atau nama file saja
+$fotoSrc = '../../img/default_pp.png';
+if (!empty($pelamar['foto'])) {
+    $fotoVal = $pelamar['foto'];
+    if (preg_match('/^(https?:)?\\/\\//', $fotoVal) || strpos($fotoVal, '/') === 0) {
+        // sudah berupa URL lengkap atau root-relative path
+        $fotoSrc = $fotoVal;
+    } elseif (strpos($fotoVal, 'uploads/') === 0) {
+        // sudah menyertakan folder uploads di awal
+        $fotoSrc = '../../' . $fotoVal;
+    } else {
+        // hanya nama file
+        $fotoSrc = '../../uploads/pelamar/' . $fotoVal;
+    }
 }
-
-
-// ambil pengalaman kerja
-$pengalaman = mysqli_query($conn, "SELECT * FROM pengalaman_kerja WHERE id_pelamar='$id'");
-
-// ambil keahlian
-$keahlian = mysqli_query($conn, "SELECT * FROM keahlian WHERE id_pelamar='$id'");
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pelamar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Detail Pelamar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen px-6 py-10">
+<body class="bg-gray-100 min-h-screen flex justify-center items-start py-10">
 
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Detail Pelamar</h2>
+  <div class="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-10">
+    <a href="pelamar.php" class="text-teal-700 hover:underline inline-block mb-6">← Kembali</a>
 
-        <div class="grid grid-cols-2 gap-4">
-            <p><span class="font-semibold">Nama:</span> <?= htmlspecialchars($pelamar['nama_lengkap']); ?></p>
-            <p><span class="font-semibold">Email:</span> <?= htmlspecialchars($pelamar['email']); ?></p>
-            <p><span class="font-semibold">No. HP:</span> <?= htmlspecialchars($pelamar['no_hp']); ?></p>
-            <p><span class="font-semibold">Alamat:</span> <?= htmlspecialchars($pelamar['alamat']); ?></p>
+    <?php if ($pelamar): ?>
+      <div class="flex flex-col items-center text-center mb-8">
+        <img 
+          src="<?= htmlspecialchars($fotoSrc) ?>" 
+          alt="Foto Pelamar" 
+          class="w-32 h-32 rounded-full object-cover border-4 border-teal-600 shadow-md mb-4"
+        >
+        <h2 class="text-2xl font-bold text-gray-800"><?= htmlspecialchars($pelamar['nama_lengkap']); ?></h2>
+        <p class="text-teal-700 font-medium mb-2"><?= htmlspecialchars($pelamar['jabatan'] ?? ''); ?></p>
+        <div class="flex flex-wrap justify-center gap-4 text-gray-600 text-sm">
+          <div class="flex items-center gap-2"><i class='bx bx-envelope'></i><?= htmlspecialchars($pelamar['email']); ?></div>
+          <div class="flex items-center gap-2"><i class='bx bx-phone'></i><?= htmlspecialchars($pelamar['no_hp'] ?? '-'); ?></div>
+          <div class="flex items-center gap-2"><i class='bx bx-map'></i><?= htmlspecialchars($pelamar['alamat'] ?? '-'); ?></div>
         </div>
+      </div>
 
-        <div class="mt-6">
-            <h3 class="font-semibold text-lg">Deskripsi Diri</h3>
-            <p class="text-gray-700"><?= nl2br(htmlspecialchars($pelamar['deskripsi'] ?? 'Belum ada deskripsi.')); ?></p>
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Deskripsi</h3>
+        <div class="bg-gray-100 p-4 rounded-lg text-gray-700 leading-relaxed">
+          <?= nl2br(htmlspecialchars($pelamar['deskripsi'] ?? '-')); ?>
         </div>
+      </div>
 
-        <div class="mt-6">
-            <h3 class="font-semibold text-lg">Pengalaman Kerja</h3>
-            <?php if (mysqli_num_rows($pengalaman) > 0): ?>
-                <ul class="list-disc ml-5">
-                    <?php while ($exp = mysqli_fetch_assoc($pengalaman)): ?>
-                        <li><?= htmlspecialchars($exp['nama_perusahaan']); ?> - <?= htmlspecialchars($exp['jabatan']); ?> (<?= $exp['tahun_mulai']; ?> - <?= $exp['tahun_selesai']; ?>)</li>
-                    <?php endwhile; ?>
-                </ul>
-            <?php else: ?>
-                <p class="text-gray-600">Belum ada pengalaman kerja.</p>
+  
+        <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Pengalaman Kerja</h3>
+
+        <?php if (!empty($pelamar['pengalaman'])): ?>
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+            <h4 class="text-lg font-semibold text-gray-800">
+                <?= htmlspecialchars($pelamar['pengalaman']); ?>
+            </h4>
+            <?php if (!empty($pelamar['tempat_kerja'])): ?>
+                <p class="text-gray-500 text-sm mb-1">
+                @ <?= htmlspecialchars($pelamar['tempat_kerja']); ?>
+                </p>
             <?php endif; ?>
-        </div>
-
-        <div class="mt-6">
-            <h3 class="font-semibold text-lg">Keahlian</h3>
-            <?php if (mysqli_num_rows($keahlian) > 0): ?>
-                <div class="flex flex-wrap gap-2">
-                    <?php while ($skill = mysqli_fetch_assoc($keahlian)): ?>
-                        <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full"><?= htmlspecialchars($skill['nama_keahlian']); ?></span>
-                    <?php endwhile; ?>
-                </div>
-            <?php else: ?>
-                <p class="text-gray-600">Belum ada keahlian.</p>
+            <?php if (!empty($pelamar['tahun_pengalaman'])): ?>
+                <p class="text-gray-400 text-sm">
+                <?= htmlspecialchars($pelamar['tahun_pengalaman']); ?>
+                </p>
             <?php endif; ?>
+            </div>
+        <?php else: ?>
+            <p class="text-gray-500 italic">Belum ada pengalaman kerja.</p>
+        <?php endif; ?>
         </div>
 
-        <div class="mt-6">
-            <h3 class="font-semibold text-lg">Curriculum Vitae (CV)</h3>
-            <?php if (!empty($pelamar['cv'])): ?>
-                <a href="../../uploads/<?= htmlspecialchars($pelamar['cv']); ?>" target="_blank" class="text-blue-600 hover:underline">Lihat CV</a>
-            <?php else: ?>
-                <p class="text-gray-600">Belum upload CV.</p>
-            <?php endif; ?>
-        </div>
 
-        <div class="mt-8 text-right">
-            <a href="detail_pelamar.php" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">Kembali</a>
-        </div>
-    </div>
 
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Keahlian</h3>
+        <?php if (!empty($pelamar['keahlian'])): ?>
+          <?php 
+            $skills = explode(',', $pelamar['keahlian']);
+            foreach ($skills as $skill): 
+          ?>
+            <span class="inline-block bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full mr-2 mb-2">
+              <?= htmlspecialchars(trim($skill)); ?>
+            </span>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <p class="text-gray-500 italic">Belum menambahkan keahlian.</p>
+        <?php endif; ?>
+      </div>
+
+    <?php else: ?>
+      <div class="text-center py-10 text-gray-600 italic">
+        Data pelamar tidak ditemukan.
+      </div>
+    <?php endif; ?>
+  </div>
 </body>
 </html>
