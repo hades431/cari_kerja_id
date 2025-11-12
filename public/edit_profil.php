@@ -170,16 +170,16 @@ if (isset($_POST['submit'])) {
                         <span class="ml-2">UX Research</span>
                     </label>
                     <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Figma" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Figma</span>
+                        <input type="checkbox" name="keahlian[]" value="Design Grafis" class="form-checkbox text-[#00646A]">
+                        <span class="ml-2">Design Grafis</span>
                     </label>
                     <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Adobe XD" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Adobe XD</span>
+                        <input type="checkbox" name="keahlian[]" value="Microsoft Office" class="form-checkbox text-[#00646A]">
+                        <span class="ml-2">Microsoft Office</span>
                     </label>
                     <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Prototyping" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Prototyping</span>
+                        <input type="checkbox" name="keahlian[]" value="Data Analyst" class="form-checkbox text-[#00646A]">
+                        <span class="ml-2">Data Analyst</span>
                     </label>
                     <label class="inline-flex items-center">
                         <input type="checkbox" name="keahlian[]" value="Teamwork" class="form-checkbox text-[#00646A]">
@@ -190,8 +190,8 @@ if (isset($_POST['submit'])) {
                         <span class="ml-2">HTML/CSS</span>
                     </label>
                     <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Javascript" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Javascript</span>
+                        <input type="checkbox" name="keahlian[]" value="Customer Service" class="form-checkbox text-[#00646A]">
+                        <span class="ml-2">Customer Service</span>
                     </label>
                     <label class="inline-flex items-center">
                         <input type="checkbox" name="keahlian[]" value="Komunikasi" class="form-checkbox text-[#00646A]">
