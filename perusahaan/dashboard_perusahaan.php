@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'perusahaan') {
+if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'Perusahaan') {
     header('Location: ../login/login.php');
     exit;
 }

@@ -13,10 +13,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     // Ganti pengecekan password sesuai kebutuhan (hash atau plain)
     $dbPassword = $user['password'];
     $isHashed = strlen($dbPassword) === 60 && preg_match('/^\$2y\$/', $dbPassword);
-    if(
-      ($isHashed && password_verify($password, $dbPassword)) ||
-      (!$isHashed && $password === $dbPassword)
-    ){
+    if(password_verify($password, $dbPassword)){
       $_SESSION['login'] = true;
       $_SESSION['id_user'] = $user['id_user'];
       $_SESSION['email'] = $user['email'];
@@ -30,26 +27,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         'role' => $user['role'],
         'status_akun' => $user['status_akun']
       ];
-      if($user['role'] == 'admin'){
-        header('Location: ../admin/dashboard/dashboard.php');
-        exit;
-      }elseif($user['role'] == 'pelamar'){
-        header('Location: ../landing/landing_page.php');
-        exit;
-      }elseif($user['role'] == 'perusahaan'){
-        header('Location: ../perusahaan/dashboard_perusahaan.php');
-        exit;
+      if($user["role"] == "Admin"){
+        header("LOCATION: ../admin/dashboard/dashboard.php");
+      }elseif($user["role"] == "Pelamar"){
+        header("LOCATION: ../landing/landing_page.php");
       }else{
-        // Jika role tidak dikenali, bisa diarahkan ke halaman error atau landing
-        header('Location: ../landing/landing_page.php');
-        exit;
+        header("LOCATION: ../perusahaan/dashboard_perusahaan.php");
       }
-    } else {
-      $error2 = true;
     }
-  } else {
     $error2 = true;
-  }
+}
 }
 ?>
 <!doctype html>
