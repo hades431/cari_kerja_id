@@ -7,51 +7,98 @@ if(!isset($_SESSION['login']) || $_SESSION['role'] !== 'perusahaan'){
     header("Location: ../login/login.php");
     exit;
 }
-$tes = $_SESSION["user"]["id"];
-$id_user = tampil("SELECT*FROM perusahaan WHERE id_user = $tes")[0];
-$id_perusahaan = $id_user["id_perusahaan"] ?? 0; // fallback jika belum ada
-$nama_perusahaan = $_SESSION['nama_perusahaan'] ?? 'Contoh Perusahaaan';
 
-// Proses form
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $posisi_pekerjaan = $_POST['posisi_pekerjaan'];
-    $deskripsi        = $_POST['deskripsi'];
-    $batas_lamaran    = $_POST['batas_tanggal_lamaran'];
-    $pengalaman       = $_POST['pengalaman'] ?? '';
-    $pendidikan       = isset($_POST['pendidikan']) ? implode(",", $_POST['pendidikan']) : "";
-    $gender           = $_POST['gender'] ?? '';
-    $lokasi           = $_POST['lokasi_kerja'];
-    // Sanitasi gaji: hapus koma dan karakter bukan angka (termasuk titik jika tidak diinginkan)
-    $gaji_raw         = $_POST['besaran_gaji'] ?? '';
-    $gaji             = preg_replace('/[^\d]/', '', $gaji_raw);
-    $tanggal_post     = date('Y-m-d');
-    $logo = "";
-    if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-        $target = "../img/" . basename($_FILES['logo']['name']);
-            if (!empty($logo) && file_exists($logo)) {
-                unlink($logo);
-            }
-        if (move_uploaded_file($_FILES['logo']['tmp_name'], $target)) {
-            $logo = $target;
-        }
+// Ambil perusahaan & paket
+$user_id = $_SESSION["user"]["id"];
+$id_perusahaan = 0;
+$durasi_hari = 7; // default
+$max_lowongan = 1; // default
+$nama_perusahaan = 'Perusahaan';
+$logo_perusahaan = '';
+
+// Cek apakah tabel paket ada sebelum melakukan JOIN
+$hasPaketTable = false;
+$result = $conn->query("SHOW TABLES LIKE 'paket'");
+if ($result && $result->num_rows > 0) {
+    $hasPaketTable = true;
+}
+
+if ($hasPaketTable) {
+    $stmt = $conn->prepare("SELECT p.id_perusahaan, p.nama_perusahaan, p.logo, p.paket_id, pk.durasi_hari, pk.max_lowongan 
+                            FROM perusahaan p 
+                            LEFT JOIN paket pk ON p.paket_id = pk.id_paket
+                            WHERE p.id_user = ? LIMIT 1");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($row = $res->fetch_assoc()) {
+        $id_perusahaan = (int)$row['id_perusahaan'];
+        $nama_perusahaan = $row['nama_perusahaan'] ?? $nama_perusahaan;
+        $logo_perusahaan = $row['logo'] ?? $logo_perusahaan;
+        $durasi_hari = (int)($row['durasi_hari'] ?? $durasi_hari);
+        $max_lowongan = (int)($row['max_lowongan'] ?? $max_lowongan);
     }
+    $stmt->close();
+} else {
+    // Jika tabel paket tidak ada, ambil data perusahaan tanpa paket dan gunakan default
+    $stmt = $conn->prepare("SELECT id_perusahaan, nama_perusahaan, logo FROM perusahaan WHERE id_user = ? LIMIT 1");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($row = $res->fetch_assoc()) {
+        $id_perusahaan = (int)$row['id_perusahaan'];
+        $nama_perusahaan = $row['nama_perusahaan'] ?? $nama_perusahaan;
+        $logo_perusahaan = $row['logo'] ?? $logo_perusahaan;
+    }
+    $stmt->close();
+    // opsional: beri pesan agar admin membuat tabel paket
+    $paket_notice = "Tabel 'paket' tidak ditemukan. Menggunakan nilai paket default. Silakan tambahkan tabel paket jika ingin mengelola durasi/kuota paket.";
+}
 
-    // Upload logo/banner
+// Hitung lowongan aktif perusahaan saat ini (batas_lamaran >= today)
+$active_count = 0;
+if ($id_perusahaan) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM lowongan WHERE id_perusahaan = ? AND (batas_lamaran IS NULL OR DATE(batas_lamaran) >= CURDATE())");
+    $stmt->bind_param("i", $id_perusahaan);
+    $stmt->execute();
+    $stmt->bind_result($active_count);
+    $stmt->fetch();
+    $stmt->close();
+}
 
-    // SQL INSERT
-    $sql = "INSERT INTO lowongan 
-        (id_perusahaan,judul,posisi,deskripsi,pengalaman,pendidikan,gender,gaji,lokasi,tanggal_post,batas_lamaran,banner)
-        VALUES
-        ('$id_perusahaan','$posisi_pekerjaan','$posisi_pekerjaan','$deskripsi','$pengalaman','$pendidikan','$gender','$gaji','$lokasi','$tanggal_post','$batas_lamaran','$logo')";
+// Pesan untuk user
+$message = '';
+$error = '';
 
-    if(mysqli_query($conn,$sql)){
-        echo "<script>
-                alert('Lowongan berhasil disimpan!');
-                window.location.href='dashboard_perusahaan.php';
-              </script>";
-        exit;
+// Proses submit
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Pastikan masih boleh membuat lowongan sesuai paket
+    if ($max_lowongan > 0 && $active_count >= $max_lowongan) {
+        $error = "Kuota lowongan Anda sudah penuh untuk paket saat ini (maks: $max_lowongan). Silakan upgrade paket atau tunggu lowongan berakhir.";
     } else {
-        $error_msg = mysqli_error($conn);
+        $judul = trim($_POST['judul'] ?? '');
+        $deskripsi = trim($_POST['deskripsi'] ?? '');
+        $lokasi = trim($_POST['lokasi'] ?? '');
+        $gaji = trim($_POST['gaji'] ?? '');
+        // Validasi sederhana
+        if ($judul === '' || $deskripsi === '') {
+            $error = "Judul dan deskripsi wajib diisi.";
+        } else {
+            // Hitung batas_lamaran berdasarkan durasi paket
+            $tanggal_post = date('Y-m-d');
+            $batas_lamaran = date('Y-m-d', strtotime("+{$durasi_hari} days", strtotime($tanggal_post)));
+            // Simpan ke DB (prepared)
+            $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, deskripsi, lokasi, gaji, tanggal_post, batas_lamaran) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("issssss", $id_perusahaan, $judul, $deskripsi, $lokasi, $gaji, $tanggal_post, $batas_lamaran);
+            if ($stmt->execute()) {
+                $message = "Lowongan berhasil dipasang. Berlaku sampai: $batas_lamaran";
+                // update active_count karena berhasil menambah lowongan
+                $active_count++;
+            } else {
+                $error = "Terjadi kesalahan saat menyimpan: " . $stmt->error;
+            }
+            $stmt->close();
+        }
     }
 }
 ?>
@@ -72,20 +119,32 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     </header>
 
     <div class="max-w-4xl mx-auto mt-8 bg-white p-8 rounded-2xl shadow-lg border">
-        <?php if(isset($error_msg)) echo "<p class='text-red-600 mb-4'>$error_msg</p>"; ?>
+        <?php if(!empty($paket_notice)): ?>
+            <div class='bg-yellow-100 text-yellow-800 p-3 rounded mb-4'><?= htmlspecialchars($paket_notice) ?></div>
+        <?php endif; ?>
+        <?php if(isset($error) && $error): echo "<div class='bg-red-100 text-red-700 p-3 rounded mb-4'>".htmlspecialchars($error)."</div>"; endif; ?>
+        <?php if(isset($message) && $message): echo "<div class='bg-green-100 text-green-700 p-3 rounded mb-4'>".htmlspecialchars($message)."</div>"; endif; ?>
+
+        <div class="mb-4">
+            <p>Paket saat ini: <strong><?= htmlspecialchars($nama_perusahaan) ?></strong></p>
+            <p>Durasi lowongan paket: <strong><?= htmlspecialchars($durasi_hari) ?> hari</strong></p>
+            <p>Kuota lowongan paket: <strong><?= htmlspecialchars($max_lowongan) ?></strong></p>
+            <p>Lowongan aktif saat ini: <strong><?= htmlspecialchars($active_count) ?></strong></p>
+        </div>
+
         <form method="POST" enctype="multipart/form-data" class="space-y-6" id="lowonganForm">
 
             <div>
-                <!-- tambahkan name pada hidden supaya tersedia di POST jika diperlukan -->
-                <input type="hidden" name="id_perusahaan" value="<?php echo $id_user["id_perusahaan"] ?>">
+                <!-- gunakan variabel yang benar: id_perusahaan dan nama_perusahaan -->
+                <input type="hidden" name="id_perusahaan" value="<?php echo htmlspecialchars($id_perusahaan); ?>">
                 <label class="block text-gray-700 font-semibold mb-2">Nama Perusahaan</label>
-                <input type="text" name="nama_perusahaan" value="<?= htmlspecialchars($id_user["nama_perusahaan"]) ?>"
+                <input type="text" name="nama_perusahaan" value="<?= htmlspecialchars($nama_perusahaan) ?>"
                     readonly class="w-full p-3 border rounded-lg bg-gray-100 cursor-not-allowed">
             </div>
 
             <div>
-                <label class="block text-gray-700 font-semibold mb-2">Posisi Pekerjaan</label>
-                <input type="text" autocomplete="off" name="posisi_pekerjaan" required
+                <label class="block text-gray-700 font-semibold mb-2">Judul Lowongan</label>
+                <input type="text" autocomplete="off" name="judul" required
                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
             </div>
 
@@ -96,103 +155,28 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             </div>
 
             <div>
-                <label class="block text-gray-700 font-semibold mb-2">Batas Tanggal Lamaran</label>
-                <input type="date" name="batas_tanggal_lamaran" required
+                <label class="block text-gray-700 font-semibold mb-2">Lokasi Kerja</label>
+                <input type="text" name="lokasi" required
                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
             </div>
 
-            <!-- Pengalaman -->
             <div>
-                <label class="block text-gray-700 font-semibold mb-1">Pengalaman</label>
-                <div class="flex gap-4">
-                    <select name="pengalaman"
-                        class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
-                        <option>Tahun</option>
-                        <option value="tanpa">Tanpa Pengalaman</option>
-                        <option value="1-4">1-4 Tahun</option>
-                        <option value=">4">4 Tahun Lebih</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Pendidikan -->
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Pendidikan Minimal</label>
-                <?php
-            $pendidikan_arr = ['sma'=>'SMA/SMK','d3'=>'Diploma (D3)','s1'=>'Sarjana (S1)','s2'=>'Magister (S2)'];
-            foreach($pendidikan_arr as $key=>$val): ?>
-                <label class="flex items-center gap-2 mr-4">
-                    <input type="checkbox" name="pendidikan[]" value="<?= $key ?>"
-                        class="pendidikan-checkbox text-teal-600 focus:ring-teal-500">
-                    <?= $val ?>
-                </label>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Gender -->
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Jenis Kelamin</label>
-                <label class="flex items-center gap-2 mr-4">
-                    <input type="radio" name="gender" value="pria" class="text-teal-600 focus:ring-teal-500"> Pria
-                </label>
-                <label class="flex items-center gap-2 mr-4">
-                    <input type="radio" name="gender" value="wanita" class="text-teal-600 focus:ring-teal-500"> Wanita
-                </label>
-                <label class="flex items-center gap-2">
-                    <input type="radio" name="gender" value="bebas" class="text-teal-600 focus:ring-teal-500"> Bebas
-                    (tanpa preferensi)
-                </label>
-            </div>
-
-            <!-- Lokasi & Gaji -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-gray-700 font-semibold mb-1">Lokasi Kerja</label>
-                    <select name="lokasi_kerja" required
-                        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
-                        <option value="">-- Pilih Lokasi --</option>
-                        <option value="baleendah">Baleendah</option>
-                        <option value="banjaran">Banjaran</option>
-                        <option value="bojongsoang">Bojongsoang</option>
-                        <option value="cileunyi">Cileunyi</option>
-                        <option value="dayeuhkolot">Dayeuhkolot</option>
-                        <option value="Kab.Bandung">Kab.Bandung</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold mb-1">Besaran Gaji</label>
-                    <!-- tambahkan id supaya JS bisa memformat, placeholder contoh, dan tetap pakai name untuk POST -->
-                    <input type="text" name="besaran_gaji" id="besaran_gaji" placeholder="0"
-                        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
-                </div>
-            </div>
-
-            <!-- Logo -->
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Banner/Logo Perusahaan</label>
-                <input type="file" name="logo" accept="image/*"
-                    class="w-full border p-3 rounded-lg bg-gray-50 cursor-pointer">
+                <label class="block text-gray-700 font-semibold mb-2">Besaran Gaji</label>
+                <!-- tambahkan id supaya JS bisa memformat, placeholder contoh, dan tetap pakai name untuk POST -->
+                <input type="text" name="gaji" id="besaran_gaji" placeholder="0"
+                    class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
             </div>
 
             <div class="flex justify-between pt-4">
                 <a href="dashboard_perusahaan.php"
                     class="px-6 py-3 bg-gray-300 text-gray-800 rounded-lg font-semibold shadow hover:bg-gray-400 transition">Kembali</a>
                 <button type="submit"
-                    class="px-6 py-3 bg-[#00797a] text-white rounded-lg font-bold shadow hover:bg-[#00646A] transition">Selanjutnya</button>
+                    class="px-6 py-3 bg-[#00797a] text-white rounded-lg font-bold shadow hover:bg-[#00646A] transition">Pasang Lowongan</button>
             </div>
         </form>
     </div>
 
     <script>
-    // Batasi pengalaman max 2
-    const pengalamanCheckboxes = document.querySelectorAll('.pengalaman-checkbox');
-    pengalamanCheckboxes.forEach(cb => {
-        cb.addEventListener('change', function() {
-            let checked = Array.from(pengalamanCheckboxes).filter(x => x.checked);
-            if (checked.length > 2) this.checked = false;
-        });
-    });
-
     // Format besaran gaji dengan koma sebagai pemisah ribuan
     const gajiInput = document.getElementById('besaran_gaji');
     if (gajiInput) {
