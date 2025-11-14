@@ -27,9 +27,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         'role' => $user['role'],
         'status_akun' => $user['status_akun']
       ];
-      if($user["role"] == "Admin"){
+      if($user["role"] == "admin"){
         header("LOCATION: ../admin/dashboard/dashboard.php");
-      }elseif($user["role"] == "Pelamar"){
+      }elseif($user["role"] == "pelamar"){
         header("LOCATION: ../landing/landing_page.php");
       }else{
         header("LOCATION: ../perusahaan/dashboard_perusahaan.php");
