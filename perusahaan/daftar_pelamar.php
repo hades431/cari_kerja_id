@@ -13,48 +13,72 @@ if ($koneksi->connect_error) {
     die("Koneksi gagal: " . $koneksi->connect_error);
 }
 
+// Ambil id_user dari session perusahaan (pastikan session set saat login)
+$user_id = $_SESSION['id_user'] ?? 0;
 
-$email_user = $_SESSION['email'];
-$id_perusahaan = tampil("SELECT*FROM perusahaan where id_user = $user_id")[0]['id_perusahaan'] ?? 0;
-$logo_perusahaan = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan")[0]["logo"];
+// Ambil data perusahaan yang terkait dengan user yang login
+$id_perusahaan = 0;
+$logo_perusahaan = '';
 $nama_perusahaan = 'Perusahaan';
 
-
-$res_perusahaan = $koneksi->query("SELECT id_perusahaan, logo, nama_perusahaan FROM perusahaan WHERE email_perusahaan = '$email_user' LIMIT 1");
-if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
-    $id_perusahaan = $row['id_perusahaan'];
-    if (!empty($row['logo'])) {
-        $logo_perusahaan = (strpos($row['logo'], 'uploads/') === 0) ? '../'.$row['logo'] : $row['logo'];
+$stmt = $koneksi->prepare("SELECT id_perusahaan, logo, nama_perusahaan FROM perusahaan WHERE id_user = ? LIMIT 1");
+if ($stmt) {
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res && $row = $res->fetch_assoc()) {
+        $id_perusahaan = (int)$row['id_perusahaan'];
+        $logo_perusahaan = $row['logo'] ?: '';
+        // jika logo disimpan path relatif tanpa ../, sesuaikan tampilan
+        if (!empty($logo_perusahaan) && strpos($logo_perusahaan, 'uploads/') === 0) {
+            $logo_perusahaan = '../' . $logo_perusahaan;
+        }
+        $nama_perusahaan = $row['nama_perusahaan'] ?: $nama_perusahaan;
     }
-    $nama_perusahaan = $row['nama_perusahaan'];
+    $stmt->close();
 }
 
 $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
 
-// Ambil pelamar yang melamar ke perusahaan ini saja
+// Ambil pelamar yang melamar ke perusahaan ini saja (filter berdasarkan id_perusahaan dari session)
 $pelamar_perusahaan = [];
-$res_pelamar_kerja = $koneksi->query("
-    SELECT 
-        pk.nama_lengkap,
-        pk.no_hp,
-        pk.cv,
-        u.email,
-        l.posisi AS jabatan,
-        lam.status_lamaran,
-        lam.tanggal_lamar
-    FROM lamaran lam
-    JOIN pelamar_kerja pk ON lam.id_pelamar = pk.id_pelamar
-    JOIN user u ON pk.id_user = u.id_user
-    JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
-    WHERE l.id_perusahaan = $id_perusahaan
-    ORDER BY lam.tanggal_lamar DESC
-");
 
-if ($res_pelamar_kerja) {
-    while ($row = $res_pelamar_kerja->fetch_assoc()) {
-        $pelamar_perusahaan[] = $row;
+if ($id_perusahaan > 0) {
+    // sanitasi pencarian simple
+    $q_esc = $koneksi->real_escape_string($q);
 
+    $sql = "
+        SELECT 
+            pk.nama_lengkap,
+            pk.no_hp,
+            pk.cv,
+            u.email,
+            l.posisi AS jabatan,
+            lam.status_lamaran,
+            lam.tanggal_lamar
+        FROM lamaran lam
+        JOIN pelamar_kerja pk ON lam.id_pelamar = pk.id_pelamar
+        JOIN user u ON pk.id_user = u.id_user
+        JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
+        WHERE l.id_perusahaan = $id_perusahaan
+    ";
+
+    if (!empty($q_esc)) {
+        $sql .= " AND LOWER(l.posisi) LIKE '%$q_esc%'";
     }
+
+    $sql .= " ORDER BY lam.tanggal_lamar DESC";
+
+    $res_pelamar_kerja = $koneksi->query($sql);
+
+    if ($res_pelamar_kerja) {
+        while ($row = $res_pelamar_kerja->fetch_assoc()) {
+            $pelamar_perusahaan[] = $row;
+        }
+    }
+} else {
+    // jika perusahaan belum lengkap/tidak ditemukan, kosongkan list
+    $pelamar_perusahaan = [];
 }
 
 ?>
@@ -122,7 +146,7 @@ if ($res_pelamar_kerja) {
 
 <!-- Table -->
 <div class="bg-white rounded-lg shadow overflow-x-auto">
-    <table class="w-full border-collapse min-w-[800px]">
+    <table class="w-full border-collapse min-w-[900px]">
         <thead class="bg-[#00646A] text-white">
             <tr>
                 <th class="p-3 text-left">Nama</th>
@@ -130,6 +154,8 @@ if ($res_pelamar_kerja) {
                 <th class="p-3 text-left">Posisi</th>
                 <th class="p-3 text-left">No HP</th>
                 <th class="p-3 text-left">CV</th>
+                <th class="p-3 text-left">Status</th>
+                <th class="p-3 text-left">Tanggal</th>
             </tr>
         </thead>
         <tbody>
@@ -152,11 +178,13 @@ if ($res_pelamar_kerja) {
                                         <span class="text-gray-500">Tidak ada CV</span>
                                     <?php endif; ?>
                                 </td>
+                                <td class="p-3"><?= htmlspecialchars($p['status_lamaran']) ?></td>
+                                <td class="p-3"><?= htmlspecialchars(date("d/m/Y", strtotime($p['tanggal_lamar']))) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="text-center p-4 text-gray-500">Tidak ada data pelamar</td>
+                            <td colspan="7" class="text-center p-4 text-gray-500">Tidak ada data pelamar</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

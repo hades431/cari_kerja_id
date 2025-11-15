@@ -6,25 +6,38 @@ if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-// Ambil id pelamar dari session (pastikan udah login)
+// Ambil id pelamar dari session / database (perbaikan)
 $id_user = $_SESSION['id_user'] ?? null;
-if (!$id_user) {
-    // kalau belum login pelamar, redirect aja
+
+// jika tidak ada id_user dan tidak ada id_pelamar di session -> minta login
+if (!$id_user && empty($_SESSION['id_pelamar'])) {
     header("Location: login_pelamar.php");
     exit;
 }
 
-// Ambil id_pelamar dari tabel pelamar_kerja
-$id_pelamar = null;
-$get_pelamar = mysqli_query($conn, "SELECT id_pelamar FROM pelamar_kerja WHERE id_user='$id_user' LIMIT 1");
-if ($get_pelamar && mysqli_num_rows($get_pelamar) > 0) {
-    $row = mysqli_fetch_assoc($get_pelamar);
-    $id_pelamar = $row['id_pelamar'];
+// prioritas ambil dari session jika sudah ada
+$id_pelamar = $_SESSION['id_pelamar'] ?? null;
 
-    // ✅ Tambahkan baris ini
-    $_SESSION['id_pelamar'] = $id_pelamar;
-} else {
-    die("Error: Data pelamar tidak ditemukan.");
+if (!$id_pelamar && $id_user) {
+    // gunakan prepared statement untuk mencari id_pelamar berdasarkan id_user
+    $stmt = mysqli_prepare($conn, "SELECT id_pelamar FROM pelamar_kerja WHERE id_user = ? LIMIT 1");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, 'i', $id_user);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $fetched_id_pelamar);
+        if (mysqli_stmt_fetch($stmt)) {
+            $id_pelamar = $fetched_id_pelamar;
+            $_SESSION['id_pelamar'] = $id_pelamar; // simpan untuk reuse
+        }
+        mysqli_stmt_close($stmt);
+    }
+}
+
+// Kalau masih belum ada id_pelamar, arahkan user untuk melengkapi profil pelamar
+if (!$id_pelamar) {
+    // ganti lokasi ini ke halaman profil pelamar atau pembuatan data pelamar sesuai aplikasi Anda
+    header("Location: profil_pelamar.php?msg=lengkapi_profil");
+    exit;
 }
 
 // Ambil id lowongan dari POST
