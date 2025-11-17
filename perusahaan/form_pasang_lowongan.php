@@ -3,7 +3,7 @@ session_start();
 include __DIR__ . "/../config.php"; // koneksi database
 include '../function/logic.php';
 // Pastikan perusahaan login
-if(!isset($_SESSION['login']) || $_SESSION['role'] !== 'perusahaan'){
+if(!isset($_SESSION['login']) || $_SESSION['role'] !== 'Perusahaan'){
     header("Location: ../login/login.php");
     exit;
 }
@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="max-w-4xl mx-auto mt-8 bg-white p-8 rounded-2xl shadow-lg border">
         <?php if(!empty($paket_notice)): ?>
-            <div class='bg-yellow-100 text-yellow-800 p-3 rounded mb-4'><?= htmlspecialchars($paket_notice) ?></div>
+        <div class='bg-yellow-100 text-yellow-800 p-3 rounded mb-4'><?= htmlspecialchars($paket_notice) ?></div>
         <?php endif; ?>
         <?php if(isset($error) && $error): echo "<div class='bg-red-100 text-red-700 p-3 rounded mb-4'>".htmlspecialchars($error)."</div>"; endif; ?>
         <?php if(isset($message) && $message): echo "<div class='bg-green-100 text-green-700 p-3 rounded mb-4'>".htmlspecialchars($message)."</div>"; endif; ?>
@@ -153,8 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- gunakan variabel yang benar: id_perusahaan dan nama_perusahaan -->
                 <input type="hidden" name="id_perusahaan" value="<?php echo htmlspecialchars($id_perusahaan); ?>">
                 <label class="block text-gray-700 font-semibold mb-2">Nama Perusahaan</label>
-                <input type="text" name="nama_perusahaan" value="<?= htmlspecialchars($nama_perusahaan) ?>"
-                    readonly class="w-full p-3 border rounded-lg bg-gray-100 cursor-not-allowed">
+                <input type="text" name="nama_perusahaan" value="<?= htmlspecialchars($nama_perusahaan) ?>" readonly
+                    class="w-full p-3 border rounded-lg bg-gray-100 cursor-not-allowed">
             </div>
 
             <div>
@@ -186,7 +186,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="dashboard_perusahaan.php"
                     class="px-6 py-3 bg-gray-300 text-gray-800 rounded-lg font-semibold shadow hover:bg-gray-400 transition">Kembali</a>
                 <button type="submit"
-                    class="px-6 py-3 bg-[#00797a] text-white rounded-lg font-bold shadow hover:bg-[#00646A] transition">Pasang Lowongan</button>
+                    class="px-6 py-3 bg-[#00797a] text-white rounded-lg font-bold shadow hover:bg-[#00646A] transition">Pasang
+                    Lowongan</button>
             </div>
         </form>
     </div>

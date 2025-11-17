@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'perusahaan') {
+if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'Perusahaan') {
     header('Location: ../login/login.php');
     exit;
 }
@@ -86,62 +86,73 @@ if ($res_pelamar_kerja) {
 </head>
 
 <body class="bg-[#00646A] h-screen">
-<!-- Header fixed di atas -->
-<header class="fixed top-0 left-0 w-full bg-[#00646A] text-white py-5 px-8 text-2xl font-bold shadow z-20">
-  Dashboard
-</header>
-<!-- Container utama dengan padding top sesuai tinggi header -->
-<div class="flex h-screen" style="padding-top:68px">
-  <!-- Sidebar: gunakan fixed dan top sama dengan header agar menempel -->
-  <aside class="fixed top-[68px] left-0 w-64 bg-[#00646A] text-white flex flex-col h-[calc(100vh-68px)] z-10">
-    <div class="flex-1 flex flex-col justify-start">
-      <div class="flex flex-col items-center py-6">
-        <a href="../perusahaan/profile_perusahaan.php" class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
-          <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan" class="w-full h-full object-cover">
-        </a>
-        <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
-      </div>
-      <!-- Menu -->
-      <nav class="mt-6 space-y-2 px-4">
-        <a href="dashboard_perusahaan.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
-        <a href="../perusahaan/daftar_pelamar.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
-        <a href="../perusahaan/form_pasang_lowongan.php" class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
-        <a href="../landing/landing_page.php" class="block py-2 px-4 rounded-lg bg-gray-200 text-[#00797a] font-semibold hover:bg-gray-300 transition mt-4">Kembali</a>
-        <form action="../logout.php" method="post" class="mt-2">
-          <!-- Ubah type submit jadi button agar tidak langsung submit; JS akan buka modal -->
-          <button type="button" id="logout-btn" class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
-        </form>
-      </nav>
-      <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
-        <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
-        <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
-        <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
-        <div class="flex justify-center gap-4">
-            <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
-            <!-- Tambahkan id untuk tombol konfirmasi -->
-            <button id="confirm-logout" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
-        </div>
-    </div>
-</div>
-    </div>
-    <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
-  </aside>
+    <!-- Header fixed di atas -->
+    <header class="fixed top-0 left-0 w-full bg-[#00646A] text-white py-5 px-8 text-2xl font-bold shadow z-20">
+        Dashboard
+    </header>
+    <!-- Container utama dengan padding top sesuai tinggi header -->
+    <div class="flex h-screen" style="padding-top:68px">
+        <!-- Sidebar: gunakan fixed dan top sama dengan header agar menempel -->
+        <aside class="fixed top-[68px] left-0 w-64 bg-[#00646A] text-white flex flex-col h-[calc(100vh-68px)] z-10">
+            <div class="flex-1 flex flex-col justify-start">
+                <div class="flex flex-col items-center py-6">
+                    <a href="../perusahaan/profile_perusahaan.php"
+                        class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
+                        <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan"
+                            class="w-full h-full object-cover">
+                    </a>
+                    <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
+                </div>
+                <!-- Menu -->
+                <nav class="mt-6 space-y-2 px-4">
+                    <a href="dashboard_perusahaan.php"
+                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
+                    <a href="../perusahaan/daftar_pelamar.php"
+                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
+                    <a href="../perusahaan/form_pasang_lowongan.php"
+                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
+                    <a href="../landing/landing_page.php"
+                        class="block py-2 px-4 rounded-lg bg-gray-200 text-[#00797a] font-semibold hover:bg-gray-300 transition mt-4">Kembali</a>
+                    <form action="../logout.php" method="post" class="mt-2">
+                        <!-- Ubah type submit jadi button agar tidak langsung submit; JS akan buka modal -->
+                        <button type="button" id="logout-btn"
+                            class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
+                    </form>
+                </nav>
+                <div id="logout-modal"
+                    class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+                        <button onclick="closeLogoutModal()"
+                            class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+                        <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
+                        <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
+                        <div class="flex justify-center gap-4">
+                            <button onclick="closeLogoutModal()"
+                                class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+                            <!-- Tambahkan id untuk tombol konfirmasi -->
+                            <button id="confirm-logout"
+                                class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
+        </aside>
 
-  <!-- Content: beri margin-left agar tidak tertutup sidebar -->
-  <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
-    <!-- Hapus <h1>Dashboard</h1> di sini -->
-    <!-- Statistik -->
- <div class="grid grid-cols-2 gap-6 mb-8">
-      <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
-        <div class="text-lg mb-2">Total Lowongan</div>
-        <div class="text-4xl font-bold"><?= $jmlLowongan ?></div>
-      </div>
-      <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
-        <div class="text-lg mb-2">Total Pelamar</div>
-        <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
-      </div>
-    </div>
+        <!-- Content: beri margin-left agar tidak tertutup sidebar -->
+        <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
+            <!-- Hapus <h1>Dashboard</h1> di sini -->
+            <!-- Statistik -->
+            <div class="grid grid-cols-2 gap-6 mb-8">
+                <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
+                    <div class="text-lg mb-2">Total Lowongan</div>
+                    <div class="text-4xl font-bold"><?= $jmlLowongan ?></div>
+                </div>
+                <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
+                    <div class="text-lg mb-2">Total Pelamar</div>
+                    <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
+                </div>
+            </div>
 
             <!-- Lowongan Saya -->
             <div class="bg-white p-6 rounded-2xl shadow mb-8">
@@ -186,37 +197,38 @@ if ($res_pelamar_kerja) {
             </div>
 
             <!-- Card Pelamar untuk perusahaan ini -->
-    <div class="bg-white p-6 rounded-2xl shadow mb-8">
-        <h2 class="text-xl font-bold text-[#00646A] mb-4">Pelamar ke Perusahaan Anda</h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-[#00646A] text-white">
-                    <tr>
-                        <th class="px-4 py-2 text-left">Nama Lengkap</th>
-                        <th class="px-4 py-2 text-left">Email</th>
-                        <th class="px-4 py-2 text-left">Tanggal Lamar</th>
-                        <th class="px-4 py-2 text-left">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <?php if(!empty($pelamar_perusahaan)): ?>
-                        <?php foreach($pelamar_perusahaan as $p): ?>
-                        <tr>
-                            <td class="px-4 py-2"><?= htmlspecialchars($p['nama_lengkap']) ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($p['email']) ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($p['tgl_lamar'] ?? '-') ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($p['status_lamaran'] ?? '-') ?></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" class="text-center px-4 py-6 text-gray-400">Belum ada pelamar untuk perusahaan Anda.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
+            <div class="bg-white p-6 rounded-2xl shadow mb-8">
+                <h2 class="text-xl font-bold text-[#00646A] mb-4">Pelamar ke Perusahaan Anda</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-[#00646A] text-white">
+                            <tr>
+                                <th class="px-4 py-2 text-left">Nama Lengkap</th>
+                                <th class="px-4 py-2 text-left">Email</th>
+                                <th class="px-4 py-2 text-left">Tanggal Lamar</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <?php if(!empty($pelamar_perusahaan)): ?>
+                            <?php foreach($pelamar_perusahaan as $p): ?>
+                            <tr>
+                                <td class="px-4 py-2"><?= htmlspecialchars($p['nama_lengkap']) ?></td>
+                                <td class="px-4 py-2"><?= htmlspecialchars($p['email']) ?></td>
+                                <td class="px-4 py-2"><?= htmlspecialchars($p['tgl_lamar'] ?? '-') ?></td>
+                                <td class="px-4 py-2"><?= htmlspecialchars($p['status_lamaran'] ?? '-') ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                            <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="text-center px-4 py-6 text-gray-400">Belum ada pelamar untuk
+                                    perusahaan Anda.</td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <!-- Notifikasi -->
             <div class="bg-white p-4 rounded-lg shadow">
@@ -236,31 +248,32 @@ if ($res_pelamar_kerja) {
 
 
     </div>
-    
+
 </body>
 
 </html>
 <script>
-  function openLogoutModal(){
+function openLogoutModal() {
     document.getElementById('logout-modal').classList.remove('hidden');
-  }
-  function closeLogoutModal(){
-    document.getElementById('logout-modal').classList.add('hidden');
-  }
+}
 
-  document.addEventListener('DOMContentLoaded', function(){
+function closeLogoutModal() {
+    document.getElementById('logout-modal').classList.add('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('logout-btn');
-    if(btn) btn.addEventListener('click', openLogoutModal);
+    if (btn) btn.addEventListener('click', openLogoutModal);
 
     var confirmBtn = document.getElementById('confirm-logout');
-    if(confirmBtn) confirmBtn.addEventListener('click', function(){
-      // Redirect ke logout script (sesuaikan path)
-      window.location.href = '../logout.php';
+    if (confirmBtn) confirmBtn.addEventListener('click', function() {
+        // Redirect ke logout script (sesuaikan path)
+        window.location.href = '../logout.php';
     });
 
     // optional: tutup modal saat tekan Escape
-    document.addEventListener('keydown', function(e){
-      if(e.key === 'Escape') closeLogoutModal();
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLogoutModal();
     });
-  });
+});
 </script>
