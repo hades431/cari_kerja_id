@@ -73,7 +73,18 @@ if (file_exists($profile_file)) {
 
   <!-- Container Full Width dengan Padding -->
   <div class="w-full px-6 mt-10">
-    <h1 class="text-3xl font-bold mb-6 primary-text">📄 Riwayat Lamaran</h1>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold primary-text">📄 Riwayat Lamaran</h1>
+      <div class="flex items-center gap-3">
+        <button id="notif-btn" class="relative inline-flex items-center px-3 py-2 bg-white border rounded shadow hover:bg-gray-50" aria-label="Notifikasi">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z" /></svg>
+          <span id="notif-count" class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full hidden">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Notifikasi panel placeholder (injected via JS) -->
+    <div id="notif-panel" class="max-w-4xl mb-4 hidden"></div>
 
     <!-- Tombol kembali ke profil pelamar -->
     <!-- Button Kembali -->
@@ -87,7 +98,7 @@ if (file_exists($profile_file)) {
     <!-- Filter Form -->
     <form method="GET" class="flex flex-wrap gap-3 mb-6">
       <select name="status" class="px-4 py-2 border rounded-lg primary-border">
-        <option value="">Semua Status</option>
+
        <option value="di proses">Di Proses</option>
 <option value="di terima">Di Terima</option>
 <option value="di tolak">Di Tolak</option>
@@ -108,7 +119,6 @@ if (file_exists($profile_file)) {
         <thead class="primary text-white">
           <tr>
             <th class="py-3 px-4 text-left">Perusahaan</th>
-            <th class="py-3 px-4 text-left">Posisi</th>
             <th class="py-3 px-4 text-left">Tanggal </th>
             <th class="py-3 px-4 text-left">Status</th>
           </tr>
@@ -117,16 +127,15 @@ if (file_exists($profile_file)) {
           <?php if (!empty($filtered)): ?>
             <?php foreach($filtered as $r): ?>
               <tr class="border-b hover:bg-gray-50">
-                <td class="py-3 px-4"><?= $r["perusahaan"]; ?></td>
-                <td class="py-3 px-4"><?= $r["posisi"]; ?></td>
-                <td class="py-3 px-4"><?= $r["tanggal"]; ?></td>
+                <td class="py-3 px-4"><?= htmlspecialchars($r["perusahaan"]); ?></td>
+                <td class="py-3 px-4"><?= htmlspecialchars($r["tanggal"]); ?></td>
                 <td class="py-3 px-4">
                   <?php if($r["status"] == "di proses"): ?>
-    <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"><?= ucfirst($r["status"]); ?></span>
+    <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
 <?php elseif($r["status"] == "di terima"): ?>
-    <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700"><?= ucfirst($r["status"]); ?></span>
+    <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
 <?php elseif($r["status"] == "di tolak"): ?>
-    <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700"><?= ucfirst($r["status"]); ?></span>
+    <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
 <?php endif; ?>
 
                 </td>
@@ -134,12 +143,54 @@ if (file_exists($profile_file)) {
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="4" class="text-center py-4 text-gray-500">Tidak ada riwayat ditemukan.</td>
+              <td colspan="3" class="text-center py-4 text-gray-500">Tidak ada riwayat ditemukan.</td>
             </tr>
           <?php endif; ?>
         </tbody>
       </table>
     </div>
   </div>
+
+<!-- Notification JS: load count and panel -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('notif-btn');
+    const panel = document.getElementById('notif-panel');
+    const countEl = document.getElementById('notif-count');
+
+    // Fetch unread count
+    fetch('notifikasi.php?count=1')
+      .then(resp => resp.json())
+      .then(data => {
+        const c = data.count || 0;
+        if (c > 0) {
+          countEl.textContent = c;
+          countEl.classList.remove('hidden');
+        } else {
+          countEl.classList.add('hidden');
+        }
+      })
+      .catch(err => console.error('Notif count error', err));
+
+    // Toggle panel and load notifications (server will mark them read)
+    btn.addEventListener('click', function() {
+      if (!panel.classList.contains('hidden')) {
+        panel.classList.add('hidden');
+        return;
+      }
+      fetch('notifikasi.php')
+        .then(r => r.text())
+        .then(html => {
+          panel.innerHTML = html;
+          panel.classList.remove('hidden');
+          // hide badge
+          countEl.classList.add('hidden');
+          countEl.textContent = '0';
+        })
+        .catch(err => console.error('Notif load error', err));
+    });
+});
+</script>
+
 </body>
 </html>

@@ -6,47 +6,40 @@ if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-// Ambil id pelamar dari session / database (perbaikan)
 $id_user = $_SESSION['id_user'] ?? null;
-
-// jika tidak ada id_user dan tidak ada id_pelamar di session -> minta login
-if (!$id_user && empty($_SESSION['id_pelamar'])) {
+if (!$id_user) {
     header("Location: login_pelamar.php");
     exit;
 }
 
-// prioritas ambil dari session jika sudah ada
-$id_pelamar = $_SESSION['id_pelamar'] ?? null;
+$id_pelamar = null;
+$get_pelamar = mysqli_query($conn, "SELECT id_pelamar FROM pelamar_kerja WHERE id_user='" . mysqli_real_escape_string($conn, $id_user) . "' LIMIT 1");
+if ($get_pelamar && mysqli_num_rows($get_pelamar) > 0) {
+    $row = mysqli_fetch_assoc($get_pelamar);
+    $id_pelamar = $row['id_pelamar'];
 
-if (!$id_pelamar && $id_user) {
-    // gunakan prepared statement untuk mencari id_pelamar berdasarkan id_user
-    $stmt = mysqli_prepare($conn, "SELECT id_pelamar FROM pelamar_kerja WHERE id_user = ? LIMIT 1");
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, 'i', $id_user);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_bind_result($stmt, $fetched_id_pelamar);
-        if (mysqli_stmt_fetch($stmt)) {
-            $id_pelamar = $fetched_id_pelamar;
-            $_SESSION['id_pelamar'] = $id_pelamar; // simpan untuk reuse
-        }
-        mysqli_stmt_close($stmt);
+    $_SESSION['id_pelamar'] = $id_pelamar;
+} else {
+    // Jika tidak ada, coba buat record minimal untuk pelamar_kerja agar FK tidak gagal.
+    // Jika INSERT gagal karena kolom wajib lain, arahkan user untuk melengkapi profil.
+    $ins = mysqli_query($conn, "INSERT INTO pelamar_kerja (id_user) VALUES ('" . mysqli_real_escape_string($conn, $id_user) . "')");
+    if ($ins) {
+        $id_pelamar = mysqli_insert_id($conn);
+        $_SESSION['id_pelamar'] = $id_pelamar;
+    } else {
+        // Gagal membuat record otomatis — arahkan user mengisi profil pelamar
+        header("Location: lengkapi_profil_pelamar.php");
+        exit;
     }
 }
 
-// Kalau masih belum ada id_pelamar, arahkan user untuk melengkapi profil pelamar
-if (!$id_pelamar) {
-    // ganti lokasi ini ke halaman profil pelamar atau pembuatan data pelamar sesuai aplikasi Anda
-    header("Location: profil_pelamar.php?msg=lengkapi_profil");
-    exit;
-}
 
-// Ambil id lowongan dari POST
 $id_lowongan = $_POST['id_lowongan'] ?? null;
 if (!$id_lowongan) {
     die("Error: ID lowongan tidak ditemukan.");
 }
 
-// Ambil data dari form
+
 $nama_pelamar = $_POST['nama_pelamar'] ?? '';
 $email = $_POST['email'] ?? '';
 $no_hp = $_POST['no_hp'] ?? '';
@@ -66,13 +59,14 @@ if (isset($_FILES['cv']) && $_FILES['cv']['error'] == 0) {
     move_uploaded_file($cv_tmp, $upload_path);
 }
 
-// Insert data lamaran
+
 $query = "INSERT INTO lamaran (id_lowongan, id_pelamar, tanggal_lamar, status_lamaran)
           VALUES ('$id_lowongan', '$id_pelamar', '$tanggal_lamar', 'di proses')";
 $result = mysqli_query($conn, $query);
 
 if ($result) {
-    header("Location: lamaran_berhasil.php");
+    // Redirect to application history page so the data appears in riwayat_lamaran.php
+    header("Location: riwayat_lamaran.php");
     exit;
 } else {
     echo "Gagal menyimpan lamaran: " . mysqli_error($conn);

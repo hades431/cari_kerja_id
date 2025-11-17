@@ -49,6 +49,8 @@ if ($id_perusahaan > 0) {
 
     $sql = "
         SELECT 
+            lam.id_lamaran,
+            pk.id_pelamar,
             pk.nama_lengkap,
             pk.no_hp,
             pk.cv,
@@ -152,11 +154,11 @@ if ($id_perusahaan > 0) {
                         <tr>
                             <th class="p-3 text-left">Nama</th>
                             <th class="p-3 text-left">Email</th>
-                            <th class="p-3 text-left">Posisi</th>
                             <th class="p-3 text-left">No HP</th>
                             <th class="p-3 text-left">CV</th>
                             <th class="p-3 text-left">Status</th>
                             <th class="p-3 text-left">Tanggal</th>
+                            <th class="p-3 text-left"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,7 +168,6 @@ if ($id_perusahaan > 0) {
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3"><?= htmlspecialchars($p['nama_lengkap']) ?></td>
                             <td class="p-3"><?= htmlspecialchars($p['email']) ?></td>
-                            <td class="p-3"><?= htmlspecialchars($p['jabatan']) ?></td>
                             <td class="p-3"><?= htmlspecialchars($p['no_hp']) ?></td>
                             <td class="p-3 text-center">
                                 <?php if (!empty($p['cv'])): ?>
@@ -178,8 +179,15 @@ if ($id_perusahaan > 0) {
                                 <span class="text-gray-500">Tidak ada CV</span>
                                 <?php endif; ?>
                             </td>
+
+                            <!-- Status (form removed) -->
                             <td class="p-3"><?= htmlspecialchars($p['status_lamaran']) ?></td>
+
                             <td class="p-3"><?= htmlspecialchars(date("d/m/Y", strtotime($p['tanggal_lamar']))) ?></td>
+                            <td class="p-3">
+                                <a href="view_pelamar.php?id=<?= urlencode($p['id_pelamar']) ?>"
+                                   class="inline-block px-3 py-1 bg-[#00646A] text-white rounded hover:opacity-90">Lihat Profil</a>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                         <?php else: ?>

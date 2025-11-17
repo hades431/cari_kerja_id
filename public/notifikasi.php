@@ -1,76 +1,125 @@
 <?php
 session_start();
-include '../header.php';
 
+$id_pelamar = $_SESSION['id_pelamar'] ?? null;
+if (!$id_pelamar) {
+    // no pelamar in session -> nothing to return
+    http_response_code(204);
+    exit;
+}
 
-// koneksi
 $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
 if (!$conn) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+    http_response_code(500);
+    echo "Koneksi gagal";
+    exit;
 }
 
-// ambil id dari session
-$id_user = isset($_SESSION['id_user']) ? (int)$_SESSION['id_user'] : null;
+// support count endpoint: ?count=1 -> JSON { count: N }
+if (isset($_GET['count']) && $_GET['count'] == '1') {
+    $stmt = mysqli_prepare($conn, "SELECT COUNT(*) AS cnt FROM notifikasi_lamaran WHERE id_pelamar = ? AND is_read = 0");
+    mysqli_stmt_bind_param($stmt, "i", $id_pelamar);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $cnt = 0;
+    if ($res && $r = mysqli_fetch_assoc($res)) $cnt = (int)$r['cnt'];
+    mysqli_stmt_close($stmt);
 
-// ambil data notifikasi dari tabel notifikasi_lamaran
-$notifications = [];
-if ($id_user) {
-    $stmt = $conn->prepare("SELECT * FROM notifikasi_lamaran WHERE id_user = ? ORDER BY id_notifikasi DESC LIMIT 10");
-    $stmt->bind_param("i", $id_user);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    while ($row = $res->fetch_assoc()) {
-        $notifications[] = $row;
+    header('Content-Type: application/json');
+    echo json_encode(['count' => $cnt]);
+    mysqli_close($conn);
+    exit;
+}
+
+// HTML: mark unread as read, then fetch recent notifications (so they remain visible but marked as read)
+
+// get unread ids (optional, not strictly needed but kept for logic)
+$unread_stmt = mysqli_prepare($conn, "SELECT id_notifikasi FROM notifikasi_lamaran WHERE id_pelamar = ? AND is_read = 0");
+$unread_ids = [];
+if ($unread_stmt) {
+    mysqli_stmt_bind_param($unread_stmt, "i", $id_pelamar);
+    mysqli_stmt_execute($unread_stmt);
+    $resu = mysqli_stmt_get_result($unread_stmt);
+    if ($resu) {
+        while ($r = mysqli_fetch_assoc($resu)) {
+            $unread_ids[] = (int)$r['id_notifikasi'];
+        }
     }
-    $stmt->close();
+    mysqli_stmt_close($unread_stmt);
 }
+
+// mark unread as read (so they will be shown as "Sudah dibaca")
+if (!empty($unread_ids)) {
+    $mark = mysqli_prepare($conn, "UPDATE notifikasi_lamaran SET is_read = 1 WHERE id_pelamar = ? AND is_read = 0");
+    if ($mark) {
+        mysqli_stmt_bind_param($mark, "i", $id_pelamar);
+        mysqli_stmt_execute($mark);
+        mysqli_stmt_close($mark);
+    }
+}
+
+// fetch recent notifications (including read ones), limit to last 50
+$notifications = [];
+$stmt = mysqli_prepare($conn, "SELECT id_notifikasi, pesan, is_read, created_at FROM notifikasi_lamaran WHERE id_pelamar = ? ORDER BY created_at DESC LIMIT 50");
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $id_pelamar);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if ($res) {
+        while ($row = mysqli_fetch_assoc($res)) {
+            $notifications[] = $row;
+        }
+    }
+    mysqli_stmt_close($stmt);
+}
+
+// render HTML fragment
+echo '<div class="max-w-4xl mb-4">';
+
+if (empty($notifications)) {
+    echo '<div class="bg-white p-4 rounded shadow text-sm text-gray-600">Belum ada notifikasi.</div>';
+    echo '</div>';
+    mysqli_close($conn);
+    exit;
+}
+
+// header summary: count unread before marking (we computed $unread_ids)
+$unreadCount = count($unread_ids);
+echo '<div class="mb-3 text-sm">';
+if ($unreadCount > 0) {
+    echo '<span class="text-[#00797a] font-medium">Pesan Belum Dibaca: ' . $unreadCount . '</span>';
+}
+echo '</div>';
+
+// list notifications
+echo '<div class="space-y-2">';
+foreach ($notifications as $n) {
+    $pesan = htmlspecialchars($n['pesan']);
+    $waktu = htmlspecialchars($n['created_at']);
+    $isRead = (int)($n['is_read'] ?? 0);
+
+    // color heuristics
+    $colorClass = 'text-gray-800';
+    if (stripos($pesan, 'diterima') !== false || stripos($pesan, 'terima') !== false) $colorClass = 'text-[#00797a] font-semibold';
+    elseif (stripos($pesan, 'ditolak') !== false || stripos($pesan, 'tolak') !== false) $colorClass = 'text-red-600 font-semibold';
+    elseif (stripos($pesan, 'di proses') !== false || stripos($pesan, 'proses') !== false) $colorClass = 'text-blue-700 font-medium';
+
+    echo '<div class="bg-white border rounded p-4 flex justify-between items-start gap-4 hover:shadow-sm">';
+    echo '<div>';
+    echo '<div class="' . $colorClass . ' text-sm leading-relaxed">' . $pesan . '</div>';
+    echo '<div class="text-xs text-gray-500 mt-1">(' . $waktu . ')</div>';
+    echo '</div>';
+    // status label: "Sudah dibaca" if is_read, else "Baru"
+    $labelClass = $isRead ? 'text-gray-500 bg-gray-100' : 'text-white bg-red-600';
+    $labelText = $isRead ? 'Sudah dibaca' : 'Baru';
+    echo '<div class="flex-shrink-0"><span class="px-2 py-1 text-xs rounded ' . $labelClass . '">' . $labelText . '</span></div>';
+    echo '</div>';
+}
+echo '</div>'; // .space-y-2
+echo '</div>'; // .max-w-4xl
+
+mysqli_close($conn);
 ?>
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notifikasi Lamaran</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide-icons@latest/dist/umd/lucide.js"></script>
-</head>
-<body class="bg-white font-sans min-h-screen">
-
-  <!-- Header Putih -->
-  <header class="bg-white border-b border-gray-200 py-4 shadow-sm">
-    <div class="max-w-5xl mx-auto px-6 flex justify-between items-center">
-      <h1 class="text-2xl font-bold tracking-wide flex items-center gap-2 text-[#00797a]">
-        <i data-lucide="bell" class="w-6 h-6 text-[#00797a]"></i>
-        Notifikasi Lamaran
-      </h1>
-      <a href="../public/riwayat_lamaran.php"
-        class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition mb-4">
-        <i class="fas fa-arrow-left mr-2"></i> Kembali
-    </a>
-    </div>
-  </header>
-
-    <!-- Konten -->
-  <main class="max-w-6xl mx-auto mt-10 px-8">
-    <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
-      <!-- Header tabel -->
-      <div class="bg-gray-50 border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i data-lucide="inbox" class="w-5 h-5 text-[#00797a]"></i>
-          <h2 class="text-lg font-semibold text-gray-800">Daftar Notifikasi</h2>
-        </div>
-
-        <?php  
-          $unreadCount = 0;
-          if (!empty($notifications)) {
-              foreach ($notifications as $n) {
-                  if (strtolower($n['status']) === 'belum dibaca') $unreadCount++;
-              }
-          }
-        ?>
-
-        <span class="text-sm font-medium 
           <?= $unreadCount > 0 ? 'text-[#00797a]' : 'text-gray-500' ?>">
           <?= $unreadCount > 0 
               ? "Pesan Belum Dibaca: {$unreadCount}" 
@@ -131,5 +180,7 @@ if ($id_user) {
     lucide.createIcons();
   </script>
 
+</body>
+</html>
 </body>
 </html>
