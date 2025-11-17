@@ -15,6 +15,7 @@ $durasi_hari = 7; // default
 $max_lowongan = 1; // default
 $nama_perusahaan = 'Perusahaan';
 $logo_perusahaan = '';
+$paket_notice = ''; // Inisialisasi variabel sebelum digunakan
 
 // Cek apakah tabel paket ada sebelum melakukan JOIN
 $hasPaketTable = false;
@@ -23,8 +24,17 @@ if ($result && $result->num_rows > 0) {
     $hasPaketTable = true;
 }
 
-if ($hasPaketTable) {
-    $stmt = $conn->prepare("SELECT p.id_perusahaan, p.nama_perusahaan, p.logo, p.paket_id, pk.durasi_hari, pk.max_lowongan 
+// Cek apakah kolom paket_id ada di tabel perusahaan
+$hasPaketIdColumn = false;
+$columnCheck = $conn->query("SHOW COLUMNS FROM perusahaan LIKE 'paket_id'");
+if ($columnCheck && $columnCheck->num_rows > 0) {
+    $hasPaketIdColumn = true;
+}
+
+if ($hasPaketTable && $hasPaketIdColumn) {
+    // Jika kedua ada, JOIN dengan paket
+    // Sesuaikan nama kolom: ganti 'pk.max_lowongan' dengan kolom yang ada di tabel paket Anda
+    $stmt = $conn->prepare("SELECT p.id_perusahaan, p.nama_perusahaan, p.logo, p.paket_id, pk.durasi_hari, pk.nama_paket
                             FROM perusahaan p 
                             LEFT JOIN paket pk ON p.paket_id = pk.id_paket
                             WHERE p.id_user = ? LIMIT 1");
@@ -35,12 +45,18 @@ if ($hasPaketTable) {
         $id_perusahaan = (int)$row['id_perusahaan'];
         $nama_perusahaan = $row['nama_perusahaan'] ?? $nama_perusahaan;
         $logo_perusahaan = $row['logo'] ?? $logo_perusahaan;
-        $durasi_hari = (int)($row['durasi_hari'] ?? $durasi_hari);
-        $max_lowongan = (int)($row['max_lowongan'] ?? $max_lowongan);
+        // Jika paket_id ada dan durasi_hari tidak null, gunakan nilai dari paket
+        if (!empty($row['paket_id']) && $row['durasi_hari'] !== null) {
+            $durasi_hari = (int)$row['durasi_hari'];
+            // max_lowongan tetap default 1 jika kolom tidak ada
+            // $max_lowongan = (int)($row['max_lowongan'] ?? 1);
+        } else {
+            $paket_notice = "Perusahaan Anda belum memilih paket. Menggunakan paket default (7 hari, 1 lowongan).";
+        }
     }
     $stmt->close();
 } else {
-    // Jika tabel paket tidak ada, ambil data perusahaan tanpa paket dan gunakan default
+    // Jika tabel paket atau kolom paket_id tidak ada, ambil data perusahaan saja
     $stmt = $conn->prepare("SELECT id_perusahaan, nama_perusahaan, logo FROM perusahaan WHERE id_user = ? LIMIT 1");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -51,8 +67,7 @@ if ($hasPaketTable) {
         $logo_perusahaan = $row['logo'] ?? $logo_perusahaan;
     }
     $stmt->close();
-    // opsional: beri pesan agar admin membuat tabel paket
-    $paket_notice = "Tabel 'paket' tidak ditemukan. Menggunakan nilai paket default. Silakan tambahkan tabel paket jika ingin mengelola durasi/kuota paket.";
+    $paket_notice = "Setup paket belum lengkap. Menggunakan paket default (7 hari, 1 lowongan). Hubungi admin untuk konfigurasi paket.";
 }
 
 // Hitung lowongan aktif perusahaan saat ini (batas_lamaran >= today)
@@ -85,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Judul dan deskripsi wajib diisi.";
         } else {
             // Hitung batas_lamaran berdasarkan durasi paket
-            $tanggal_post = date('Y-m-d');
+            $tanggal_post = date('Y-m-d H:i:s');
             $batas_lamaran = date('Y-m-d', strtotime("+{$durasi_hari} days", strtotime($tanggal_post)));
             // Simpan ke DB (prepared)
             $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, deskripsi, lokasi, gaji, tanggal_post, batas_lamaran) VALUES (?, ?, ?, ?, ?, ?, ?)");
