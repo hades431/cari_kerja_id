@@ -170,14 +170,37 @@ if ($id_perusahaan > 0) {
                             <td class="p-3"><?= htmlspecialchars($p['email']) ?></td>
                             <td class="p-3"><?= htmlspecialchars($p['no_hp']) ?></td>
                             <td class="p-3 text-center">
-                                <?php if (!empty($p['cv'])): ?>
-                                <a href="../uploads/<?= htmlspecialchars($p['cv']) ?>" target="_blank"
-                                    class="text-blue-600 hover:underline">
-                                    Lihat CV
-                                </a>
-                                <?php else: ?>
-                                <span class="text-gray-500">Tidak ada CV</span>
-                                <?php endif; ?>
+                                <?php
+                                $cv_rel = trim($p['cv'] ?? '');
+                                if ($cv_rel === '') {
+                                    echo '<span class="text-gray-500">Tidak ada CV</span>';
+                                } else {
+                                    // try common server locations
+                                    $candidates = [
+                                        __DIR__ . '/../' . $cv_rel,
+                                        __DIR__ . '/../uploads/cv/' . basename($cv_rel),
+                                        __DIR__ . '/../uploads/' . basename($cv_rel),
+                                    ];
+                                    $found = '';
+                                    foreach ($candidates as $cand) {
+                                        if (file_exists($cand)) { $found = $cand; break; }
+                                    }
+                                    if ($found) {
+                                        // build web-relative URL from project folder
+                                        $webPath = str_replace('\\', '/', substr($found, strlen(__DIR__ . '/../')));
+                                        $cv_url = '../' . ltrim($webPath, '/');
+                                    } else {
+                                        // fallback: assume stored value is web-relative or already correct
+                                        if (strpos($cv_rel, 'http://') === 0 || strpos($cv_rel, 'https://') === 0) {
+                                            $cv_url = $cv_rel;
+                                        } else {
+                                            $cv_url = '../' . ltrim($cv_rel, '/');
+                                        }
+                                    }
+                                    // render only the "Buka CV" link (no download)
+                                    echo '<a href="' . htmlspecialchars($cv_url) . '" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Buka CV</a>';
+                                }
+                                ?>
                             </td>
 
                             <!-- Status (form removed) -->

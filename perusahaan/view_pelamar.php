@@ -158,33 +158,68 @@ if ($stmt) {
 
       <div>
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Pengalaman</h3>
-        <div class="bg-gray-50 p-4 rounded text-gray-700 whitespace-pre-line">
-          <?= nl2br(htmlspecialchars($pelamar['pengalaman'] ?? 'Belum ada pengalaman.')); ?>
-        </div>
+        <?php
+        $exp_raw = trim($pelamar['pengalaman'] ?? '');
+        if ($exp_raw === '') {
+            echo '<p class="text-gray-500 text-sm">Belum ada pengalaman.</p>';
+        } else {
+            // normalize line endings and collapse multiple blank lines
+            $exp = preg_replace("/\r\n|\r/", "\n", $exp_raw);
+            $exp = preg_replace("/\n{2,}/", "\n\n", $exp);
+            echo '<div class="bg-gray-50 p-4 rounded text-gray-700">';
+            foreach (explode("\n", $exp) as $line) {
+                $line = trim($line);
+                if ($line === '') continue;
+                echo '<p class="mb-2">' . htmlspecialchars($line) . '</p>';
+            }
+            echo '</div>';
+        }
+        ?>
       </div>
 
       <div>
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Curriculum Vitae (CV)</h3>
-        <?php if (!empty($pelamar['cv'])) { ?>
-          <div class="bg-gray-50 p-4 rounded flex items-center justify-between">
-            <div class="flex items-center gap-2 text-gray-700">
-              <i class="fa-solid fa-file-pdf text-red-500 text-2xl"></i>
-              <span><?= htmlspecialchars(basename($pelamar['cv'])); ?></span>
-            </div>
-            <div class="flex gap-3">
-              <a href="../<?= htmlspecialchars($pelamar['cv']); ?>" target="_blank" class="text-blue-600 hover:underline"><i class="fa-solid fa-eye"></i> Lihat</a>
-              <a href="../<?= htmlspecialchars($pelamar['cv']); ?>" download class="text-[#00646A] hover:underline"><i class="fa-solid fa-download"></i> Download</a>
-            </div>
-          </div>
-        <?php } else { ?>
-          <p class="text-gray-500 text-sm">Belum upload CV.</p>
-        <?php } ?>
+        <?php
+        $cv_rel = trim($pelamar['cv'] ?? '');
+        if ($cv_rel === '') {
+            echo '<p class="text-gray-500 text-sm">Belum upload CV.</p>';
+        } else {
+            // candidate server paths
+            $candidates = [
+                __DIR__ . '/../' . $cv_rel,
+                __DIR__ . '/../uploads/cv/' . basename($cv_rel),
+                __DIR__ . '/../uploads/' . basename($cv_rel),
+            ];
+            $found = '';
+            foreach ($candidates as $p) {
+                if (file_exists($p)) { $found = $p; break; }
+            }
+
+            // Build web URL for the found file or fallback to original stored value
+            if ($found) {
+                $webPath = str_replace('\\', '/', substr($found, strlen(__DIR__ . '/../')));
+                $cv_url = '../' . ltrim($webPath, '/');
+            } else {
+                $cv_url = (strpos($cv_rel, '../') === 0) ? $cv_rel : '../' . ltrim($cv_rel, '/');
+            }
+
+            echo '<div class="bg-gray-50 p-4 rounded">';
+            echo '<div class="flex items-center justify-between mb-3">';
+            echo '<div class="flex items-center gap-2 text-gray-700"><i class="fa-solid fa-file text-red-500 text-2xl"></i><span>' . htmlspecialchars(basename($cv_rel)) . '</span></div>';
+            // Only show links; do NOT embed/preview file
+            echo '<div class="flex gap-3">';
+            echo '<a href="' . htmlspecialchars($cv_url) . '" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline"><i class="fa-solid fa-eye"></i> Buka</a>';
+            echo '<a href="' . htmlspecialchars($cv_url) . '" download class="text-[#00646A] hover:underline"><i class="fa-solid fa-download"></i> Download</a>';
+            echo '</div></div>';
+            echo '</div>';
+        }
+        ?>
       </div>
 
       <!-- Tampilkan satu kontrol ubah status (latest lamaran) -->
       <?php if (!empty($lamaran)) { ?>
       <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="text-md font-semibold text-gray-800 mb-3">Ubah Status Lamaran (Posisi: <?= htmlspecialchars($lamaran['posisi']); ?>)</h3>
+        <h3 class="text-md font-semibold text-gray-800 mb-3">Ubah Status Lamaran <?= htmlspecialchars($lamaran['posisi']); ?></h3>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div class="text-sm text-gray-600">
             Dikirim: <?= htmlspecialchars(date("d/m/Y", strtotime($lamaran['tanggal_lamar']))); ?>
@@ -222,19 +257,12 @@ if ($stmt) {
               <button type="submit" class="px-4 py-2 bg-[#00646A] text-white rounded text-sm">Simpan</button>
             </form>
           </div>
+       
         </div>
       </div>
       <?php } else { ?>
         <div class="text-gray-500">Belum ada lamaran terkait perusahaan Anda untuk pelamar ini.</div>
       <?php } ?>
-
-    </div>
-  </div>
-</div>
-
-</body>
-</html>
-      <?php  ?>
 
     </div>
   </div>
