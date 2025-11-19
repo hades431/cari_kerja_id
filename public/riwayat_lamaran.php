@@ -82,18 +82,17 @@ if (file_exists($profile_file)) {
         </button>
       </div>
     </div>
-
-    <!-- Notifikasi panel placeholder (injected via JS) -->
-    <div id="notif-panel" class="max-w-4xl mb-4 hidden"></div>
-
-    <!-- Tombol kembali ke profil pelamar -->
-    <!-- Button Kembali -->
+  <!-- Button Kembali -->
 <div class="max-w-4xl mt-4 px-4 flex justify-start">
     <a href="../public/profil_pelamar.php"
         class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition mb-4">
         <i class="fas fa-arrow-left mr-2"></i> Kembali
     </a>
 </div>
+
+    <!-- Notifikasi panel placeholder (injected via JS) -->
+    <div id="notif-panel" class="max-w-4xl mb-4 hidden"></div>
+
 
     <!-- Filter Form -->
     <form method="GET" class="flex flex-wrap gap-3 mb-6">
@@ -158,36 +157,86 @@ document.addEventListener('DOMContentLoaded', function() {
     const panel = document.getElementById('notif-panel');
     const countEl = document.getElementById('notif-count');
 
-    // Fetch unread count
-    fetch('notifikasi.php?count=1')
-      .then(resp => resp.json())
-      .then(data => {
-        const c = data.count || 0;
-        if (c > 0) {
-          countEl.textContent = c;
-          countEl.classList.remove('hidden');
-        } else {
-          countEl.classList.add('hidden');
-        }
-      })
-      .catch(err => console.error('Notif count error', err));
+    function loadCount() {
+        fetch('notifikasi.php?count=1')
+          .then(resp => resp.json())
+          .then(data => {
+            const c = data.count || 0;
+            if (c > 0) {
+              countEl.textContent = c;
+              countEl.classList.remove('hidden');
+            } else {
+              countEl.classList.add('hidden');
+            }
+          })
+          .catch(err => console.error('Notif count error', err));
+    }
 
-    // Toggle panel and load notifications (server will mark them read)
+    function attachDeleteHandlers() {
+        const delBtns = panel.querySelectorAll('.notif-delete-btn');
+        delBtns.forEach(btn => {
+            btn.removeEventListener('click', handleDelete); // ensure no duplicate
+            btn.addEventListener('click', handleDelete);
+        });
+    }
+
+    function handleDelete(e) {
+        const id = e.currentTarget.dataset.id;
+        if (!id) return;
+        if (!confirm('Hapus notifikasi ini?')) return;
+        const fd = new FormData();
+        fd.append('id_notifikasi', id);
+        fetch('hapus_notifikasi.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(json => {
+                if (json && json.success) {
+                    // reload panel and count
+                    loadPanel();
+                    loadCount();
+                } else {
+                    alert('Gagal menghapus notifikasi');
+                    console.error(json);
+                }
+            })
+            .catch(err => {
+                console.error('Delete error', err);
+                alert('Terjadi kesalahan saat menghapus.');
+            });
+    }
+
+    function loadPanel() {
+        fetch('notifikasi.php')
+            .then(r => r.text())
+            .then(html => {
+                panel.innerHTML = html;
+                // remove duplicate fallback messages if present
+                // (existing helper from previous edits)
+                Array.from(panel.querySelectorAll('.text-gray-500, .text-sm.text-gray-600, .bg-white.p-4')).forEach(el => {
+                    const t = (el.textContent || '').trim();
+                    if (!t) return;
+                    if (/^(Semua pesan sudah dibaca|Tidak ada notifikasi baru|Belum ada notifikasi)\b/i.test(t)) {
+                        el.remove();
+                    }
+                });
+                attachDeleteHandlers();
+                panel.classList.remove('hidden');
+                // hide badge
+                countEl.classList.add('hidden');
+                countEl.textContent = '0';
+            })
+            .catch(err => console.error('Notif load error', err));
+    }
+
+    // initial load
+    loadCount();
+
+    // Toggle panel
     btn.addEventListener('click', function() {
-      if (!panel.classList.contains('hidden')) {
-        panel.classList.add('hidden');
-        return;
-      }
-      fetch('notifikasi.php')
-        .then(r => r.text())
-        .then(html => {
-          panel.innerHTML = html;
-          panel.classList.remove('hidden');
-          // hide badge
-          countEl.classList.add('hidden');
-          countEl.textContent = '0';
-        })
-        .catch(err => console.error('Notif load error', err));
+        if (!panel.classList.contains('hidden')) {
+            panel.classList.add('hidden');
+            return;
+        }
+        loadPanel();
     });
 });
 </script>

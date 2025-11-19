@@ -77,7 +77,7 @@ if ($stmt) {
 echo '<div class="max-w-4xl mb-4">';
 
 if (empty($notifications)) {
-    echo '<div class="bg-white p-4 rounded shadow text-sm text-gray-600">Belum ada notifikasi.</div>';
+    // no fallback gray text — return empty container
     echo '</div>';
     mysqli_close($conn);
     exit;
@@ -94,6 +94,7 @@ echo '</div>';
 // list notifications
 echo '<div class="space-y-2">';
 foreach ($notifications as $n) {
+    $id_notif = (int)$n['id_notifikasi'];
     $pesan = htmlspecialchars($n['pesan']);
     $waktu = htmlspecialchars($n['created_at']);
     $isRead = (int)($n['is_read'] ?? 0);
@@ -109,10 +110,16 @@ foreach ($notifications as $n) {
     echo '<div class="' . $colorClass . ' text-sm leading-relaxed">' . $pesan . '</div>';
     echo '<div class="text-xs text-gray-500 mt-1">(' . $waktu . ')</div>';
     echo '</div>';
-    // status label: "Sudah dibaca" if is_read, else "Baru"
+
+    // status label + delete button
     $labelClass = $isRead ? 'text-gray-500 bg-gray-100' : 'text-white bg-red-600';
     $labelText = $isRead ? 'Sudah dibaca' : 'Baru';
-    echo '<div class="flex-shrink-0"><span class="px-2 py-1 text-xs rounded ' . $labelClass . '">' . $labelText . '</span></div>';
+    echo '<div class="flex-shrink-0 flex items-center gap-2">';
+    // delete button
+    echo '<button type="button" class="notif-delete-btn text-xs text-red-600 hover:underline" data-id="' . $id_notif . '">Hapus</button>';
+    echo '<span class="px-2 py-1 text-xs rounded ' . $labelClass . '">' . $labelText . '</span>';
+    echo '</div>';
+
     echo '</div>';
 }
 echo '</div>'; // .space-y-2
@@ -120,7 +127,7 @@ echo '</div>'; // .max-w-4xl
 
 mysqli_close($conn);
 ?>
-          <?= $unreadCount > 0 ? 'text-[#00797a]' : 'text-gray-500' ?>">
+          <?= $unreadCount > 0 ? '' : '' ?>
           <?= $unreadCount > 0 
               ? "Pesan Belum Dibaca: {$unreadCount}" 
               : "Semua pesan sudah dibaca ✅"; ?>
@@ -142,27 +149,7 @@ mysqli_close($conn);
                 elseif (stripos($text, 'diproses') !== false) $colorClass = 'text-blue-700 font-medium';
                 elseif (stripos($text, 'menunggu') !== false) $colorClass = 'text-amber-700 font-medium';
             ?>
-            
-            <div class="flex items-start gap-4 py-5 px-3 <?= $status ? 'bg-gray-50' : 'bg-white' ?> hover:bg-gray-100 transition rounded-lg">
-              
-              <!-- Titik status -->
-              <div class="flex-shrink-0 mt-2">
-                <div class="<?= $status ? 'bg-[#00797a]' : 'bg-gray-300' ?> w-3 h-3 rounded-full"></div>
-              </div>
-
-              <!-- Isi notifikasi -->
-              <div class="flex-1">
-                <p class="<?= $colorClass ?> leading-relaxed text-[15px]">
-                  <?= htmlspecialchars($text); ?>
-                </p>
-                <?php if ($time): ?>
-                  <p class="text-sm text-gray-500 mt-1 flex items-center gap-1">
-                    <i data-lucide="clock" class="w-4 h-4 text-gray-400"></i>
-                    <?= htmlspecialchars($time); ?>
-                  </p>
-                <?php endif; ?>
-              </div>
-            </div>
+           
             <?php endforeach; ?>
           </div>
         <?php else: ?>
