@@ -14,6 +14,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $dbPassword = $user['password'];
     $isHashed = strlen($dbPassword) === 60 && preg_match('/^\$2y\$/', $dbPassword);
     if(password_verify($password, $dbPassword)){
+        $id = $user['id_user'];
       $_SESSION['login'] = true;
       $_SESSION['id_user'] = $user['id_user'];
       $_SESSION['email'] = $user['email'];
@@ -25,7 +26,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         'email' => $user['email'],
         'nama' => $user['nama'] ?? '',
         'role' => $user['role'],
-        'status_akun' => $user['status_akun']
+        'status_akun' => $user['status_akun'],
+        'id_perusahaan' => tampil("SELECT*FROM perusahaan WHERE id_user=$id")[0]['id_perusahaan'] ?? null
       ];
       if($user["role"] == "Admin"){
         header("LOCATION: ../admin/dashboard/dashboard.php");
