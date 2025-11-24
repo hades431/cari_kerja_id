@@ -16,18 +16,15 @@ mysqli_stmt_execute($query);
 $result = mysqli_stmt_get_result($query);
 $pelamar = mysqli_fetch_assoc($result);
 
-// Tentukan path foto secara fleksibel: URL, root-relative, path yang sudah berisi 'uploads/', atau nama file saja
+
 $fotoSrc = '../../img/default_pp.png';
 if (!empty($pelamar['foto'])) {
     $fotoVal = $pelamar['foto'];
     if (preg_match('/^(https?:)?\\/\\//', $fotoVal) || strpos($fotoVal, '/') === 0) {
-        // sudah berupa URL lengkap atau root-relative path
         $fotoSrc = $fotoVal;
     } elseif (strpos($fotoVal, 'uploads/') === 0) {
-        // sudah menyertakan folder uploads di awal
         $fotoSrc = '../../' . $fotoVal;
     } else {
-        // hanya nama file
         $fotoSrc = '../../uploads/pelamar/' . $fotoVal;
     }
 }
@@ -70,29 +67,55 @@ if (!empty($pelamar['foto'])) {
 
   
         <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-3">Pengalaman Kerja</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Pengalaman Kerja</h3>
 
-        <?php if (!empty($pelamar['pengalaman'])): ?>
-            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-            <h4 class="text-lg font-semibold text-gray-800">
-                <?= htmlspecialchars($pelamar['pengalaman']); ?>
-            </h4>
-            <?php if (!empty($pelamar['tempat_kerja'])): ?>
-                <p class="text-gray-500 text-sm mb-1">
-                @ <?= htmlspecialchars($pelamar['tempat_kerja']); ?>
-                </p>
-            <?php endif; ?>
-            <?php if (!empty($pelamar['tahun_pengalaman'])): ?>
-                <p class="text-gray-400 text-sm">
-                <?= htmlspecialchars($pelamar['tahun_pengalaman']); ?>
-                </p>
-            <?php endif; ?>
+            <?php  
+                
+                $exp = json_decode($pelamar['pengalaman'], true);
+
+                $jabatan = "-";
+                $perusahaan = "-";
+                $tahun = "-";
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $jabatan = isset($exp['jabatan'][0]) ? $exp['jabatan'][0] : "-";
+                    $perusahaan = isset($exp['perusahaan'][0]) ? $exp['perusahaan'][0] : "-";
+                    $tahun = isset($exp['tahun'][0]) ? $exp['tahun'][0] : "-";
+                } else {
+                    $jabatan = $pelamar['pengalaman'] ?: "-";
+                    $perusahaan = $pelamar['tempat_kerja'] ?: "-";
+                    $tahun = $pelamar['tahun_pengalaman'] ?: "-";
+                }
+            ?>
+
+            <?php if ($jabatan != "-" || $perusahaan != "-" || $tahun != "-"): ?>
+            
+            <div class="bg-white border border-gray-300 shadow-sm rounded-xl p-5">
+
+                <div class="flex mb-3">
+                    <span class="w-32 font-semibold text-gray-700"> Jabatan</span>
+                    <span class="mr-2">:</span>
+                    <span class="text-gray-600"><?= htmlspecialchars($jabatan) ?></span>
+                </div>
+
+                <div class="flex mb-3">
+                    <span class="w-32 font-semibold text-gray-700"> Perusahaan</span>
+                    <span class="mr-2">:</span>
+                    <span class="text-gray-600"><?= htmlspecialchars($perusahaan) ?></span>
+                </div>
+
+                <div class="flex mb-1">
+                    <span class="w-32 font-semibold text-gray-700"> Tahun</span>
+                    <span class="mr-2">:</span>
+                    <span class="text-gray-600"><?= htmlspecialchars($tahun) ?></span>
+                </div>
+
             </div>
-        <?php else: ?>
-            <p class="text-gray-500 italic">Belum ada pengalaman kerja.</p>
-        <?php endif; ?>
-        </div>
 
+            <?php else: ?>
+                <p class="text-gray-500 italic">Belum ada pengalaman kerja.</p>
+            <?php endif; ?>
+        </div>
 
 
       <div class="mb-8">

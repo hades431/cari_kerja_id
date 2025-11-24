@@ -6,6 +6,10 @@ include '../../function/sesi_role_aktif_admin.php';
 $menuAktif = menu_aktif('lowongan');
 $keyword = $_GET['search'] ?? '';
 $lowongan = getLowonganList($keyword);
+
+if (isset($_GET['pesan'])) {
+    header("Refresh: 3; url=lowongan_kerja.php");
+}
 ?>
 
 <!DOCTYPE html>
@@ -95,6 +99,15 @@ $lowongan = getLowonganList($keyword);
 
       <div class="p-6 mt-6">
 
+        
+        <?php if (isset($_GET['pesan'])): ?>
+        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+            <?= htmlspecialchars($_GET['pesan']) ?>
+        </div>
+        <?php endif; ?>
+
+
+
         <form method="GET" class="mb-4 flex gap-2">
           <input 
             type="text" 
@@ -159,5 +172,38 @@ $lowongan = getLowonganList($keyword);
       </div>
     </div>
   </div>
+
+  <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+        <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+        <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
+        <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
+        <div class="flex justify-center gap-4">
+            <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+            <button id="logout-confirm-btn" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    function openLogoutModal(){document.getElementById('logout-modal').classList.remove('hidden')}
+    function closeLogoutModal(){document.getElementById('logout-modal').classList.add('hidden')}
+    document.addEventListener('DOMContentLoaded',function(){
+      var confirmBtn=document.getElementById('logout-confirm-btn');
+      document.querySelectorAll('a[href*="logout"]').forEach(function(a){
+        try{a.removeAttribute('onclick')}catch(e){}
+        a.addEventListener('click',function(e){
+          e.preventDefault();
+          var href=a.getAttribute('href')||'../../public/logout.php';
+          confirmBtn.setAttribute('data-href',href);
+          openLogoutModal();
+        });
+      });
+      confirmBtn.addEventListener('click',function(){
+        var href=this.getAttribute('data-href')||'../../public/logout.php';
+        window.location.href=href;
+      });
+    });
+  </script>
 </body>
 </html>

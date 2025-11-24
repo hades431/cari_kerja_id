@@ -59,8 +59,12 @@ if ($result && mysqli_num_rows($result) > 0) {
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
           <span>Artikel & Tips</span>
         </a>
-        <a href="../logout.php" onclick="return confirm('Yakin mau logout?')" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition <?= $menuAktif['logout'] ? 'bg-red-700 text-white' : 'text-teal-100 hover:bg-red-700 hover:text-white' ?> mt-auto">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7" /><rect x="3" y="4" width="4" height="16" rx="2" /></svg>
+        <a href="../../public/logout.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition 
+          <?= $menuAktif['logout'] ? 'bg-red-700 text-white' : 'text-teal-100 hover:bg-red-700 hover:text-white' ?> mt-auto">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M17 16l4-4m0 0l-4-4m4 4H7" />
+            <rect x="3" y="4" width="4" height="16" rx="2" />
+          </svg>
           <span>Logout</span>
         </a>
       </nav>
@@ -99,7 +103,24 @@ if ($result && mysqli_num_rows($result) > 0) {
                   <tr class="hover:bg-gray-50 transition">
                     <td class="px-4 py-3"><?= $i+1 ?>.</td>
                     <td class="px-4 py-3 font-medium text-gray-700"><?= htmlspecialchars($row['nama']); ?></td>
-                    <td class="px-4 py-3 font-medium text-gray-700"><?= htmlspecialchars($row['role']); ?></td>
+<td class="px-4 py-3">
+    <?php if ($row['role'] == 'Admin'): ?>
+        <span class="font-medium text-gray-700">Admin</span>
+    <?php else: ?>
+        <form action="update_role.php" method="POST" class="flex items-center gap-2">
+            <input type="hidden" name="id" value="<?= $row['id_user']; ?>">
+
+            <select name="role" class="px-2 py-1 border rounded-lg text-sm text-gray-700">
+                <option value="pelamar" <?= $row['role'] == 'pelamar' ? 'selected' : '' ?>>Pelamar</option>
+                <option value="perusahaan" <?= $row['role'] == 'perusahaan' ? 'selected' : '' ?>>Perusahaan</option>
+            </select>
+
+            <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm">
+                Simpan
+            </button>
+        </form>
+    <?php endif; ?>
+</td>
                     <td class="px-4 py-3 text-gray-600"><?= htmlspecialchars($row['email']); ?></td>
                     <td class="px-4 py-3">
                       <span class="px-2 py-1 rounded-full text-xs font-semibold <?= $row['status_akun'] == 'aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>"><?= $row['status_akun']; ?></span>
@@ -114,12 +135,13 @@ if ($result && mysqli_num_rows($result) > 0) {
                           <a href="update_status.php?id=<?= $row['id_user']; ?>&status=aktif" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">Aktifkan</a>
                         <?php endif; ?>
                       <?php endif; ?>
+                      
                     </td>
                     <td class="px-4 py-3 text-center">
                       <?php if ($row['role'] != 'Admin'): ?>
                         <a href="detail_pelamar.php?id=<?= $row['id_user']; ?>" 
                           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm shadow">
-                          Lihat Detail
+                          Lihat 
                         </a>
                       <?php else: ?>
                         <span class="text-gray-500 italic">-</span>
@@ -148,5 +170,38 @@ if ($result && mysqli_num_rows($result) > 0) {
       </footer>
     </div>
   </div>
+
+<div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+        <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+        <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
+        <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
+        <div class="flex justify-center gap-4">
+            <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+            <button id="logout-confirm-btn" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    function openLogoutModal(){document.getElementById('logout-modal').classList.remove('hidden')}
+    function closeLogoutModal(){document.getElementById('logout-modal').classList.add('hidden')}
+    document.addEventListener('DOMContentLoaded',function(){
+      var confirmBtn=document.getElementById('logout-confirm-btn');
+      document.querySelectorAll('a[href*="logout"]').forEach(function(a){
+        try{a.removeAttribute('onclick')}catch(e){}
+        a.addEventListener('click',function(e){
+          e.preventDefault();
+          var href=a.getAttribute('href')||'../../public/logout.php';
+          confirmBtn.setAttribute('data-href',href);
+          openLogoutModal();
+        });
+      });
+      confirmBtn.addEventListener('click',function(){
+        var href=this.getAttribute('data-href')||'../../public/logout.php';
+        window.location.href=href;
+      });
+    });
+  </script>
 </body>
 </html>
