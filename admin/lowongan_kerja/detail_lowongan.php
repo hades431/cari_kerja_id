@@ -26,56 +26,56 @@ if (!$data) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 py-10">
+<body class="bg-gray-100 py-12">
 
-    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-8">
 
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Detail Lowongan</h1>
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Detail Lowongan</h1>
 
-        <div class="space-y-4">
+            <a href="lowongan_kerja.php" 
+               class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition">
+                  Kembali
+            </a>
+        </div>
+
+        <div class="space-y-6">
 
             <div>
-                <p class="text-gray-500">Nama Perusahaan</p>
-                <p class="text-lg font-semibold text-gray-900">
+                <p class="text-gray-500 text-sm">Nama Perusahaan</p>
+                <p class="text-xl font-semibold text-gray-900">
                     <?= htmlspecialchars($data['nama_perusahaan']) ?>
                 </p>
             </div>
 
             <div>
-                <p class="text-gray-500">Lowongan</p>
-                <p class="text-lg font-semibold text-gray-900">
+                <p class="text-gray-500 text-sm">Posisi / Lowongan</p>
+                <p class="text-xl font-semibold text-gray-900">
                     <?= htmlspecialchars($data['posisi']) ?>
                 </p>
             </div>
 
             <div>
-                <p class="text-gray-500">Deskripsi Lowongan</p>
-                <p class="text-gray-800 leading-relaxed">
+                <p class="text-gray-500 text-sm">Deskripsi Pekerjaan</p>
+                <div class="bg-gray-50 p-4 rounded-lg border text-gray-700 leading-relaxed">
                     <?= nl2br(htmlspecialchars($data['deskripsi'])) ?>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-gray-500 text-sm">Lokasi Kerja</p>
+                <p class="text-lg font-medium text-gray-900">
+                    📍 <?= htmlspecialchars($data['lokasi']) ?>
                 </p>
             </div>
 
             <div>
-                <p class="text-gray-500">Lokasi Kerja</p>
-                <p class="text-lg font-semibold text-gray-900">
-                    <?= htmlspecialchars($data['lokasi']) ?>
+                <p class="text-gray-500 text-sm">Gaji</p>
+                <p class="text-xl font-bold text-green-600">
+                    Rp <?= number_format($data['gaji'], 0, ',', '.') ?>
                 </p>
             </div>
 
-            <div>
-                <p class="text-gray-500">Gaji</p>
-                <p class="text-lg font-semibold text-green-700">
-                    <?= htmlspecialchars($data['gaji']) ?>
-                </p>
-            </div>
-
-        </div>
-
-        <div class="mt-8 flex justify-between">
-            <a href="lowongan_kerja.php"
-               class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                Kembali
-            </a>
         </div>
 
     </div>

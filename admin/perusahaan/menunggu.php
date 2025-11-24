@@ -5,9 +5,8 @@ $menuAktif = menu_aktif('perusahaan');
 
 if (isset($_POST['submit'])) {
     $id = $_POST['id'];
-    $id_user = tampil("SELECT id_user FROM perusahaan WHERE id_perusahaan = $id")[0]['id_user'];
     $aksi = $_POST['verifikasi'];
-    verifikasiPerusahaan($id, $aksi, $id_user);
+    verifikasiPerusahaan($id, $aksi);
     header("Location: perusahaan.php");
     exit;
 }
@@ -85,7 +84,7 @@ $result = getPerusahaanMenunggu();
           <span>Artikel & Tips</span>
         </a>
 
-        <a href="../../public/logout.php" onclick="return confirm('Yakin mau logout?')" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition 
+        <a href="../../public/logout.php" class="flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition 
           <?= $menuAktif['logout'] ? 'bg-red-700 text-white' : 'text-teal-100 hover:bg-red-700 hover:text-white' ?> mt-auto">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M17 16l4-4m0 0l-4-4m4 4H7" />
@@ -102,8 +101,16 @@ $result = getPerusahaanMenunggu();
       </header>
 
       <main class="p-8 flex-1 space-y-10">
-      <h3 class="text-xl font-bold mb-6 text-gray-700">Daftar Perusahaan Menunggu Verifikasi</h3>
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-700">
+                Daftar Perusahaan Menunggu Verifikasi
+            </h3>
 
+            <a href="../perusahaan/perusahaan.php" 
+              class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition">
+                Kembali
+            </a>
+        </div>
       <div class="p-8">
         <?php if (empty($perusahaanList)): ?>
           <div class="bg-gray-50 rounded-xl shadow p-8 text-center text-gray-500">
@@ -119,7 +126,6 @@ $result = getPerusahaanMenunggu();
                   <th class="px-4 py-3 text-left">Email</th>
                   <th class="px-4 py-3 text-left">Tanggal Daftar</th>
                   <th class="px-4 py-3 text-left">Bukti Pembayaran</th>
-                  <th class="px-4 py-3 text-left">Deskripsi Perusahaan</th>
                   <th class="px-4 py-3 text-left">Aksi</th>
                 </tr>
               </thead>
@@ -132,9 +138,6 @@ $result = getPerusahaanMenunggu();
                     <td class="px-4 py-3"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
                     <td class="px-4 py-3">
                       <a href="../transaksi/riwayat_transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
-                    </td>
-                    <td class="px-4 py-3">
-                      <a href="detail_perusahaan.php?id=<?= $row['id_perusahaan'] ?>" class="text-indigo-600 hover:underline">Lihat Deskripsi</a>
                     </td>
                     <td class="px-4 py-3 flex gap-2">
                       <form method="POST">
@@ -161,5 +164,38 @@ $result = getPerusahaanMenunggu();
       </footer>
     </div>
   </div>
+
+  <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+        <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+        <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
+        <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
+        <div class="flex justify-center gap-4">
+            <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+            <button id="logout-confirm-btn" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    function openLogoutModal(){document.getElementById('logout-modal').classList.remove('hidden')}
+    function closeLogoutModal(){document.getElementById('logout-modal').classList.add('hidden')}
+    document.addEventListener('DOMContentLoaded',function(){
+      var confirmBtn=document.getElementById('logout-confirm-btn');
+      document.querySelectorAll('a[href*="logout"]').forEach(function(a){
+        try{a.removeAttribute('onclick')}catch(e){}
+        a.addEventListener('click',function(e){
+          e.preventDefault();
+          var href=a.getAttribute('href')||'../../public/logout.php';
+          confirmBtn.setAttribute('data-href',href);
+          openLogoutModal();
+        });
+      });
+      confirmBtn.addEventListener('click',function(){
+        var href=this.getAttribute('data-href')||'../../public/logout.php';
+        window.location.href=href;
+      });
+    });
+  </script>
 </body>
 </html>
