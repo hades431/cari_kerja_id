@@ -23,6 +23,8 @@ if ($is_logged_in) {
     }
     elseif (isset($_SESSION['user'])) {
         require_once '../function/logic.php';
+        $id_user = $_SESSION['user']['id'] ?? null;
+$expire_check = tampil("SELECT*FROM perusahaan WHERE id_user=$id_user")[0] ?? null;
         $user_id = $_SESSION['user']['id'] ?? null;
         $nama_lengkap = $_SESSION['user']['email'] ?? 'Nama Pengguna';
         if ($user_id) {
@@ -79,10 +81,21 @@ if (!isset($_SESSION['user'])){
                       text-white px-6 py-2 rounded-full font-bold shadow transition">
                         Info & Tips Kerja
                     </a>
+                    <?php if(isset($_SESSION["user"])): ?>
+                    <?php if(!$_SESSION["user"]["id_perusahaan"]): ?>
                     <a href="../public/buka_lowongan.php" class="bg-yellow-500 max-w-max hover:bg-yellow-600 active:bg-yellow-700 
                       text-black px-6 py-2 rounded-full font-bold shadow transition">
                         Buka Lowongan
                     </a>
+                    <?php
+
+                    elseif($expire_check["verifikasi"] == 'expire'): ?>
+                    <a href="../public/buka_lowongan.php" class="bg-yellow-500 max-w-max hover:bg-yellow-600 active:bg-yellow-700 
+                      text-black px-6 py-2 rounded-full font-bold shadow transition">
+                        perpanjang paket
+                    </a>
+                    <?php endif; ?>
+                    <?php endif; ?>
                     <?php if (!isset($_SESSION['user'])): ?>
                     <a href="../login/login.php" class="bg-green-500 max-w-max hover:bg-[#024629] active:bg-green-700 
                       text-white px-6 py-2 rounded-full font-bold shadow transition">

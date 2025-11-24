@@ -1,7 +1,9 @@
 <?php
 session_start();
+
 include __DIR__ . "/../config.php"; // koneksi database
 include '../function/logic.php';
+include '../function/check_exp.php';
 // Pastikan perusahaan login
 if(!isset($_SESSION['login']) || $_SESSION['role'] !== 'Perusahaan'){
     header("Location: ../login/login.php");
@@ -9,11 +11,25 @@ if(!isset($_SESSION['login']) || $_SESSION['role'] !== 'Perusahaan'){
 }
 
 // Ambil perusahaan & paket
+
+
 $user_id = $_SESSION["user"]["id"];
-$id_perusahaan = 0;
-$durasi_hari = 7; // default
-$max_lowongan = 1; // default
-$nama_perusahaan = 'Perusahaan';
+$id_perusahaan = $_SESSION['user']['id_perusahaan'] ?? null;
+$paket = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0]['paket'] ?? 'default';
+if($paket == 'diamond'){
+    $durasi_hari = 60;
+}elseif($paket == 'gold'){
+    $durasi_hari = 45;
+}elseif($paket == 'silver'){
+    $durasi_hari = 30;
+}else{
+    $durasi_hari = 15; // default
+}
+
+$max_lowongan = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0]["Lowogan_post"]; // default
+
+$nama_perusahaan = tampil("SELECT nama_perusahaan FROM perusahaan WHERE id_user=$user_id")[0]['nama_perusahaan'] ?? 'Perusahaan Anda';
+$status = tampil("SELECT verifikasi FROM perusahaan WHERE id_user=$user_id")[0]['verifikasi'] ?? 'Perusahaan Anda';
 $logo_perusahaan = '';
 $paket_notice = ''; // Inisialisasi variabel sebelum digunakan
 
@@ -31,47 +47,8 @@ if ($columnCheck && $columnCheck->num_rows > 0) {
     $hasPaketIdColumn = true;
 }
 
-if ($hasPaketTable && $hasPaketIdColumn) {
-    // Jika kedua ada, JOIN dengan paket
-    // Sesuaikan nama kolom: ganti 'pk.max_lowongan' dengan kolom yang ada di tabel paket Anda
-    $stmt = $conn->prepare("SELECT p.id_perusahaan, p.nama_perusahaan, p.logo, p.paket_id, pk.durasi_hari, pk.nama_paket
-                            FROM perusahaan p 
-                            LEFT JOIN paket pk ON p.paket_id = pk.id_paket
-                            WHERE p.id_user = ? LIMIT 1");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    if ($row = $res->fetch_assoc()) {
-        $id_perusahaan = (int)$row['id_perusahaan'];
-        $nama_perusahaan = $row['nama_perusahaan'] ?? $nama_perusahaan;
-        $logo_perusahaan = $row['logo'] ?? $logo_perusahaan;
-        // Jika paket_id ada dan durasi_hari tidak null, gunakan nilai dari paket
-        if (!empty($row['paket_id']) && $row['durasi_hari'] !== null) {
-            $durasi_hari = (int)$row['durasi_hari'];
-            // max_lowongan tetap default 1 jika kolom tidak ada
-            // $max_lowongan = (int)($row['max_lowongan'] ?? 1);
-        } else {
-            $paket_notice = "Perusahaan Anda belum memilih paket. Menggunakan paket default (7 hari, 1 lowongan).";
-        }
-    }
-    $stmt->close();
-} else {
-    // Jika tabel paket atau kolom paket_id tidak ada, ambil data perusahaan saja
-    $stmt = $conn->prepare("SELECT id_perusahaan, nama_perusahaan, logo FROM perusahaan WHERE id_user = ? LIMIT 1");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    if ($row = $res->fetch_assoc()) {
-        $id_perusahaan = (int)$row['id_perusahaan'];
-        $nama_perusahaan = $row['nama_perusahaan'] ?? $nama_perusahaan;
-        $logo_perusahaan = $row['logo'] ?? $logo_perusahaan;
-    }
-    $stmt->close();
-    $paket_notice = "Setup paket belum lengkap. Menggunakan paket default (7 hari, 1 lowongan). Hubungi admin untuk konfigurasi paket.";
-}
 
 // Hitung lowongan aktif perusahaan saat ini (batas_lamaran >= today)
-$active_count = 0;
 if ($id_perusahaan) {
     $stmt = $conn->prepare("SELECT COUNT(*) FROM lowongan WHERE id_perusahaan = ? AND (batas_lamaran IS NULL OR DATE(batas_lamaran) >= CURDATE())");
     $stmt->bind_param("i", $id_perusahaan);
@@ -81,6 +58,28 @@ if ($id_perusahaan) {
     $stmt->close();
 }
 
+// Ambil tanggal Expire paket perusahaan dan hitung sisa hari
+$expire_raw = tampil("SELECT Expire FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0]['Expire'] ?? null;
+$expire_formatted = null;
+$expire_iso = null;
+$days_left = null;
+if ($expire_raw && $expire_raw !== '0000-00-00') {
+    try {
+        $expire_dt = new DateTime($expire_raw);
+        $now = new DateTime();
+        $interval = $now->diff($expire_dt);
+        // %r%a memberi tanda kalau negatif (sudah lewat)
+        $days_left = (int)$interval->format('%r%a');
+        $expire_formatted = $expire_dt->format('Y-m-d H:i:s');
+        // format ISO untuk JS (eksplicit timezone lokal server)
+        $expire_iso = $expire_dt->format(DateTime::ATOM);
+    } catch (Exception $e) {
+        $expire_formatted = null;
+        $expire_iso = null;
+        $days_left = null;
+    }
+}
+
 // Pesan untuk user
 $message = '';
 $error = '';
@@ -88,13 +87,17 @@ $error = '';
 // Proses submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Pastikan masih boleh membuat lowongan sesuai paket
-    if ($max_lowongan > 0 && $active_count >= $max_lowongan) {
+       $cek = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0];
+    if ($cek['Lowogan_post'] <= 0 || $cek["verifikasi"] == "expire") {
         $error = "Kuota lowongan Anda sudah penuh untuk paket saat ini (maks: $max_lowongan). Silakan upgrade paket atau tunggu lowongan berakhir.";
     } else {
         $judul = trim($_POST['judul'] ?? '');
         $deskripsi = trim($_POST['deskripsi'] ?? '');
         $lokasi = trim($_POST['lokasi'] ?? '');
         $gaji = trim($_POST['gaji'] ?? '');
+        $pengalaman = trim($_POST['pengalaman'] ?? '');
+        $gender = trim($_POST['gender'] ?? '');
+        $pendidikan = isset($_POST['pendidikan']) ? implode(',', $_POST['pendidikan']) : '';
         // Validasi sederhana
         if ($judul === '' || $deskripsi === '') {
             $error = "Judul dan deskripsi wajib diisi.";
@@ -103,12 +106,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tanggal_post = date('Y-m-d H:i:s');
             $batas_lamaran = date('Y-m-d', strtotime("+{$durasi_hari} days", strtotime($tanggal_post)));
             // Simpan ke DB (prepared)
-            $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, deskripsi, lokasi, gaji, tanggal_post, batas_lamaran) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("issssss", $id_perusahaan, $judul, $deskripsi, $lokasi, $gaji, $tanggal_post, $batas_lamaran);
+           $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, posisi, deskripsi, pengalaman, pendidikan, gender, gaji, lokasi, tanggal_post, batas_lamaran) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
++            // urutan variabel harus sesuai kolom: id_perusahaan (i), lalu 10 string (s)
++            $stmt->bind_param("issssssssss", $id_perusahaan, $judul, $judul, $deskripsi, $pengalaman, $pendidikan, $gender, $gaji, $lokasi, $tanggal_post, $batas_lamaran);
             if ($stmt->execute()) {
+            $stmt2 = $conn->prepare("UPDATE perusahaan SET Lowogan_post = Lowogan_post - 1 WHERE id_perusahaan = ?");
+            $stmt2->bind_param("i", $id_perusahaan);
+            $stmt2->execute();
                 $message = "Lowongan berhasil dipasang. Berlaku sampai: $batas_lamaran";
                 // update active_count karena berhasil menambah lowongan
-                $active_count++;
+                header("Location: dashboard_perusahaan.php");
+                exit;
+                
             } else {
                 $error = "Terjadi kesalahan saat menyimpan: " . $stmt->error;
             }
@@ -143,8 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="mb-4">
             <p>Paket saat ini: <strong><?= htmlspecialchars($nama_perusahaan) ?></strong></p>
             <p>Durasi lowongan paket: <strong><?= htmlspecialchars($durasi_hari) ?> hari</strong></p>
-            <p>Kuota lowongan paket: <strong><?= htmlspecialchars($max_lowongan) ?></strong></p>
+            <p>Kuota lowongan paket: <strong><?= $max_lowongan ?></strong></p>
+            <p>status: <strong><?= $status == "expire" ? "kadaluarsa" : "aktif"; ?></strong></p>
             <p>Lowongan aktif saat ini: <strong><?= htmlspecialchars($active_count) ?></strong></p>
+            <p>Expire paket: <strong id="expire_date"><?= htmlspecialchars($expire_formatted ?? '-') ?></strong></p>
         </div>
 
         <form method="POST" enctype="multipart/form-data" class="space-y-6" id="lowonganForm">
@@ -168,11 +179,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <textarea name="deskripsi" rows="5" required
                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500"></textarea>
             </div>
-
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Pengalaman</label>
+                <div class="flex gap-4">
+                    <select name="pengalaman"
+                        class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
+                        <option>Tahun</option>
+                        <option value="tanpa">Tanpa Pengalaman</option>
+                        <option value="1-4">1-4 Tahun</option>
+                        <option value=">4">4 Tahun Lebih</option>
+                    </select>
+                </div>
+            </div>
             <div>
                 <label class="block text-gray-700 font-semibold mb-2">Lokasi Kerja</label>
                 <input type="text" name="lokasi" required
                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Pendidikan Minimal</label>
+                <?php
+            $pendidikan_arr = ['sma'=>'SMA/SMK','d3'=>'Diploma (D3)','s1'=>'Sarjana (S1)','s2'=>'Magister (S2)'];
+            foreach($pendidikan_arr as $key=>$val): ?>
+                <label class="flex items-center gap-2 mr-4">
+                    <input type="checkbox" name="pendidikan[]" value="<?= $key ?>"
+                        class="pendidikan-checkbox text-teal-600 focus:ring-teal-500">
+                    <?= $val ?>
+                </label>
+                <?php endforeach; ?>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Jenis Kelamin</label>
+                <label class="flex items-center gap-2 mr-4">
+                    <input type="radio" name="gender" value="pria" class="text-teal-600 focus:ring-teal-500"> Pria
+                </label>
+                <label class="flex items-center gap-2 mr-4">
+                    <input type="radio" name="gender" value="wanita" class="text-teal-600 focus:ring-teal-500"> Wanita
+                </label>
+                <label class="flex items-center gap-2">
+                    <input type="radio" name="gender" value="bebas" class="text-teal-600 focus:ring-teal-500"> Bebas
+                    (tanpa preferensi)
+                </label>
             </div>
 
             <div>
@@ -219,6 +266,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     }
+
+    // Hitung mundur live berdasarkan tanggal Expire dari server (jika ada)
+    (function(){
+        const expireIso = <?= json_encode($expire_iso) ?>; // iso string atau null
+        if (!expireIso) return;
+        const target = new Date(expireIso).getTime();
+        const timerEl = document.getElementById('countdown_timer');
+        const daysLeftEl = document.getElementById('days_left');
+
+        const update = () => {
+            const now = Date.now();
+            let diff = target - now;
+            if (diff <= 0) {
+                timerEl.textContent = "Kadaluarsa";
+                if (daysLeftEl) daysLeftEl.textContent = "Sudah kadaluarsa";
+                clearInterval(intervalId);
+                return;
+            }
+            const days = Math.floor(diff / (1000*60*60*24));
+            diff -= days * (1000*60*60*24);
+            const hours = Math.floor(diff / (1000*60*60)); diff -= hours * (1000*60*60);
+            const minutes = Math.floor(diff / (1000*60)); diff -= minutes * (1000*60);
+            const seconds = Math.floor(diff / 1000);
+            // tampilkan "Nh HH:MM:SS"
+            timerEl.textContent = (days>0? days + " hari " : "") + String(hours).padStart(2,'0') + ":" + String(minutes).padStart(2,'0') + ":" + String(seconds).padStart(2,'0');
+            if (daysLeftEl) daysLeftEl.textContent = days + ' hari';
+        };
+        update();
+        const intervalId = setInterval(update, 1000);
+    })();
     </script>
 
 </body>

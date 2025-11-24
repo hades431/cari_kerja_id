@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telepon_perusahaan = $_POST['telepon_perusahaan'] ?? '';
     $website_perusahaan = $_POST['website_perusahaan'] ?? '';
     $paket = $_POST['paket'] ?? '';
+    $deskripsi = $_POST['deskripsi'] ?? '';
     $metode_pembayaran = $_POST['metode_pembayaran'] ?? ''; // ambil dari form
     $bukti_pembayaran = '';
 
@@ -54,11 +55,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $bukti_pembayaran = 'uploads/' . $fileName;
         }
     }
+    $count_lowongan = 0;
+    $expire = '';
 
+    if($paket == 'bronze'){
+        $expire = date('Y-m-d', strtotime('+15 days'));
+    } else if($paket == 'silver'){
+        $expire = date('Y-m-d', strtotime('+30 days'));
+    } else if($paket == 'gold'){
+        $expire = date('Y-m-d', strtotime('+45 days'));
+    } else if($paket == 'diamond'){
+        $expire = date('Y-m-d', strtotime('+60 days'));
+    }
+
+    if($paket == 'bronze'){
+        $count_lowongan = 1;
+    } else if($paket == 'silver'){
+        $count_lowongan = 3;
+    } else if($paket == 'gold'){
+        $count_lowongan = 7;
+    } else if($paket == 'diamond'){
+        $count_lowongan = 999;
+    }
     // Simpan ke database
     $sql = "INSERT INTO perusahaan 
-        (nama_perusahaan, id_user ,alamat, email_perusahaan, no_telepon, website, bukti_pembayaran, deskripsi, paket, verifikasi, waktu) VALUES
-        ('$nama_perusahaan', $id , '$alamat_perusahaan', '$email_perusahaan', '$telepon_perusahaan', '$website_perusahaan', '$bukti_pembayaran', '$deskripsi', '$paket', 'belum' , '15')";
+        (nama_perusahaan, id_user ,alamat, email_perusahaan, no_telepon, website, bukti_pembayaran, deskripsi, paket, verifikasi, waktu, Expire, Lowogan_post) VALUES
+        ('$nama_perusahaan', $id , '$alamat_perusahaan', '$email_perusahaan', '$telepon_perusahaan', '$website_perusahaan', '$bukti_pembayaran', '$deskripsi', '$paket', 'belum' , '15', '$expire', $count_lowongan)";
     // Jangan update role user di sini, tunggu sampai verifikasi admin
     // $sql_user = "UPDATE user SET role = 'perusahaan' WHERE id_user = $id";
     // mysqli_query($conn, $sql_user);
