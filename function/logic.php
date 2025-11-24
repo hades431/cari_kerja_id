@@ -655,4 +655,18 @@ function cari_diamond($data){
 
     return tampil($sql);
 }
+
+function getLowonganById($id) {
+    global $conn;
+
+    $query = mysqli_query($conn, "
+        SELECT l.*, p.nama_perusahaan 
+        FROM lowongan_kerja l
+        JOIN perusahaan p ON p.id_perusahaan = l.id_perusahaan
+        WHERE l.id_lowongan = $id
+    ");
+
+    return mysqli_fetch_assoc($query);
+}
+
 ?>

@@ -6,6 +6,10 @@ include '../../function/sesi_role_aktif_admin.php';
 $menuAktif = menu_aktif('lowongan');
 $keyword = $_GET['search'] ?? '';
 $lowongan = getLowonganList($keyword);
+
+if (isset($_GET['pesan'])) {
+    header("Refresh: 3; url=lowongan_kerja.php");
+}
 ?>
 
 <!DOCTYPE html>
@@ -94,6 +98,15 @@ $lowongan = getLowonganList($keyword);
       </header>
 
       <div class="p-6 mt-6">
+
+        
+        <?php if (isset($_GET['pesan'])): ?>
+        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+            <?= htmlspecialchars($_GET['pesan']) ?>
+        </div>
+        <?php endif; ?>
+
+
 
         <form method="GET" class="mb-4 flex gap-2">
           <input 
