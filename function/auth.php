@@ -13,7 +13,7 @@ if($password != $konfirm){
     return false;
 }
 if(mysqli_num_rows($result) > 0){
-    echo "<script>alert('email sudah di pakai');</script>";
+    echo "<script>alert('Email sudah terdaftar!');</script>";
     return false;
 }
 if($password <= 7){
