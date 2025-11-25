@@ -63,7 +63,7 @@ if (!isset($_SESSION['user'])){
                 <?php if ($is_logged_in && !$is_tai2 && !$is_dashboard_perusahaan && !$is_tai && $nama_lengkap !== 'Nama Pengguna'): ?>
                 <?php
                         $profil_link = '../public/profil_pelamar.php';
-                        if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'perusahaan') {
+                        if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'Perusahaan') {
                             $profil_link = '../perusahaan/dashboard_perusahaan.php';
                         }
                     ?>
