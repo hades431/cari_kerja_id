@@ -21,34 +21,46 @@ $logo = $data[0]['logo'] ?? '';
 $bannerUrl = '';
 
 // helper kecil untuk mengecek file lokal dan membangun path relatif
-function resolve_upload_path($filename, $type_folder) {
-    // __DIR__ sebagai folder current file (landing)
-    $server_path = __DIR__ . '/../uploads/' . $type_folder . '/' . $filename;
-    $web_path = '../uploads/' . $type_folder . '/' . $filename;
-    if ($filename !== '' && file_exists($server_path)) {
-        return $web_path;
+
+// helper kecil untuk mengecek file lokal dan membangun path relatif
+function resolve_upload_path($filename, $possible_folders = ['banner','logo','lowongan','']) {
+    $filename = trim((string)$filename);
+    if ($filename === '') return '';
+
+    // sudah URL penuh?
+    if (filter_var($filename, FILTER_VALIDATE_URL)) {
+        return $filename;
     }
+
+    // jika string sudah mengandung 'uploads' (mis. uploads/banner/xxx.jpg), coba langsung
+    if (strpos($filename, 'uploads') !== false) {
+        $server = rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . '/' . ltrim($filename, '/');
+        $web = '/' . ltrim($filename, '/');
+        if (file_exists($server)) return $web;
+    }
+
+    // coba beberapa folder kemungkinan, dan cek dua lokasi server: relatif file dan DOCUMENT_ROOT (XAMPP)
+    foreach ($possible_folders as $folder) {
+        $folder = $folder === '' ? '' : trim($folder, "/") . '/';
+        $server_path = __DIR__ . '/../uploads/' . $folder . $filename;
+        $web_path = '../uploads/' . $folder . $filename; // relatif dari folder landing/
+        if (file_exists($server_path)) return $web_path;
+
+        // juga coba path berdasarkan document root + nama proyek (berguna kalau project di htdocs/<proj>)
+        $projectFolder = basename(dirname(__DIR__)); // biasanya 'cari_kerja_id'
+        $server2 = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/' . $projectFolder . '/uploads/' . $folder . $filename;
+        $web2 = '/' . $projectFolder . '/uploads/' . $folder . $filename;
+        if (file_exists($server2)) return $web2;
+    }
+
     return '';
 }
 
-if (!empty($banner)) {
-    // jika banner adalah URL penuh, pakai langsung
-    if (filter_var($banner, FILTER_VALIDATE_URL)) {
-        $bannerUrl = $banner;
-    } else {
-        // coba resolve sebagai file di uploads/banner, kalau tidak ada gunakan apa yang tersimpan
-        $resolved = resolve_upload_path($banner, 'banner');
-        $bannerUrl = $resolved !== '' ? $resolved : $banner;
-    }
-} elseif (!empty($logo)) {
-    if (filter_var($logo, FILTER_VALIDATE_URL)) {
-        $bannerUrl = $logo;
-    } else {
-        $resolved = resolve_upload_path($logo, 'logo');
-        $bannerUrl = $resolved !== '' ? $resolved : $logo;
-    }
+if (!empty($data[0]['banner'] ?? '')) {
+    $bannerUrl = resolve_upload_path($data[0]['banner'], ['banner','lowongan','']);
+} elseif (!empty($data[0]['logo'] ?? '')) {
+    $bannerUrl = resolve_upload_path($data[0]['logo'], ['logo','perusahaan','']);
 } else {
-    // path default (sesuaikan file default Anda jika berbeda)
     $bannerUrl = '../assets/images/default-banner.png';
 }
 
