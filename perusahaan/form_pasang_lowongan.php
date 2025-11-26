@@ -258,18 +258,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <!-- NEW: Banner upload -->
             <div>
-                <label class="block text-gray-700 font-semibold mb-2">Banner Lowongan (opsional, max 2MB)</label>
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-teal-500 transition cursor-pointer" onclick="document.getElementById('banner-input').click()">
-                    <input type="file" id="banner-input" name="banner" accept="image/jpeg,image/png,image/gif,image/webp" class="hidden">
-                    <div id="banner-preview" style="display:none;">
-                        <img id="banner-img" src="" alt="Preview" class="max-h-32 mx-auto rounded mb-2">
-                        <p class="text-sm text-gray-600">Klik untuk ganti gambar</p>
-                    </div>
-                    <div id="banner-placeholder">
-                        <p class="text-gray-500 font-semibold">📤 Klik atau drag gambar di sini</p>
-                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, GIF, WEBP (maks 2MB)</p>
-                        <p class="text-xs text-gray-400">Rekomendasi ukuran: 1200x300 px</p>
-                    </div>
+                <label class="block text-gray-700 font-semibold mb-1">Banner Lowongan</label>
+                <div>
+                    <img id="preview-crop" src="" alt="Preview Banner" style="display:none; max-height: 200px; width: 100%; object-fit: cover; border-radius: 8px;">
+                </div>
+                <input type="file" name="banner" accept="image/*" class="w-full" id="banner-input">
+                <div id="crop-info" class="text-sm text-gray-500 mt-2 hidden">
+                    Area preview di atas akan menampilkan banner yang baru dipilih. Pastikan ukuran proporsional dan tidak terlalu besar (maks 2MB).
                 </div>
             </div>
 
@@ -343,7 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Banner preview dan drag-drop
     const bannerInput = document.getElementById('banner-input');
-    const bannerDropZone = bannerInput.parentElement;
+    const bannerDropZone = document.getElementById('banner-drop-zone');
     const bannerPreview = document.getElementById('banner-preview');
     const bannerPlaceholder = document.getElementById('banner-placeholder');
     const bannerImg = document.getElementById('banner-img');
@@ -360,28 +355,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    function removeBanner() {
+        bannerInput.value = '';
+        bannerPreview.style.display = 'none';
+        bannerPlaceholder.style.display = 'block';
+    }
+
     bannerInput.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
             showBannerPreview(e.target.files[0]);
         }
     });
 
-    // Drag and drop
+    // Drag and drop for banner
     bannerDropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        bannerDropZone.classList.add('border-teal-500', 'bg-teal-50');
+        bannerDropZone.classList.add('border-teal-500', 'bg-teal-100');
     });
 
     bannerDropZone.addEventListener('dragleave', () => {
-        bannerDropZone.classList.remove('border-teal-500', 'bg-teal-50');
+        bannerDropZone.classList.remove('border-teal-500', 'bg-teal-100');
     });
 
     bannerDropZone.addEventListener('drop', (e) => {
         e.preventDefault();
-        bannerDropZone.classList.remove('border-teal-500', 'bg-teal-50');
+        bannerDropZone.classList.remove('border-teal-500', 'bg-teal-100');
         if (e.dataTransfer.files.length > 0) {
             bannerInput.files = e.dataTransfer.files;
             showBannerPreview(e.dataTransfer.files[0]);
+        }
+    });
+
+    document.getElementById('banner-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('preview-crop');
+        const info = document.getElementById('crop-info');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                preview.src = ev.target.result;
+                preview.style.display = 'block';
+                info.classList.remove('hidden');
+                info.textContent = 'Area preview di atas menunjukkan banner yang akan diupload. Jika perlu, crop/resize sebelum submit.';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+            info.classList.add('hidden');
         }
     });
     </script>
