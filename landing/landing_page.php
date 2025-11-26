@@ -281,20 +281,22 @@ setTimeout(function() {
                 <?php foreach($diamond as $index => $row): ?>
                 <a href="card.php?id=<?php echo $row['id_lowongan'] ?>"
                     class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
+                    <!-- Banner Preview -->
                     <?php if(!empty($row["banner"])): ?>
-                    <div class="bg-gray-300 h-24 mb-2 rounded"
-                        style="background-image: url('<?php echo $row["banner"] ?>'); background-size: cover; background-position: center;">
+                    <div class="bg-gray-300 h-40 mb-3 rounded overflow-hidden">
+                        <img src="<?php echo htmlspecialchars('../' . $row["banner"]) ?>" alt="Banner" class="w-full h-full object-cover" onerror="this.style.display='none'">
                     </div>
                     <?php else: ?>
-                    <div class="bg-gray-300 h-24 mb-2 rounded flex items-center justify-center text-gray-500">
-                        No Image
+                    <div class="bg-gradient-to-r from-teal-400 to-teal-600 h-40 mb-3 rounded flex items-center justify-center text-white text-4xl">
+                        💼
                     </div>
                     <?php endif; ?>
-                    <h3 class="text-lg font-semibold text-[#23395d]"><?php echo $row["judul"] ?></h3>
-                    <p class="text-sm text-gray-500"><?php echo $row["nama_perusahaan"] ?></p>
+                    
+                    <h3 class="text-lg font-semibold text-[#23395d]"><?php echo htmlspecialchars($row["judul"]) ?></h3>
+                    <p class="text-sm text-gray-500"><?php echo htmlspecialchars($row["nama_perusahaan"]) ?></p>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-2">
                         <i class="fa fa-graduation-cap"></i>
-                        <?php echo strtoupper(str_replace(' ', ' - ', $row["pendidikan"])) ?>
+                        <?php echo strtoupper(str_replace(',', ' - ', $row["pendidikan"])) ?>
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-briefcase"></i>
@@ -302,11 +304,11 @@ setTimeout(function() {
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-map-marker-alt"></i>
-                        <?php echo $row["lokasi"] ?>
+                        <?php echo htmlspecialchars($row["lokasi"]) ?>
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-money-bill"></i>
-                        <?php  echo 'Rp ' . number_format($row['gaji'], 0, ',', '.') ?>
+                        <?php echo 'Rp ' . number_format($row['gaji'], 0, ',', '.') ?>
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-clock"></i>
@@ -338,10 +340,14 @@ setTimeout(function() {
         <a href="card.php?id=<?php echo $row['id_lowongan'] ?>"
             class="w-full max-w-3xl bg-white rounded-2xl shadow p-6 hover:shadow-lg transition-transform duration-200 ease-out transform hover:-translate-y-2 mx-auto block">
             <div class="flex items-start gap-6">
-                <!-- small thumbnail image on the left (kept ukuran seperti sebelumnya) -->
+                <!-- Banner thumbnail on the left -->
                 <?php if (!empty($row['banner'])): ?>
                 <div class="flex-shrink-0">
-                    <img src="<?php echo $row['banner'] ?>" alt="" class="w-20 h-20 md:w-24 md:h-24 object-contain" />
+                    <img src="<?php echo htmlspecialchars('../'.$row['banner']) ?>" alt="Banner" class="w-24 h-24 object-cover rounded shadow" />
+                </div>
+                <?php else: ?>
+                <div class="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-teal-400 to-teal-600 rounded flex items-center justify-center text-white text-3xl">
+                    💼
                 </div>
                 <?php endif; ?>
 
@@ -357,13 +363,13 @@ setTimeout(function() {
                     </div>
 
                     <h3 class="text-2xl md:text-3xl font-bold text-[#23395d] mt-1 mb-1">
-                        <?php echo $row['posisi'] ?>
+                        <?php echo htmlspecialchars($row['posisi'] ?? $row['judul']) ?>
                     </h3>
 
                     <div class="flex items-center gap-4 mb-3">
                         <div class="flex items-center gap-2 text-[#23395d]">
                             <i class="fa fa-building"></i>
-                            <span class="font-medium"><?php echo $row['nama_perusahaan'] ?></span>
+                            <span class="font-medium"><?php echo htmlspecialchars($row['nama_perusahaan']) ?></span>
                         </div>
                         <div class="ml-auto text-sm text-gray-500 flex items-center gap-2">
                             <i class="fa fa-money-bill"></i>
@@ -376,15 +382,15 @@ setTimeout(function() {
                     <div class="flex flex-wrap gap-4 text-gray-600 text-base items-center mt-2">
                         <span class="flex items-center gap-2">
                             <i class="fa fa-graduation-cap"></i>
-                            <?php echo strtoupper(str_replace(',','-', $row["pendidikan"] )) ?>
+                            <?php echo strtoupper(str_replace(',', '-', $row["pendidikan"])) ?>
                         </span>
                         <span class="flex items-center gap-2">
                             <i class="fa fa-briefcase"></i>
-                            <?php echo str_replace(',', ' - ', $row['pengalaman']  . " Tahun"); ?>
+                            <?php echo str_replace(',', ' - ', $row['pengalaman'] . " Tahun"); ?>
                         </span>
                         <span class="flex items-center gap-2">
                             <i class="fa fa-map-marker-alt"></i>
-                            <?php echo $row['lokasi'] ?>
+                            <?php echo htmlspecialchars($row['lokasi']) ?>
                         </span>
                     </div>
                 </div>
@@ -483,10 +489,11 @@ setTimeout(function() {
             <div class="flex items-center gap-4 rounded-lg p-3 border hover:shadow-sm transition"
                 data-id="<?php echo $index['save_lowongan_id']; ?>">
                 <?php if(!empty($index['banner'])): ?>
-                <img src="<?php echo $index['banner']; ?>" alt="" class="w-16 h-12 object-cover rounded">
+                <img src="<?php echo htmlspecialchars($index['banner']) ?>" alt="Banner" class="w-16 h-12 object-cover rounded">
                 <?php else: ?>
-                <div class="w-16 h-12 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-400">No
-                    Image</div>
+                <div class="w-16 h-12 bg-gradient-to-r from-teal-400 to-teal-600 rounded flex items-center justify-center text-sm text-white">
+                    💼
+                </div>
                 <?php endif; ?>
 
                 <div class="flex-1">
@@ -501,8 +508,7 @@ setTimeout(function() {
                 </div>
 
                 <div class="flex flex-row items-center gap-2">
-                    <a href="hapus.php?id_save=<?php echo $index["save_lowongan_id"]  ?>" class="remove-simpan-btn text-xs text-red-600 border border-red-100 bg-red-50 px-2 py-1
-                        rounded hover:bg-red-100 transition">
+                    <a href="hapus.php?id_save=<?php echo $index["save_lowongan_id"] ?>" class="remove-simpan-btn text-xs text-red-600 border border-red-100 bg-red-50 px-2 py-1 rounded hover:bg-red-100 transition">
                         Hapus
                     </a>
                     <a href="card.php?id=<?php echo $index['id_lowongan'] ?>"

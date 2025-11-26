@@ -87,7 +87,7 @@ $error = '';
 // Proses submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Pastikan masih boleh membuat lowongan sesuai paket
-       $cek = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0];
+    $cek = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0];
     if ($cek['Lowogan_post'] <= 0 || $cek["verifikasi"] == "expire") {
         $error = "Kuota lowongan Anda sudah penuh untuk paket saat ini (maks: $max_lowongan). Silakan upgrade paket atau tunggu lowongan berakhir.";
     } else {
@@ -98,26 +98,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pengalaman = trim($_POST['pengalaman'] ?? '');
         $gender = trim($_POST['gender'] ?? '');
         $pendidikan = isset($_POST['pendidikan']) ? implode(',', $_POST['pendidikan']) : '';
+        
+        // ===== Banner upload handling =====
+        $banner_path = '';
+        if (isset($_FILES['banner']) && $_FILES['banner']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $file = $_FILES['banner'];
+            $allowed = ['image/jpeg','image/png','image/gif','image/webp'];
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                $error = "Upload banner gagal (kode error {$file['error']}).";
+            } elseif ($file['size'] > 2 * 1024 * 1024) {
+                $error = "Ukuran banner terlalu besar (maks 2MB).";
+            } elseif (!in_array(mime_content_type($file['tmp_name']), $allowed)) {
+                $error = "Tipe file tidak diperbolehkan. Gunakan JPG/PNG/GIF/WEBP.";
+            } else {
+                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $name = time() . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+                $uploadDir = __DIR__ . '/../uploads/banners/';
+                if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                $target = $uploadDir . $name;
+                if (move_uploaded_file($file['tmp_name'], $target)) {
+                    $banner_path = 'uploads/banners/' . $name;
+                } else {
+                    $error = "Gagal memindahkan file banner.";
+                }
+            }
+        }
+        // ===== end banner upload handling =====
+
         // Validasi sederhana
-        if ($judul === '' || $deskripsi === '') {
+        if (empty($error) && ($judul === '' || $deskripsi === '')) {
             $error = "Judul dan deskripsi wajib diisi.";
-        } else {
+        }
+
+        if (empty($error)) {
             // Hitung batas_lamaran berdasarkan durasi paket
             $tanggal_post = date('Y-m-d H:i:s');
             $batas_lamaran = date('Y-m-d', strtotime("+{$durasi_hari} days", strtotime($tanggal_post)));
             // Simpan ke DB (prepared)
-           $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, posisi, deskripsi, pengalaman, pendidikan, gender, gaji, lokasi, tanggal_post, batas_lamaran) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-+            // urutan variabel harus sesuai kolom: id_perusahaan (i), lalu 10 string (s)
-+            $stmt->bind_param("issssssssss", $id_perusahaan, $judul, $judul, $deskripsi, $pengalaman, $pendidikan, $gender, $gaji, $lokasi, $tanggal_post, $batas_lamaran);
+            $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, posisi, deskripsi, pengalaman, pendidikan, gender, gaji, lokasi, tanggal_post, batas_lamaran, banner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $banner_to_bind = $banner_path ?: '';
+            $stmt->bind_param("isssssssssss", $id_perusahaan, $judul, $judul, $deskripsi, $pengalaman, $pendidikan, $gender, $gaji, $lokasi, $tanggal_post, $batas_lamaran, $banner_to_bind);
             if ($stmt->execute()) {
-            $stmt2 = $conn->prepare("UPDATE perusahaan SET Lowogan_post = Lowogan_post - 1 WHERE id_perusahaan = ?");
-            $stmt2->bind_param("i", $id_perusahaan);
-            $stmt2->execute();
+                $stmt2 = $conn->prepare("UPDATE perusahaan SET Lowogan_post = Lowogan_post - 1 WHERE id_perusahaan = ?");
+                $stmt2->bind_param("i", $id_perusahaan);
+                $stmt2->execute();
+                $stmt2->close();
                 $message = "Lowongan berhasil dipasang. Berlaku sampai: $batas_lamaran";
-                // update active_count karena berhasil menambah lowongan
                 header("Location: dashboard_perusahaan.php");
                 exit;
-                
             } else {
                 $error = "Terjadi kesalahan saat menyimpan: " . $stmt->error;
             }
@@ -224,9 +252,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div>
                 <label class="block text-gray-700 font-semibold mb-2">Besaran Gaji</label>
-                <!-- tambahkan id supaya JS bisa memformat, placeholder contoh, dan tetap pakai name untuk POST -->
                 <input type="text" name="gaji" id="besaran_gaji" placeholder="0"
                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
+            </div>
+
+            <!-- NEW: Banner upload -->
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2">Banner Lowongan (opsional, max 2MB)</label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-teal-500 transition cursor-pointer" onclick="document.getElementById('banner-input').click()">
+                    <input type="file" id="banner-input" name="banner" accept="image/jpeg,image/png,image/gif,image/webp" class="hidden">
+                    <div id="banner-preview" style="display:none;">
+                        <img id="banner-img" src="" alt="Preview" class="max-h-32 mx-auto rounded mb-2">
+                        <p class="text-sm text-gray-600">Klik untuk ganti gambar</p>
+                    </div>
+                    <div id="banner-placeholder">
+                        <p class="text-gray-500 font-semibold">📤 Klik atau drag gambar di sini</p>
+                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, GIF, WEBP (maks 2MB)</p>
+                        <p class="text-xs text-gray-400">Rekomendasi ukuran: 1200x300 px</p>
+                    </div>
+                </div>
             </div>
 
             <div class="flex justify-between pt-4">
@@ -296,6 +340,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         update();
         const intervalId = setInterval(update, 1000);
     })();
+
+    // Banner preview dan drag-drop
+    const bannerInput = document.getElementById('banner-input');
+    const bannerDropZone = bannerInput.parentElement;
+    const bannerPreview = document.getElementById('banner-preview');
+    const bannerPlaceholder = document.getElementById('banner-placeholder');
+    const bannerImg = document.getElementById('banner-img');
+
+    function showBannerPreview(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                bannerImg.src = e.target.result;
+                bannerPreview.style.display = 'block';
+                bannerPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    bannerInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            showBannerPreview(e.target.files[0]);
+        }
+    });
+
+    // Drag and drop
+    bannerDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        bannerDropZone.classList.add('border-teal-500', 'bg-teal-50');
+    });
+
+    bannerDropZone.addEventListener('dragleave', () => {
+        bannerDropZone.classList.remove('border-teal-500', 'bg-teal-50');
+    });
+
+    bannerDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        bannerDropZone.classList.remove('border-teal-500', 'bg-teal-50');
+        if (e.dataTransfer.files.length > 0) {
+            bannerInput.files = e.dataTransfer.files;
+            showBannerPreview(e.dataTransfer.files[0]);
+        }
+    });
     </script>
 
 </body>
