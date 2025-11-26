@@ -282,15 +282,27 @@ setTimeout(function() {
                 <a href="card.php?id=<?php echo $row['id_lowongan'] ?>"
                     class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
                     <!-- Banner Preview -->
-                    <?php if(!empty($row["banner"])): ?>
-                    <div class="bg-gray-300 h-40 mb-3 rounded overflow-hidden">
-                        <img src="<?php echo htmlspecialchars('../' . $row["banner"]) ?>" alt="Banner" class="w-full h-full object-cover" onerror="this.style.display='none'">
-                    </div>
-                    <?php else: ?>
-                    <div class="bg-gradient-to-r from-teal-400 to-teal-600 h-40 mb-3 rounded flex items-center justify-center text-white text-4xl">
-                        💼
-                    </div>
-                    <?php endif; ?>
+                   <?php
+$bannerUrl = '../assets/images/default-banner.png'; // default
+
+if (!empty($row["banner"])) {
+    $banner = $row["banner"];
+
+    // Jika hanya filename → tambah folder
+    if (strpos($banner, '/') === false) {
+        $bannerUrl = '../uploads/banners/' . $banner;
+    } else {
+        // Jika sudah ada path lengkap
+        $bannerUrl = '../' . $banner;
+    }
+}
+?>
+<div class="bg-gray-300 h-40 mb-3 rounded overflow-hidden">
+    <img src="<?= htmlspecialchars($bannerUrl) ?>"
+         alt="Banner"
+         class="w-full h-full object-cover"
+         onerror="this.src='../assets/images/default-banner.png'">
+</div>
                     
                     <h3 class="text-lg font-semibold text-[#23395d]"><?php echo htmlspecialchars($row["judul"]) ?></h3>
                     <p class="text-sm text-gray-500"><?php echo htmlspecialchars($row["nama_perusahaan"]) ?></p>
@@ -489,7 +501,7 @@ setTimeout(function() {
             <div class="flex items-center gap-4 rounded-lg p-3 border hover:shadow-sm transition"
                 data-id="<?php echo $index['save_lowongan_id']; ?>">
                 <?php if(!empty($index['banner'])): ?>
-                <img src="<?php echo htmlspecialchars($index['banner']) ?>" alt="Banner" class="w-16 h-12 object-cover rounded">
+                <img src="../<?php echo htmlspecialchars($index['banner']) ?>" alt="Banner" class="w-16 h-12 object-cover rounded">
                 <?php else: ?>
                 <div class="w-16 h-12 bg-gradient-to-r from-teal-400 to-teal-600 rounded flex items-center justify-center text-sm text-white">
                     💼
