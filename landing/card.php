@@ -8,14 +8,49 @@ if(isset($_SESSION['user'])){
 
 $id = $_GET['id'] ?? $_GET['id_lowongan'] ?? 0;
 
-$sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo 
+$sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo
         FROM lowongan AS l
         LEFT JOIN perusahaan AS p ON l.id_perusahaan = p.id_perusahaan
         WHERE l.id_lowongan = $id";
 
 $data = tampil($sql);
 
+// Tentukan URL banner yang akan dipakai (prioritas: lowongan.banner -> perusahaan.logo -> default)
+$banner = $data[0]['banner'] ?? '';
+$logo = $data[0]['logo'] ?? '';
+$bannerUrl = '';
 
+// helper kecil untuk mengecek file lokal dan membangun path relatif
+function resolve_upload_path($filename, $type_folder) {
+    // __DIR__ sebagai folder current file (landing)
+    $server_path = __DIR__ . '/../uploads/' . $type_folder . '/' . $filename;
+    $web_path = '../uploads/' . $type_folder . '/' . $filename;
+    if ($filename !== '' && file_exists($server_path)) {
+        return $web_path;
+    }
+    return '';
+}
+
+if (!empty($banner)) {
+    // jika banner adalah URL penuh, pakai langsung
+    if (filter_var($banner, FILTER_VALIDATE_URL)) {
+        $bannerUrl = $banner;
+    } else {
+        // coba resolve sebagai file di uploads/banner, kalau tidak ada gunakan apa yang tersimpan
+        $resolved = resolve_upload_path($banner, 'banner');
+        $bannerUrl = $resolved !== '' ? $resolved : $banner;
+    }
+} elseif (!empty($logo)) {
+    if (filter_var($logo, FILTER_VALIDATE_URL)) {
+        $bannerUrl = $logo;
+    } else {
+        $resolved = resolve_upload_path($logo, 'logo');
+        $bannerUrl = $resolved !== '' ? $resolved : $logo;
+    }
+} else {
+    // path default (sesuaikan file default Anda jika berbeda)
+    $bannerUrl = '../assets/images/default-banner.png';
+}
 
 // Kalau data kosong
 if (!$data || count($data) == 0) {
@@ -42,8 +77,8 @@ if (!$data || count($data) == 0) {
                 </div>
             </div>
             <div>
-                <img src="<?php echo $data[0]["banner"] ?>" alt="montir"
-                    class="w-40 h-24 rounded-lg object-cover border" />
+                <img src="<?php echo htmlspecialchars($bannerUrl) ?>" alt="banner"
+                    class="w-40 h-24 rounded-lg object-cover border" onerror="this.src='../assets/images/default-banner.png'" />
             </div>
         </div>
         <hr class="my-4">

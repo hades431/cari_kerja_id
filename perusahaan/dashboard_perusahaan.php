@@ -165,7 +165,7 @@ if ($res_pelamar_kerja) {
                                 <th class="px-4 py-2 text-left">Batas Lamaran</th>
                                 <th class="px-4 py-2 text-left">Gaji</th>
                                 <th class="px-4 py-2 text-left">Lokasi</th>
-                                <th class="px-4 py-2 text-left">Logo</th>
+                                <th class="px-4 py-2 text-left">Banner</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -177,11 +177,12 @@ if ($res_pelamar_kerja) {
                                 <td class="px-4 py-2"><?= htmlspecialchars($l['gaji']) ?></td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($l['lokasi']) ?></td>
                                 <td class="px-4 py-2">
-                                    <?php if(!empty($l['logo'])): ?>
-                                    <img src="../<?= htmlspecialchars($l['logo']) ?>" alt="Logo"
-                                        class="w-16 h-16 object-cover rounded">
+                                    <?php if(!empty($l['banner'])): ?>
+                                    <img src="../<?= htmlspecialchars($l['banner']) ?>" alt="Banner"
+                                        class="max-h-16 max-w-32 object-cover rounded cursor-pointer hover:shadow-lg transition" 
+                                        onclick="showBannerModal('<?= htmlspecialchars($l['banner']) ?>')">
                                     <?php else: ?>
-                                    -
+                                    <span class="text-gray-400 text-sm">Tidak ada banner</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -246,6 +247,13 @@ if ($res_pelamar_kerja) {
                 </ul>
             </div>
 
+            <!-- Banner Modal -->
+            <div id="banner-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-lg shadow-lg p-4 max-w-2xl w-full relative">
+                    <button onclick="closeBannerModal()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                    <img id="banner-modal-img" src="" alt="Banner" class="w-full rounded">
+                </div>
+            </div>
 
     </div>
 
@@ -261,6 +269,15 @@ function closeLogoutModal() {
     document.getElementById('logout-modal').classList.add('hidden');
 }
 
+function showBannerModal(bannerSrc) {
+    document.getElementById('banner-modal-img').src = bannerSrc;
+    document.getElementById('banner-modal').classList.remove('hidden');
+}
+
+function closeBannerModal() {
+    document.getElementById('banner-modal').classList.add('hidden');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('logout-btn');
     if (btn) btn.addEventListener('click', openLogoutModal);
@@ -273,7 +290,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // optional: tutup modal saat tekan Escape
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeLogoutModal();
+        if (e.key === 'Escape') {
+            closeLogoutModal();
+            closeBannerModal();
+        }
     });
 });
 </script>
