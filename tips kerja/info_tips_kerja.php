@@ -65,7 +65,7 @@ if(isset($_POST['keyword'])) {
             <div class="flex justify-center space-x-2 pt-8">
                 <?php for($i = 1; $i <= $jumlah_halaman; $i++) : ?>
                 <a href="?halaman=<?php echo $i ?>"
-                    class="bg-white hover:bg-[#e6eef5] text-[#00646A] font-semibold px-4 py-2 rounded shadow transition-colors duration-150 border border-[#00646A] <?php echo $i === $halaman_aktif ? 'bg-[#00646A] text-white' : '' ?>">
+                    class="bg-white hover:bg-[#e6eef5] text-[#00646A] font-semibold px-4 py-2 rounded shadow transition-colors duration-150 border border-[#00646A] <?php echo $i === $halaman_aktif ? 'bg-[#00646A] text-black' : '' ?>">
                     <?php echo $i ?>
                 </a>
                 <?php endfor; ?>
