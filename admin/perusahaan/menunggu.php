@@ -117,44 +117,46 @@ $result = getPerusahaanMenunggu();
             Belum ada perusahaan yang menunggu verifikasi.
           </div>
         <?php else: ?>
-          <div class="overflow-x-auto bg-white shadow rounded-xl">
-            <table class="w-full border-collapse">
-              <thead class="bg-teal-600 text-white">
-                <tr>
-                  <th class="px-4 py-3 text-left">No</th>
-                  <th class="px-4 py-3 text-left">Nama Perusahaan</th>
-                  <th class="px-4 py-3 text-left">Email</th>
-                  <th class="px-4 py-3 text-left">Tanggal Daftar</th>
-                  <th class="px-4 py-3 text-left">Bukti Pembayaran</th>
-                  <th class="px-4 py-3 text-left">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($perusahaanList as $index => $row): ?>
-                  <tr class="border-t hover:bg-gray-50">
-                    <td class="px-4 py-3"><?= $index+1 ?></td>
-                    <td class="px-4 py-3 font-medium text-gray-800"><?= htmlspecialchars($row['nama_perusahaan']) ?></td>
-                    <td class="px-4 py-3"><?= htmlspecialchars($row['email_perusahaan']) ?></td>
-                    <td class="px-4 py-3"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
-                    <td class="px-4 py-3">
-                      <a href="../transaksi/riwayat_transaksi.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
-                    </td>
-                    <td class="px-4 py-3 flex gap-2">
-                      <form method="POST">
-                        <input type="hidden" name="verifikasi" value="sudah">
-                        <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
-                        <button type="submit" name="submit"  class="px-3 py-1 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Setujui</button>
-                      </form>
-                      <form method="POST">
-                        <input type="hidden" name="id" value="<?= $row['id_perusahaan'] ?>">
-                        <input type="hidden" name="verifikasi" value="ditolak">
-                        <button type="submit" name="submit" class="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Tolak</button>
-                      </form>
-                    </td>
+          <div class="overflow-x-auto">
+            <div class="shadow rounded-lg border border-gray-200">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-teal-600">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">No</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nama Perusahaan</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Email</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Tanggal Daftar</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Bukti Pembayaran</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Aksi</th>
                   </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-100">
+                  <?php foreach ($perusahaanList as $index => $row): ?>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?= $index + 1 ?></td>
+                      <td class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900"><?= htmlspecialchars($row['nama_perusahaan']) ?></td>
+                      <td class="px-6 py-4 whitespace-normal text-sm text-gray-700"><?= htmlspecialchars($row['email_perusahaan']) ?></td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <a href="../transaksi/riwayat_transaksi.php?id=<?= (int)$row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
+                        <form method="POST" class="inline">
+                          <input type="hidden" name="verifikasi" value="sudah">
+                          <input type="hidden" name="id" value="<?= (int)$row['id_perusahaan'] ?>">
+                          <button type="submit" name="submit" class="px-3 py-1 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Setujui</button>
+                        </form>
+                        <form method="POST" class="inline">
+                          <input type="hidden" name="id" value="<?= (int)$row['id_perusahaan'] ?>">
+                          <input type="hidden" name="verifikasi" value="ditolak">
+                          <button type="submit" name="submit" class="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Tolak</button>
+                        </form>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
           </div>
         <?php endif; ?>
       </div>

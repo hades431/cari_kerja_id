@@ -2,7 +2,7 @@
 include '../../function/logic.php';
 $menuAktif = menu_aktif('perusahaan');
 $keyword = $_GET['search'] ?? '';
-$sql = "SELECT * FROM perusahaan WHERE verifikasi = 'setuju'";
+$sql = "SELECT * FROM perusahaan WHERE verifikasi = 'sudah'";
 if ($keyword) {
     $sql .= " AND nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
 }
@@ -114,40 +114,44 @@ $result = mysqli_query($conn, $sql);
         </form>
 
         <div class="overflow-x-auto">
-          <table class="w-full border border-gray-200 rounded-lg overflow-hidden shadow">
-            <thead class="bg-teal-700 text-white">
-              <tr>
-                <th class="px-4 py-3 text-left">No</th>
-                <th class="px-4 py-3 text-left">Nama Perusahaan</th>
-                <th class="px-4 py-3 text-left">Email</th>
-                <th class="px-4 py-3 text-left">Bukti Pembayaran</th>
-                <th class="px-4 py-3 text-left">Deskripsi Perusahaan</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <?php 
-              $no = 1;
-                if (mysqli_num_rows($result) > 0): 
+          <div class="shadow rounded-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-teal-700">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">No</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nama Perusahaan</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Email</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Bukti Pembayaran</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Deskripsi</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-100">
+                <?php 
+                $no = 1;
+                if (mysqli_num_rows($result) > 0):
                     while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= $no++; ?></td>
-                            <td><?= htmlspecialchars($row['nama_perusahaan']); ?></td>
-                            <td><?= htmlspecialchars($row['email_perusahaan']); ?></td>
-                            <td>
-                                <a href="bukti_pembayaran.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 underline">Lihat Bukti</a>
-                            </td>
-                            <td>
-                                <a href="deskripsi_perusahaan.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 underline">Lihat Deskripsi</a>
-                            </td>
-                        </tr>
+                      <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?= $no++; ?></td>
+                        <td class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900"><?= htmlspecialchars($row['nama_perusahaan']); ?></td>
+                        <td class="px-6 py-4 whitespace-normal text-sm text-gray-700"><?= htmlspecialchars($row['email_perusahaan']); ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                          <a href="bukti_pembayaran.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                          <div class="max-w-xl break-words">
+                            <a href="deskripsi_perusahaan.php?id=<?= $row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Deskripsi</a>
+                          </div>
+                        </td>
+                      </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <tr>
-                        <td colspan="5" class="px-4 py-6 text-center text-gray-500 italic">Belum ada perusahaan terdaftar.</td>
-                    </tr>
+                  <tr>
+                    <td colspan="5" class="px-6 py-6 text-center text-gray-500 italic">Belum ada perusahaan terdaftar.</td>
+                  </tr>
                 <?php endif; ?>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </main>
       </div>

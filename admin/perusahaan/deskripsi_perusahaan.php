@@ -63,14 +63,14 @@ $data = mysqli_fetch_assoc($result);
 
             <p class="text-gray-500 text-sm">No Telepon</p>
             <p class="text-gray-800 font-medium mb-4">
-                <?= htmlspecialchars($data['no_telp'] ?: '-'); ?>
+                <?= htmlspecialchars($data['no_telepon'] ?: '-'); ?>
             </p>
         </div>
 
         <div class="col-span-2">
             <p class="text-gray-500 text-sm">Deskripsi Perusahaan</p>
             <p class="text-gray-800 leading-relaxed bg-gray-50 p-4 rounded-lg border">
-                <?= nl2br(htmlspecialchars($data['deskripsi_perusahaan'] ?: 'Tidak ada deskripsi.')); ?>
+                <?= nl2br(htmlspecialchars($data['deskripsi'] ?: 'Tidak ada deskripsi.')); ?>
             </p>
         </div>
 
