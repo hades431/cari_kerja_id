@@ -15,59 +15,33 @@ $sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo
 
 $data = tampil($sql);
 
-// Tentukan URL banner yang akan dipakai (prioritas: lowongan.banner -> perusahaan.logo -> default)
-$banner = $data[0]['banner'] ?? '';
-$logo = $data[0]['logo'] ?? '';
-$bannerUrl = '';
-
-// helper kecil untuk mengecek file lokal dan membangun path relatif
-
-// helper kecil untuk mengecek file lokal dan membangun path relatif
-function resolve_upload_path($filename, $possible_folders = ['banner','logo','lowongan','']) {
-    $filename = trim((string)$filename);
-    if ($filename === '') return '';
-
-    // sudah URL penuh?
-    if (filter_var($filename, FILTER_VALIDATE_URL)) {
-        return $filename;
-    }
-
-    // jika string sudah mengandung 'uploads' (mis. uploads/banner/xxx.jpg), coba langsung
-    if (strpos($filename, 'uploads') !== false) {
-        $server = rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . '/' . ltrim($filename, '/');
-        $web = '/' . ltrim($filename, '/');
-        if (file_exists($server)) return $web;
-    }
-
-    // coba beberapa folder kemungkinan, dan cek dua lokasi server: relatif file dan DOCUMENT_ROOT (XAMPP)
-    foreach ($possible_folders as $folder) {
-        $folder = $folder === '' ? '' : trim($folder, "/") . '/';
-        $server_path = __DIR__ . '/../uploads/' . $folder . $filename;
-        $web_path = '../uploads/' . $folder . $filename; // relatif dari folder landing/
-        if (file_exists($server_path)) return $web_path;
-
-        // juga coba path berdasarkan document root + nama proyek (berguna kalau project di htdocs/<proj>)
-        $projectFolder = basename(dirname(__DIR__)); // biasanya 'cari_kerja_id'
-        $server2 = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/' . $projectFolder . '/uploads/' . $folder . $filename;
-        $web2 = '/' . $projectFolder . '/uploads/' . $folder . $filename;
-        if (file_exists($server2)) return $web2;
-    }
-
-    return '';
-}
-
-if (!empty($data[0]['banner'] ?? '')) {
-    $bannerUrl = resolve_upload_path($data[0]['banner'], ['banner','lowongan','']);
-} elseif (!empty($data[0]['logo'] ?? '')) {
-    $bannerUrl = resolve_upload_path($data[0]['logo'], ['logo','perusahaan','']);
-} else {
-    $bannerUrl = '../assets/images/default-banner.png';
-}
-
 // Kalau data kosong
 if (!$data || count($data) == 0) {
     die("Error: Data lowongan tidak ditemukan di database.");
 }
+
+// Tentukan URL banner
+$bannerUrl = '../images/default-banner.png'; // default
+
+// Prioritas 1: gunakan banner dari lowongan jika ada
+if (!empty($data[0]['banner'])) {
+    $banner = $data[0]['banner'];
+    if (strpos($banner, '/') === false) {
+        $bannerUrl = '../uploads/banner/' . $banner;
+    } else {
+        $bannerUrl = $banner;
+    }
+}
+// Prioritas 2: jika banner kosong, gunakan logo perusahaan
+elseif (!empty($data[0]['logo'])) {
+    $logo = $data[0]['logo'];
+    if (strpos($logo, '/') === false) {
+        $bannerUrl = '../uploads/logo/' . $logo;
+    } else {
+        $bannerUrl = $logo;
+    }
+}
+
 ?>
 
 <div class="max-w-3xl mx-auto mt-10 mb-10">
@@ -88,11 +62,13 @@ if (!$data || count($data) == 0) {
                     <?php echo $data[0]["posisi"] ?>
                 </div>
             </div>
-            <div>
-                <img src="<?php echo htmlspecialchars($bannerUrl) ?>" alt="banner"
-                    class="w-40 h-24 rounded-lg object-cover border" onerror="this.src='../assets/images/default-banner.png'" />
+            <div class="bg-gray-100 rounded-lg border">
+                <img src="../<?php echo $bannerUrl  ?>" alt="banner"
+                    class="w-56 h-32 rounded-lg object-cover border" 
+                    onerror="this.src='../assets/images/default-banner.png'; this.classList.add('opacity-50')" />
             </div>
         </div>
+
         <hr class="my-4">
         <div class="text-[#23395d] text-lg mb-4">
             <?php echo $data[0]["deskripsi"] ?>
