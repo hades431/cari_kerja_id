@@ -40,7 +40,10 @@ if (!empty($pelamar['foto'])) {
 <body class="bg-gray-100 min-h-screen flex justify-center items-start py-10">
 
   <div class="bg-white shadow-xl rounded-2xl w-full max-w-3xl p-10">
-    <a href="pelamar.php" class="text-teal-700 hover:underline inline-block mb-6">← Kembali</a>
+    <a href="pelamar.php"
+           class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700">
+            Kembali
+        </a>
 
     <?php if ($pelamar): ?>
       <div class="flex flex-col items-center text-center mb-8">

@@ -32,6 +32,7 @@ $data = mysqli_fetch_assoc($result);
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-700">Detail Perusahaan</h2>
 
+
         <a href="ditolak.php"
            class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700">
             Kembali
