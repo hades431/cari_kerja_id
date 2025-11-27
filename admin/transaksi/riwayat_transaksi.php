@@ -8,7 +8,7 @@ $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Ambil data perusahaan dengan filter search
 $transaksi = [];
-$sql = "SELECT nama_perusahaan, paket, metode_pembayaran, bukti_pembayaran, verifikasi, created_at FROM perusahaan";
+$sql = "SELECT id_perusahaan, nama_perusahaan, paket, metode_pembayaran, bukti_pembayaran, verifikasi, created_at FROM perusahaan";
 if ($keyword !== '') {
     $sql .= " WHERE nama_perusahaan LIKE '%" . $conn->real_escape_string($keyword) . "%'";
 }
@@ -169,7 +169,7 @@ if ($res) {
                       <td class="py-3 px-4"><?= htmlspecialchars($t['metode_pembayaran'] ?? '-') ?></td>
                       <td class="py-3 px-4">
                         <?php if (!empty($t['bukti_pembayaran'])): ?>
-                          <a href="../../<?= $t['bukti_pembayaran'] ?>" target="_blank" class="text-blue-600 underline">Lihat</a>
+                          <a href="/cari_kerja_id/admin/perusahaan/bukti_pembayaran.php?id=<?= $t['id_perusahaan'] ?>" class="text-blue-600 underline">Lihat</a>
                         <?php else: ?>
                           <span class="text-gray-400">-</span>
                         <?php endif; ?>

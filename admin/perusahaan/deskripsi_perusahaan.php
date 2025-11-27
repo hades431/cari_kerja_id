@@ -15,6 +15,34 @@ if (mysqli_num_rows($result) == 0) {
 }
 
 $data = mysqli_fetch_assoc($result);
+
+$logoSrc = '../../img/default_company.png';
+if (!empty($data['logo'])) {
+    $logoVal = trim($data['logo']);
+    if (preg_match('#^https?://#i', $logoVal)) {
+        $logoSrc = $logoVal;
+    } else {
+        $clean = preg_replace('#^(\./|\.\./|/)+#', '', $logoVal);
+        $base = basename($clean);
+        $candidates = [
+            $clean,
+            'uploads/'.$clean,
+            'uploads/logo_perusahaan/'.$clean,
+            'uploads/logo/'.$clean,
+            'uploads/'.$base,
+            'uploads/logo_perusahaan/'.$base,
+            'uploads/logo/'.$base
+        ];
+        $projectRoot = realpath(__DIR__ . '/../../');
+        foreach ($candidates as $cand) {
+            $full = realpath(__DIR__ . '/../../' . $cand);
+            if ($full && strpos($full, $projectRoot) === 0 && file_exists($full)) {
+                $logoSrc = '../../' . $cand;
+                break;
+            }
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -32,8 +60,7 @@ $data = mysqli_fetch_assoc($result);
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-700">Detail Perusahaan</h2>
 
-
-        <a href="ditolak.php"
+        <a href="acc.php"
            class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700">
             Kembali
         </a>
@@ -41,11 +68,7 @@ $data = mysqli_fetch_assoc($result);
 
     <div class="flex items-center gap-6 mb-6">
         <div class="w-32 h-32 bg-gray-200 rounded-xl overflow-hidden">
-            <?php if (!empty($data['logo'])): ?>
-                <img src="../../uploads/logo_perusahaan/<?= $data['logo'] ?>" class="w-full h-full object-cover">
-            <?php else: ?>
-                <img src="../../img/default_company.png" class="w-full h-full object-cover">
-            <?php endif; ?>
+            <img src="<?= htmlspecialchars($logoSrc) ?>" class="w-full h-full object-cover" alt="Logo <?= htmlspecialchars($data['nama_perusahaan']) ?>">
         </div>
 
         <div>
