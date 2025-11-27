@@ -15,47 +15,33 @@ $sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo
 
 $data = tampil($sql);
 
-// Tentukan URL banner yang akan dipakai (prioritas: lowongan.banner -> perusahaan.logo -> default)
-$banner = $data[0]['banner'] ?? '';
-$logo = $data[0]['logo'] ?? '';
-$bannerUrl = '';
-
-// helper kecil untuk mengecek file lokal dan membangun path relatif
-function resolve_upload_path($filename, $type_folder) {
-    // __DIR__ sebagai folder current file (landing)
-    $server_path = __DIR__ . '/../uploads/' . $type_folder . '/' . $filename;
-    $web_path = '../uploads/' . $type_folder . '/' . $filename;
-    if ($filename !== '' && file_exists($server_path)) {
-        return $web_path;
-    }
-    return '';
-}
-
-if (!empty($banner)) {
-    // jika banner adalah URL penuh, pakai langsung
-    if (filter_var($banner, FILTER_VALIDATE_URL)) {
-        $bannerUrl = $banner;
-    } else {
-        // coba resolve sebagai file di uploads/banner, kalau tidak ada gunakan apa yang tersimpan
-        $resolved = resolve_upload_path($banner, 'banner');
-        $bannerUrl = $resolved !== '' ? $resolved : $banner;
-    }
-} elseif (!empty($logo)) {
-    if (filter_var($logo, FILTER_VALIDATE_URL)) {
-        $bannerUrl = $logo;
-    } else {
-        $resolved = resolve_upload_path($logo, 'logo');
-        $bannerUrl = $resolved !== '' ? $resolved : $logo;
-    }
-} else {
-    // path default (sesuaikan file default Anda jika berbeda)
-    $bannerUrl = '../assets/images/default-banner.png';
-}
-
 // Kalau data kosong
 if (!$data || count($data) == 0) {
     die("Error: Data lowongan tidak ditemukan di database.");
 }
+
+// Tentukan URL banner
+$bannerUrl = '../img/blank.jpg'; // default
+
+// Prioritas 1: gunakan banner dari lowongan jika ada
+if (!empty($data[0]['banner'])) {
+    $banner = $data[0]['banner'];
+    if (strpos($banner, '/') === false) {
+        $bannerUrl = '../uploads/banner/' . $banner;
+    } else {
+        $bannerUrl = $banner;
+    }
+}
+// Prioritas 2: jika banner kosong, gunakan logo perusahaan
+elseif (!empty($data[0]['logo'])) {
+    $logo = $data[0]['logo'];
+    if (strpos($logo, '/') === false) {
+        $bannerUrl = '../uploads/logo/' . $logo;
+    } else {
+        $bannerUrl = $logo;
+    }
+}
+
 ?>
 
 <div class="max-w-3xl mx-auto mt-10 mb-10">
@@ -76,11 +62,12 @@ if (!$data || count($data) == 0) {
                     <?php echo $data[0]["posisi"] ?>
                 </div>
             </div>
-            <div>
-                <img src="<?php echo htmlspecialchars($bannerUrl) ?>" alt="banner"
-                    class="w-40 h-24 rounded-lg object-cover border" onerror="this.src='../assets/images/default-banner.png'" />
+            <div class="bg-gray-100 rounded-lg border">
+                <img src="../<?php echo $bannerUrl  ?>" alt="banner" class="w-56 h-32 rounded-lg object-cover border"
+                    onerror="this.src='../img/no-image.png'; this.classList.add('opacity-50')" />
             </div>
         </div>
+
         <hr class="my-4">
         <div class="text-[#23395d] text-lg mb-4">
             <?php echo $data[0]["deskripsi"] ?>
@@ -120,9 +107,9 @@ if (!$data || count($data) == 0) {
         </div>
         <div class="flex gap-4 mt-4">
             <a href="../public/form_lamaran.php?id_lowongan=<?= $data[0]['id_lowongan']; ?>"
-   class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
-   <i class="fa fa-paper-plane"></i> Lamar
-</a>
+                class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
+                <i class="fa fa-paper-plane"></i> Lamar
+            </a>
 
             <a href="save.php?id=<?php echo $data[0]["id_lowongan"] ?>"
                 class="flex items-center gap-2 border-2 border-[#d1d5db] text-[#23395d] font-semibold px-8 py-3 rounded-lg bg-white hover:bg-gray-100 transition">
