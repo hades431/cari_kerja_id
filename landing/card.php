@@ -21,7 +21,7 @@ if (!$data || count($data) == 0) {
 }
 
 // Tentukan URL banner
-$bannerUrl = '../images/default-banner.png'; // default
+$bannerUrl = '../img/blank.jpg'; // default
 
 // Prioritas 1: gunakan banner dari lowongan jika ada
 if (!empty($data[0]['banner'])) {
@@ -63,9 +63,8 @@ elseif (!empty($data[0]['logo'])) {
                 </div>
             </div>
             <div class="bg-gray-100 rounded-lg border">
-                <img src="../<?php echo $bannerUrl  ?>" alt="banner"
-                    class="w-56 h-32 rounded-lg object-cover border" 
-                    onerror="this.src='../assets/images/default-banner.png'; this.classList.add('opacity-50')" />
+                <img src="../<?php echo $bannerUrl  ?>" alt="banner" class="w-56 h-32 rounded-lg object-cover border"
+                    onerror="this.src='../img/no-image.png'; this.classList.add('opacity-50')" />
             </div>
         </div>
 
@@ -108,9 +107,9 @@ elseif (!empty($data[0]['logo'])) {
         </div>
         <div class="flex gap-4 mt-4">
             <a href="../public/form_lamaran.php?id_lowongan=<?= $data[0]['id_lowongan']; ?>"
-   class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
-   <i class="fa fa-paper-plane"></i> Lamar
-</a>
+                class="flex items-center gap-2 bg-[#00646A] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-[#0d7c82] transition">
+                <i class="fa fa-paper-plane"></i> Lamar
+            </a>
 
             <a href="save.php?id=<?php echo $data[0]["id_lowongan"] ?>"
                 class="flex items-center gap-2 border-2 border-[#d1d5db] text-[#23395d] font-semibold px-8 py-3 rounded-lg bg-white hover:bg-gray-100 transition">

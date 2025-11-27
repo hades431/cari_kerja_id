@@ -327,7 +327,7 @@ setTimeout(function() {
                     class="bg-white rounded shadow p-4 w-64 hover:shadow-lg hover:scale-105 transition cursor-pointer block">
                     <!-- Banner Preview -->
                     <?php
-$bannerUrl = '../assets/images/default-banner.png'; // default
+$bannerUrl = '../img/no-image.png'; 
 
 if (!empty($row["banner"])) {
     $banner = $row["banner"];
@@ -342,6 +342,7 @@ if (!empty($row["banner"])) {
 }
 ?>
                     <div class="bg-gray-300 h-40 mb-3 rounded overflow-hidden">
+
                         <img src="<?= htmlspecialchars($bannerUrl) ?>" alt="Banner" class="w-full h-full object-cover"
                             onerror="this.src='../assets/images/default-banner.png'">
                     </div>
@@ -548,10 +549,7 @@ if (!empty($row["banner"])) {
                 <img src="../<?php echo htmlspecialchars($index['banner']) ?>" alt="Banner"
                     class="w-16 h-12 object-cover rounded">
                 <?php else: ?>
-                <div
-                    class="w-16 h-12 bg-gradient-to-r from-teal-400 to-teal-600 rounded flex items-center justify-center text-sm text-white">
-                    💼
-                </div>
+                <img src="../img/no-image.png" alt="Banner" class="w-16 h-12 object-cover rounded">
                 <?php endif; ?>
 
                 <div class="flex-1">
@@ -577,11 +575,7 @@ if (!empty($row["banner"])) {
             <?php endforeach; ?>
             <?php else: ?>
             <div id="simpan-empty" class="text-center text-gray-500 py-8">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline w-12 h-12 mb-3 text-gray-300" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M3 7h18M5 7v12a1 1 0 001 1h12a1 1 0 001-1V7M10 11v6M14 11v6" />
-                </svg>
+
                 <div class="text-lg font-medium">Belum ada lowongan yang disimpan</div>
                 <div class="text-sm mt-2">Simpan lowongan untuk melihatnya nanti.</div>
             </div>
