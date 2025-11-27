@@ -62,10 +62,10 @@ if($res){
 // Ambil pelamar yang melamar ke perusahaan ini
 $pelamar_perusahaan = [];
 $res_pelamar_kerja = $conn->query("
-    SELECT p.*, u.username, u.email, u.role, l.id_perusahaan 
+    SELECT p.*, u.username, u.email, u.role, l.judul as judul_lowongan
     FROM pelamar_kerja p
     JOIN user u ON p.id_user = u.id_user
-    JOIN lowongan l ON p.id_pelamar = l.id_lowongan
+    JOIN lowongan l ON p.id_lowongan = l.id_lowongan
     WHERE l.id_perusahaan = $id_perusahaan
     ORDER BY p.no_hp DESC
 ");
@@ -206,6 +206,7 @@ if ($res_pelamar_kerja) {
                             <tr>
                                 <th class="px-4 py-2 text-left">Nama Lengkap</th>
                                 <th class="px-4 py-2 text-left">Email</th>
+                                <th class="px-4 py-2 text-left">Lowongan</th>
                                 <th class="px-4 py-2 text-left">Tanggal Lamar</th>
                                 <th class="px-4 py-2 text-left">Status</th>
                             </tr>
@@ -216,14 +217,19 @@ if ($res_pelamar_kerja) {
                             <tr>
                                 <td class="px-4 py-2"><?= htmlspecialchars($p['nama_lengkap']) ?></td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($p['email']) ?></td>
+                                <td class="px-4 py-2"><?= htmlspecialchars($p['judul_lowongan'] ?? '-') ?></td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($p['tgl_lamar'] ?? '-') ?></td>
-                                <td class="px-4 py-2"><?= htmlspecialchars($p['status_lamaran'] ?? '-') ?></td>
+                                <td class="px-4 py-2">
+                                    <span class="px-3 py-1 rounded-full text-sm font-semibold 
+                                        <?= ($p['status_lamaran'] === 'Diterima') ? 'bg-green-100 text-green-800' : (($p['status_lamaran'] === 'Ditolak') ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') ?>">
+                                        <?= htmlspecialchars($p['status_lamaran'] ?? 'Menunggu') ?>
+                                    </span>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                             <?php else: ?>
                             <tr>
-                                <td colspan="4" class="text-center px-4 py-6 text-gray-400">Belum ada pelamar untuk
-                                    perusahaan Anda.</td>
+                                <td colspan="5" class="text-center px-4 py-6 text-gray-400">Belum ada pelamar untuk perusahaan Anda.</td>
                             </tr>
                             <?php endif; ?>
                         </tbody>
