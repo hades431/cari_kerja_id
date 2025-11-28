@@ -19,7 +19,7 @@ $lowongan_simpan = tampil("SELECT
         if($hapus_berhasil < 0){
             echo "<script>alert('Gagal menghapus semua lowongan tersimpan');</script>";
         } else {
-            $sukses = true;
+            echo "<script>alert('Berhasil menghapus semua lowongan tersimpan');window.location='landing_page.php';</script>";
         } 
     }
 function formatWaktuLalu($timestamp) {
@@ -85,42 +85,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 ?>
 
-<?php 
-if (isset($sukses)): ?>
-<div id="success-popup" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
-    <div class="rounded-md border border-gray-300 bg-white p-4 shadow-sm relative max-w-md w-full">
-        <div class="flex items-start gap-4">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="size-6 text-green-600">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-
-            <div class="flex-1">
-                <strong class="font-medium text-gray-900"> Berhasil! </strong>
-            </div>
-
-            <button onclick="closeSuccessPopup()"
-                class="-m-3 rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
-                type="button" aria-label="Dismiss alert">
-                <span class="sr-only">Dismiss popup</span>
-
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-    </div>
-</div>
-<script>
-function closeSuccessPopup() {
-    const popup = document.getElementById('success-popup');
-    if (popup) popup.style.display = 'none';
-
-}
-</script>
-<?php endif ?>
 
 
 <!-- Notifikasi Berhasil Login -->
@@ -298,7 +262,7 @@ if (!empty($row["banner"])) {
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-briefcase"></i>
-                        <?php echo str_replace(',', ' - ', $row["pengalaman"] . " Tahun"); ?>
+                        <?php echo str_replace(',', ' - ', $row["pengalaman"] . " Ta"); ?>
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-map-marker-alt"></i>
@@ -386,7 +350,7 @@ if (!empty($row["banner"])) {
                         </span>
                         <span class="flex items-center gap-2">
                             <i class="fa fa-briefcase"></i>
-                            <?php echo str_replace(',', ' - ', $row['pengalaman'] . " Tahun"); ?>
+                            <?php echo ucfirst(str_replace(',', ' - ', $row['pengalaman'] . " Pengalaman")); ?>
                         </span>
                         <span class="flex items-center gap-2">
                             <i class="fa fa-map-marker-alt"></i>
@@ -403,7 +367,7 @@ if (!empty($row["banner"])) {
         <form method="post" class="flex flex-col gap-4">
             <input autocomplete="off" name="search" type="text"
                 class="border rounded-xl px-4 py-3 w-full text-lg font-semibold placeholder-gray-400 shadow-sm focus:outline-none focus:border-[#00646A]"
-                placeholder="Searchbar..." />
+                placeholder="Bidang..." />
             <div class="flex gap-3">
                 <select name="lokasi"
                     class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
