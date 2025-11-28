@@ -275,18 +275,22 @@ if (!function_exists('getJumlahArtikel')) {
 
 if (!function_exists('getAktivitasTerbaru')) {
     function getAktivitasTerbaru() {
-        global $conn;
-        $aktivitas = [];
+    global $conn;
 
-        $sql1 = "SELECT id_user, created_at FROM user ORDER BY created_at DESC LIMIT 3";
-        $res1 = mysqli_query($conn, $sql1);
-        while ($row = mysqli_fetch_assoc($res1)) {
-            $aktivitas[] = [
-                "icon" => "👤",
-                "pesan" => "User baru mendaftar: <span class='font-medium'>".$row['id_user']."</span>",
-                "tanggal" => $row['created_at']
-            ];
-        }
+    $today = date("Y-m-d");
+
+    $sql = "SELECT COUNT(*) AS total FROM user WHERE DATE(created_at) = '$today'";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+
+    return [
+        [
+            'jumlah' => $row['total'],
+            'pesan'  => 'User baru mendaftar hari ini',
+            'tanggal'=> $today
+        ]
+    ];
+
 
         $sql2 = "SELECT id_perusahaan, created_at FROM lowongan ORDER BY created_at DESC LIMIT 3";
         $res2 = mysqli_query($conn, $sql2);
@@ -361,24 +365,28 @@ if (!function_exists('getArtikelTerbaru')) {
     }
 }
 
-if (!function_exists('getNotifikasi')) {
-    function getNotifikasi() {
-        global $conn;
-        $notifikasi = [];
+function getNotifikasi() {
+    global $conn;
 
-        $sql2 = "SELECT COUNT(*) as total FROM user WHERE created_at >= NOW() - INTERVAL 7 DAY";
-        $res2 = mysqli_query($conn, $sql2);
-        $row2 = mysqli_fetch_assoc($res2);
-        if (($row2['total'] ?? 0) > 0) {
-            $notifikasi[] = [
-                "icon" => "🆕",
-                "pesan" => $row2['total']." user baru mendaftar",
-                "aksi" => "Lihat",
-                "link" => "../pelamar/pelamar.php"
-            ];
-        }
-        return $notifikasi;
+    $today = date("Y-m-d");
+
+    $sql = "SELECT * FROM user WHERE DATE(created_at) = '$today'";
+    $result = mysqli_query($conn, $sql);
+
+    $count = mysqli_num_rows($result);
+
+    if ($count > 0) {
+        return [
+            [
+                'icon' => '👤',
+                'pesan' => "$count User baru mendaftar hari ini",
+                'link'  => '../pelamar/pelamar.php',
+                'aksi'  => 'Lihat'
+            ]
+        ];
     }
+
+    return [];
 }
 
 if (!function_exists('hitungPerusahaan')) {
