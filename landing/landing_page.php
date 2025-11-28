@@ -162,110 +162,52 @@ setTimeout(function() {
             </button>
         </div>
 
-        <!-- START: Large horizontal searchbar (baru) -->
-        <form method="post" class="bg-white rounded-xl shadow-md p-3 max-w-4xl w-full mt-6 z-20 mx-auto">
-            <div class="flex flex-col md:flex-row items-center gap-4">
-                <!-- input sekarang setengah lebar di md+ -->
-                <div class="flex items-center gap-4">
-                    <div class="w-full md:w-1/2">
-                        <input name="search" type="text" autocomplete="off"
-                            value="<?php echo isset($_POST['search']) ? htmlspecialchars($_POST['search']) : '' ?>"
-                            class="w-full border rounded-xl px-4 py-3 text-lg font-semibold placeholder-gray-400 shadow-sm focus:outline-none focus:border-[#00646A]"
-                            placeholder="Cari disini.." />
-                    </div>
-
-                    <div class="hidden sm:block w-56">
-                        <select name="lokasi"
-                            class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
-                            <option value="">
-                                <?php echo isset($_POST['lokasi']) && $_POST['lokasi'] ? htmlspecialchars($_POST['lokasi']) : 'Semua Lokasi' ?>
-                            </option>
-                            <option value="baleendah">Baleendah</option>
-                            <option value="banjaran">Banjaran</option>
-                            <option value="bojongsoang">Bojongsoang</option>
-                            <option value="cileunyi">Cileunyi</option>
-                            <option value="dayeuhkolot">Dayeuhkolot</option>
-                            <option value="Kab.Bandung">Kab.Bandung</option>
-                        </select>
-                    </div>
-
-                    <div class="hidden md:block w-56">
-                        <select name="pendidikan"
-                            class="bg-white rounded-xl px-4 py-3 w-full text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
-                            <option value="">
-                                <?php echo isset($_POST['pendidikan']) && $_POST['pendidikan'] ? htmlspecialchars($_POST['pendidikan']) : 'Semua Lulusan' ?>
-                            </option>
-                            <option value="sma">SMA/SMK</option>
-                            <option value="d3">D3/D4</option>
-                            <option value="s1">S1</option>
-                            <option value="s2">S2</option>
-                        </select>
-                    </div>
-
-                    <input type="hidden" name="pengalaman" id="pengalaman-input"
-                        value="<?php echo isset($_POST['pengalaman']) ? htmlspecialchars($_POST['pengalaman']) : '' ?>">
-                </div>
 
 
+        <div id="info-card"
+            class="bg-white rounded-xl shadow-md p-6 max-w-xl w-full mt-[-40px] z-20 relative hidden transition-all duration-300 scale-95 opacity-0 mx-auto">
+            <div class="text-lg text-gray-800 leading-relaxed">
+                <span class="font-semibold">CariKerjaID</span> adalah platform informasi <a href="#"
+                    class="text-[#00646A] underline">lowongan kerja Bandung</a>.<br>
+                lowongan kerja yang dirancang untuk memudahkan pencari kerja
+                menemukan peluang sesuai minat, keterampilan, dan lokasi. Kami berkomitmen menjadi penghubung antara
+                perusahaan dan talenta terbaik, dengan menghadirkan informasi lowongan yang terbaru, terpercaya, dan
+                relevan.
 
-                <button type="submit"
-                    class="ml-auto flex items-center gap-2 bg-[#00646A] text-white rounded-xl px-5 py-3 text-lg font-semibold shadow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none" />
-                        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" />
-                    </svg>
-                    Cari
-                </button>
+                Melalui CariKerjaID, pencari kerja bisa dengan mudah menelusuri berbagai kategori pekerjaan,
+                sementara perusahaan dapat menemukan kandidat potensial dengan cepat dan tepat.
+
+                Visi kami adalah membantu mempercepat proses rekrutmen dan membuka akses karier yang lebih luas bagi
+                semua orang.
+                Misi kami adalah menyediakan informasi lowongan kerja yang akurat, user-friendly, serta mendukung
+                pencari kerja dan perusahaan untuk berkembang bersama.
             </div>
-    </div>
-    </form>
-
-    <div id="info-card"
-        class="bg-white rounded-xl shadow-md p-6 max-w-xl w-full mt-[-40px] z-20 relative hidden transition-all duration-300 scale-95 opacity-0 mx-auto">
-        <div class="text-lg text-gray-800 leading-relaxed">
-            <span class="font-semibold">CariKerjaID</span> adalah platform informasi <a href="#"
-                class="text-[#00646A] underline">lowongan kerja Bandung</a>.<br>
-            lowongan kerja yang dirancang untuk memudahkan pencari kerja
-            menemukan peluang sesuai minat, keterampilan, dan lokasi. Kami berkomitmen menjadi penghubung antara
-            perusahaan dan talenta terbaik, dengan menghadirkan informasi lowongan yang terbaru, terpercaya, dan
-            relevan.
-
-            Melalui CariKerjaID, pencari kerja bisa dengan mudah menelusuri berbagai kategori pekerjaan,
-            sementara perusahaan dapat menemukan kandidat potensial dengan cepat dan tepat.
-
-            Visi kami adalah membantu mempercepat proses rekrutmen dan membuka akses karier yang lebih luas bagi
-            semua orang.
-            Misi kami adalah menyediakan informasi lowongan kerja yang akurat, user-friendly, serta mendukung
-            pencari kerja dan perusahaan untuk berkembang bersama.
         </div>
-    </div>
-    <script>
-    function toggleInfoCard() {
-        const card = document.getElementById('info-card');
-        const btn = document.getElementById('toggle-info-btn');
-        const isHidden = card.classList.contains('hidden');
-        if (isHidden) {
-            card.classList.remove('hidden');
-            setTimeout(() => {
-                card.classList.remove('scale-95', 'opacity-0');
-                card.classList.add('scale-100', 'opacity-100');
-            }, 10);
-            btn.textContent = 'Minimalkan';
-        } else {
-            card.classList.remove('scale-100', 'opacity-100');
-            card.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                card.classList.add('hidden');
-            }, 300);
-            btn.textContent = 'Selengkapnya';
+        <script>
+        function toggleInfoCard() {
+            const card = document.getElementById('info-card');
+            const btn = document.getElementById('toggle-info-btn');
+            const isHidden = card.classList.contains('hidden');
+            if (isHidden) {
+                card.classList.remove('hidden');
+                setTimeout(() => {
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                btn.textContent = 'Minimalkan';
+            } else {
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    card.classList.add('hidden');
+                }, 300);
+                btn.textContent = 'Selengkapnya';
+            }
         }
-    }
-    </script>
+        </script>
 
 
-    <!-- END: Large horizontal searchbar (baru) -->
+        <!-- END: Large horizontal searchbar (baru) -->
 
     </div>
 </section>
