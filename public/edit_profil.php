@@ -65,22 +65,27 @@ if (isset($_POST['submit'])) {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Edit Profil - CariKerja.id</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-[#00646A] min-h-screen">
     <!-- Notifikasi Logout Modal -->
     <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
-            <button onclick="closeLogoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+            <button onclick="closeLogoutModal()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
             <h2 class="text-2xl font-bold text-[#00646A] mb-2">Konfirmasi Logout</h2>
             <p class="text-gray-500 mb-6">Apakah Anda yakin ingin logout?</p>
             <div class="flex justify-center gap-4">
-                <button onclick="closeLogoutModal()" class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
-                <button onclick="window.location.href='../public/logout.php'" class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
+                <button onclick="closeLogoutModal()"
+                    class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+                <button onclick="window.location.href='../public/logout.php'"
+                    class="border border-red-600 text-red-700 px-6 py-2 rounded hover:bg-red-50 font-semibold">Logout</button>
             </div>
         </div>
     </div>
@@ -90,7 +95,7 @@ if (isset($_POST['submit'])) {
             <!-- Foto Profil -->
             <div class="flex flex-col items-center">
                 <img src="<?= isset($pelamar['foto']) && $pelamar['foto'] ? '../' . htmlspecialchars($pelamar['foto']) : 'https://ui-avatars.com/api/?name=' . urlencode($pelamar['nama_lengkap'] ?? 'Nama Pelamar') . '&background=2563eb&color=fff&size=128' ?>"
-                     class="w-24 h-24 rounded-full border-2 border-gray-200 object-cover mb-2" alt="Foto Profil">
+                    class="w-24 h-24 rounded-full border-2 border-gray-200 object-cover mb-2" alt="Foto Profil">
                 <label class="block">
                     <span class="sr-only">Pilih Foto Profil</span>
                     <input type="file" name="foto" class="block w-full text-sm text-gray-500
@@ -99,38 +104,50 @@ if (isset($_POST['submit'])) {
                         file:text-sm file:font-semibold
                         file:bg-blue-50 file:text-blue-700
                         hover:file:bg-blue-100
-                    "/>
+                    " />
                 </label>
             </div>
             <!-- Nama -->
             <div>
                 <label for="nama_lengkap" class="block text-gray-700 mb-1">Nama Lengkap</label>
-                <input type="text" name="nama" value="<?= htmlspecialchars($pelamar['nama_lengkap'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nama Lengkap">
+                <input type="text" name="nama" value="<?= htmlspecialchars($pelamar['nama_lengkap'] ?? '') ?>"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                    placeholder="Nama Lengkap">
             </div>
             <!-- Email -->
             <div>
                 <label for="email" class="block text-gray-700 mb-1">Email</label>
-                <input type="email" name="email" value="<?= htmlspecialchars($pelamar['email'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Email">
+                <input type="email" name="email" value="<?= htmlspecialchars($pelamar['email'] ?? '') ?>"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                    placeholder="Email">
             </div>
             <!-- Telepon -->
             <div>
                 <label for="telepon" class="block text-gray-700 mb-1">Telepon</label>
-                <input type="text" name="telepon" value="<?= htmlspecialchars($pelamar['no_hp'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Nomor Telepon">
+                <input type="text" name="telepon" value="<?= htmlspecialchars($pelamar['no_hp'] ?? '') ?>"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                    placeholder="Nomor Telepon">
             </div>
             <!-- Jabatan -->
             <div>
                 <label for="jabatan" class="block text-gray-700 mb-1">Kemampuan Bidang</label>
-                <input type="text" name="jabatan" value="<?= htmlspecialchars($pelamar['jabatan'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: UI/UX Designer">
+                <input type="text" name="jabatan" value="<?= htmlspecialchars($pelamar['jabatan'] ?? '') ?>"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                    placeholder="Contoh: UI/UX Designer">
             </div>
             <!-- Lokasi -->
             <div>
                 <label for="alamat" class="block text-gray-700 mb-1">Alamat</label>
-                <input type="text" name="alamat" value="<?= htmlspecialchars($pelamar['alamat'] ?? '') ?>" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Contoh: Bandung, Indonesia">
+                <input type="text" name="alamat" value="<?= htmlspecialchars($pelamar['alamat'] ?? '') ?>"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                    placeholder="Contoh: Bandung, Indonesia">
             </div>
             <!-- Deskripsi Profil -->
             <div>
                 <label for="deskripsi" class="block text-gray-700 mb-1">Deskripsi Profil</label>
-                <textarea name="deskripsi" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Ceritakan tentang diri Anda..."><?= htmlspecialchars($pelamar['deskripsi'] ?? '') ?></textarea>
+                <textarea name="deskripsi" rows="4"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                    placeholder="Ceritakan tentang diri Anda..."><?= htmlspecialchars($pelamar['deskripsi'] ?? '') ?></textarea>
             </div>
             <!-- Pengalaman Kerja -->
             <div>
@@ -145,65 +162,72 @@ if (isset($_POST['submit'])) {
                     for ($i = 0; $i < $count_pengalaman; $i++):
                     ?>
                     <div class="flex flex-col md:flex-row gap-2 pengalaman-row items-center">
-                        <input type="text" name="pengalaman_jabatan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Jabatan/Posisi" value="<?= htmlspecialchars($pengalaman_jabatan[$i] ?? '') ?>">
-                        <input type="text" name="pengalaman_perusahaan[]" class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Perusahaan" value="<?= htmlspecialchars($pengalaman_perusahaan[$i] ?? '') ?>">
-                        <input type="text" name="pengalaman_tahun[]" class="md:w-40 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]" placeholder="Tahun" value="<?= htmlspecialchars($pengalaman_tahun[$i] ?? '') ?>">
-                        <button type="button" class="remove-pengalaman px-2 ml-2" style="display:<?= $i === 0 ? 'none' : 'inline-block' ?>;">
+                        <input type="text" name="pengalaman_jabatan[]"
+                            class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                            placeholder="Jabatan/Posisi" value="<?= htmlspecialchars($pengalaman_jabatan[$i] ?? '') ?>">
+                        <input type="text" name="pengalaman_perusahaan[]"
+                            class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                            placeholder="Perusahaan" value="<?= htmlspecialchars($pengalaman_perusahaan[$i] ?? '') ?>">
+                        <input type="text" name="pengalaman_tahun[]"
+                            class="md:w-40 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                            placeholder="Tahun" value="<?= htmlspecialchars($pengalaman_tahun[$i] ?? '') ?>">
+                        <button type="button" class="remove-pengalaman px-2 ml-2"
+                            style="display:<?= $i === 0 ? 'none' : 'inline-block' ?>;">
                             <i class="fas fa-trash text-red-500 text-lg"></i>
                         </button>
                     </div>
                     <?php endfor; ?>
                 </div>
-                <button type="button" id="tambah-pengalaman" class="mt-2 bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm hover:bg-blue-200 transition">+ Tambah Pengalaman</button>
-                <p class="text-xs text-gray-400 mt-1">* Tambahkan lebih banyak pengalaman dengan klik tombol di atas.</p>
+                <button type="button" id="tambah-pengalaman"
+                    class="mt-2 bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm hover:bg-blue-200 transition">+
+                    Tambah Pengalaman</button>
+                <p class="text-xs text-gray-400 mt-1">* Tambahkan lebih banyak pengalaman dengan klik tombol di atas.
+                </p>
             </div>
-            <!-- Keahlian -->
+            <!-- Keahlian (diperbarui: support custom input) -->
             <div>
                 <label class="block text-gray-700 mb-1">Keahlian</label>
-                <div class="grid grid-cols-2 gap-2">
+
+                <div class="grid grid-cols-2 gap-2" id="predefined-skills">
+                    <?php foreach ($predefined as $skill): ?>
                     <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="UI Design" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">UI Design</span>
+                        <input type="checkbox" name="keahlian[]" value="<?php echo htmlspecialchars($skill) ?>"
+                            class="form-checkbox text-[#00646A]"
+                            <?php echo in_array($skill, $userSkills) ? 'checked' : '' ?>>
+                        <span class="ml-2"><?php echo htmlspecialchars($skill) ?></span>
                     </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="UX Research" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">UX Research</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Design Grafis" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Design Grafis</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Microsoft Office" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Microsoft Office</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Data Analyst" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Data Analyst</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Teamwork" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Teamwork</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="HTML/CSS" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">HTML/CSS</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Customer Service" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Customer Service</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Komunikasi" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Komunikasi</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="Manajemen Proyek" class="form-checkbox text-[#00646A]">
-                        <span class="ml-2">Manajemen Proyek</span>
-                    </label>
-                    <!-- Tambahkan opsi lain sesuai kebutuhan -->
+                    <?php endforeach; ?>
                 </div>
-                <p class="text-xs text-gray-400 mt-1">* Pilih satu atau lebih keahlian yang kamu miliki.</p>
+
+                <!-- Tambah keahlian custom -->
+                <div class="mt-3">
+                    <label class="block text-gray-700 mb-1">Tambahkan Keahlian Lain</label>
+                    <div class="flex gap-2">
+                        <input id="keahlian-input" type="text"
+                            class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                            placeholder="Ketik keahlian lalu tekan Tambah (mis. React, Node.js)" />
+                        <button type="button" id="add-keahlian"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">Tambah</button>
+                    </div>
+
+                    <div id="custom-keahlian-list" class="flex flex-wrap gap-2 mt-3">
+                        <?php
+                        // render keahlian user yang bukan bagian predefined sebagai pill + hidden input
+                        foreach ($userSkills as $s):
+                            if (trim($s) === '') continue;
+                            if (in_array($s, $predefined)) continue;
+                        ?>
+                        <span class="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                            <span><?php echo htmlspecialchars($s) ?></span>
+                            <button type="button" class="remove-custom-keahlian text-red-500"
+                                data-value="<?php echo htmlspecialchars($s) ?>">×</button>
+                            <input type="hidden" name="keahlian[]" value="<?php echo htmlspecialchars($s) ?>">
+                        </span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <p class="text-xs text-gray-400 mt-1">* Pilih atau tambahkan keahlian yang kamu miliki.</p>
             </div>
             <!-- Upload CV -->
             <div>
@@ -214,13 +238,16 @@ if (isset($_POST['submit'])) {
                     file:text-sm file:font-semibold
                     file:bg-blue-50 file:text-blue-700
                     hover:file:bg-blue-100
-                "/>
+                " />
                 <p class="text-xs text-gray-400 mt-1">* Format file PDF. Maksimal ukuran 2MB.</p>
             </div>
             <!-- Tombol Simpan dan Kembali -->
             <div class="flex justify-end gap-2">
-                <a href="profil_pelamar.php" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-full shadow hover:bg-gray-400 transition">Kembali</a>
-                <button type="submit" name="submit" class="bg-[#00646A] text-white px-6 py-2 rounded-full shadow hover:bg-teal-800 transition">Simpan Perubahan</button>
+                <a href="profil_pelamar.php"
+                    class="bg-gray-300 text-gray-700 px-6 py-2 rounded-full shadow hover:bg-gray-400 transition">Kembali</a>
+                <button type="submit" name="submit"
+                    class="bg-[#00646A] text-white px-6 py-2 rounded-full shadow hover:bg-teal-800 transition">Simpan
+                    Perubahan</button>
             </div>
         </form>
     </div>
@@ -245,7 +272,8 @@ if (isset($_POST['submit'])) {
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-pengalaman') || e.target.classList.contains('fa-trash')) {
             // Support click on button or icon
-            const btn = e.target.classList.contains('remove-pengalaman') ? e.target : e.target.closest('.remove-pengalaman');
+            const btn = e.target.classList.contains('remove-pengalaman') ? e.target : e.target.closest(
+                '.remove-pengalaman');
             if (btn) btn.parentElement.remove();
         }
     });
@@ -253,11 +281,80 @@ if (isset($_POST['submit'])) {
     function openLogoutModal() {
         document.getElementById('logout-modal').classList.remove('hidden');
     }
+
     function closeLogoutModal() {
         document.getElementById('logout-modal').classList.add('hidden');
     }
+
+    // Keahlian custom: tambah / hapus
+    (function() {
+        const input = document.getElementById('keahlian-input');
+        const addBtn = document.getElementById('add-keahlian');
+        const list = document.getElementById('custom-keahlian-list');
+
+        function normalize(s) {
+            return s.trim();
+        }
+
+        function existsValue(val) {
+            if (!val) return false;
+            val = normalize(val).toLowerCase();
+            // cek hidden inputs nama keahlian[] dan juga predefined checkboxes
+            const hidden = list.querySelectorAll('input[type="hidden"][name="keahlian[]"]');
+            for (const h of hidden)
+                if (h.value.trim().toLowerCase() === val) return true;
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][name="keahlian[]"]');
+            for (const c of checkboxes)
+                if (c.value.trim().toLowerCase() === val && c.checked) return true;
+            return false;
+        }
+
+        function createPill(value) {
+            const span = document.createElement('span');
+            span.className = 'flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm';
+            const text = document.createElement('span');
+            text.textContent = value;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'remove-custom-keahlian text-red-500';
+            btn.dataset.value = value;
+            btn.textContent = '×';
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'keahlian[]';
+            hidden.value = value;
+            span.appendChild(text);
+            span.appendChild(btn);
+            span.appendChild(hidden);
+            return span;
+        }
+
+        addBtn && addBtn.addEventListener('click', function() {
+            const v = input.value.trim();
+            if (!v) return;
+            if (existsValue(v)) {
+                alert('Keahlian "' + v + '" sudah ada atau sudah dipilih.');
+                input.value = '';
+                return;
+            }
+            const pill = createPill(v);
+            list.appendChild(pill);
+            input.value = '';
+        });
+
+        // delegate remove
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('remove-custom-keahlian')) {
+                const btn = e.target;
+                const pill = btn.closest('span');
+                if (pill) pill.remove();
+            }
+        });
+    })();
     </script>
 </body>
+
 </html>
 </body>
+
 </html>

@@ -9,9 +9,11 @@ $is_tai = basename($_SERVER['PHP_SELF']) === "daftar_pelamar.php";
 $is_tai2 = basename($_SERVER['PHP_SELF']) === "profile_perusahaan.php";
 
 $foto_default = '../img/default_profile.png'; 
+$logo_default = '../img/default_logo.png';
 
 $nama_lengkap = 'Nama Pengguna';
 $foto_profil = $foto_default;
+$is_perusahaan = false;
 
 if ($is_logged_in) {
     if (isset($_SESSION['pelamar_kerja'])) {
@@ -24,14 +26,31 @@ if ($is_logged_in) {
     elseif (isset($_SESSION['user'])) {
         require_once '../function/logic.php';
         $id_user = $_SESSION['user']['id'] ?? null;
-$expire_check = tampil("SELECT*FROM perusahaan WHERE id_user=$id_user")[0] ?? null;
-        $user_id = $_SESSION['user']['id'] ?? null;
-        $nama_lengkap = $_SESSION['user']['email'] ?? 'Nama Pengguna';
-        if ($user_id) {
-            $query = mysqli_query($conn, "SELECT nama_lengkap, foto FROM pelamar_kerja WHERE id_user='$user_id' LIMIT 1");
-            if ($row = mysqli_fetch_assoc($query)) {
-                $nama_lengkap = $row['nama_lengkap'] ?: $nama_lengkap;
-                $foto_profil = $row['foto'] ? (strpos($row['foto'], 'uploads/') === 0 ? '../'.$row['foto'] : $row['foto']) : $foto_default;
+        $user_role = $_SESSION['user']['role'] ?? null;
+        
+        // Cek apakah user adalah perusahaan
+        if ($user_role === 'Perusahaan') {
+            $is_perusahaan = true;
+            $expire_check = tampil("SELECT * FROM perusahaan WHERE id_user=$id_user")[0] ?? null;
+            
+            if ($expire_check) {
+                $nama_lengkap = $expire_check['nama_perusahaan'] ?? 'Nama Perusahaan';
+                $foto_profil = $expire_check['logo'] ?: $logo_default;
+                if ($foto_profil !== $logo_default && strpos($foto_profil, 'uploads/') === 0) {
+                    $foto_profil = '../' . $foto_profil;
+                }
+            }
+        } else {
+            // Role pelamar
+            $expire_check = tampil("SELECT * FROM perusahaan WHERE id_user=$id_user")[0] ?? null;
+            $user_id = $_SESSION['user']['id'] ?? null;
+            $nama_lengkap = $_SESSION['user']['email'] ?? 'Nama Pengguna';
+            if ($user_id) {
+                $query = mysqli_query($conn, "SELECT nama_lengkap, foto FROM pelamar_kerja WHERE id_user='$user_id' LIMIT 1");
+                if ($row = mysqli_fetch_assoc($query)) {
+                    $nama_lengkap = $row['nama_lengkap'] ?: $nama_lengkap;
+                    $foto_profil = $row['foto'] ? (strpos($row['foto'], 'uploads/') === 0 ? '../'.$row['foto'] : $row['foto']) : $foto_default;
+                }
             }
         }
     }
@@ -62,15 +81,16 @@ if (!isset($_SESSION['user'])){
             <div class="flex flex-col items-end gap-1">
                 <?php if ($is_logged_in && !$is_tai2 && !$is_dashboard_perusahaan && !$is_tai && $nama_lengkap !== 'Nama Pengguna'): ?>
                 <?php
-                        $profil_link = '../public/profil_pelamar.php';
-                        if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'Perusahaan') {
+                        if ($is_perusahaan) {
                             $profil_link = '../perusahaan/dashboard_perusahaan.php';
+                        } else {
+                            $profil_link = '../public/profil_pelamar.php';
                         }
                     ?>
                 <a href="<?= $profil_link ?>" class="flex items-center gap-2 mb-0 hover:opacity-80 transition">
                     <img src="<?= htmlspecialchars($foto_profil) ?>" alt="Profil"
                         class="w-10 h-10 rounded-full border-2 border-white shadow object-cover"
-                        onerror="this.onerror=null;this.src='<?= $foto_default ?>';">
+                        onerror="this.onerror=null;this.src='<?= $is_perusahaan ? $logo_default : $foto_default ?>';">
                     <span class="text-white font-semibold">
                         <?= htmlspecialchars($nama_lengkap) ?>
                     </span>
@@ -92,7 +112,7 @@ if (!isset($_SESSION['user'])){
                     elseif($expire_check["verifikasi"] == 'expire'): ?>
                     <a href="../public/buka_lowongan.php" class="bg-yellow-500 max-w-max hover:bg-yellow-600 active:bg-yellow-700 
                       text-black px-6 py-2 rounded-full font-bold shadow transition">
-                        perpanjang paket
+                        Perpanjang Paket
                     </a>
                     <?php endif; ?>
                     <?php endif; ?>
