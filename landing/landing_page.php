@@ -2,6 +2,7 @@
 include '../header.php';
 include '../function/sesi_role_aktif.pelamar.php';
 include 'delete_save.php';
+$user_id = $_SESSION['user']['id'] ?? null;
 if(isset($_SESSION['user'])){
 $lowongan_simpan = tampil("SELECT 
         l.*, 
