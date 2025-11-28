@@ -83,6 +83,13 @@ if ($id_perusahaan > 0) {
     $pelamar_perusahaan = [];
 }
 
+// Tambahkan: hitung jumlah pelamar yang statusnya mengandung kata "baru" (case-insensitive)
+$count_new_pelamar = 0;
+foreach ($pelamar_perusahaan as $tmp_p) {
+    if (!empty($tmp_p['status_lamaran']) && stripos(trim($tmp_p['status_lamaran']), 'baru') !== false) {
+        $count_new_pelamar++;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -110,11 +117,26 @@ if ($id_perusahaan > 0) {
                 </div>
 
                 <!-- Menu -->
-                <nav class="mt-6 space-y-2 px-4">
+                 <nav class="mt-6 space-y-2 px-4">
                     <a href="dashboard_perusahaan.php"
-                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
-                    <a href="../perusahaan/daftar_pelamar.php"
-                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
+                       class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">
+                        <span>Dashboard</span>
+                    </a>
+
+                    <!-- Ubah tampilan menu Daftar Pelamar agar beda dari menu lain: background putih, teks berwarna, border kiri, dan badge jumlah -->
+                    <a href="daftar_pelamar.php"
+                       class="sidebar-link block py-2 px-4 rounded-lg transition bg-white text-[#00797a] font-semibold border-l-4 border-yellow-400"
+                       data-key="daftar_pelamar.php" aria-current="page">
+                        <span class="inline-flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="#00797a" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14M12 11v6"></path></svg>
+                            <span>Daftar Pelamar</span>
+                        </span>
+
+                        <?php if (!empty($count_new_pelamar) && $count_new_pelamar > 0): ?>
+                            <span class="ml-3 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-red-500 text-white rounded-full"><?= htmlspecialchars($count_new_pelamar) ?></span>
+                        <?php endif; ?>
+                  </a>
+
                     <a href="../perusahaan/form_pasang_lowongan.php"
                         class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
                     <a href="../landing/landing_page.php"
