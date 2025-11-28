@@ -6,12 +6,14 @@ include '../../function/sesi_role_aktif_admin.php';
 $menuAktif = menu_aktif('pelamar');
 $keyword = $_GET['search'] ?? '';
 
-$sql = "SELECT id_user, username AS nama, email, role, status_akun, created_at FROM user";
+$safeKeyword = '';
+$where = '';
 if (!empty($keyword)) {
     $safeKeyword = mysqli_real_escape_string($conn, $keyword);
-    $sql .= " WHERE username LIKE '%$safeKeyword%'";
+    $where = " WHERE (username LIKE '%" . $safeKeyword . "%' OR email LIKE '%" . $safeKeyword . "%')";
 }
-$sql .= " ORDER BY id_user ASC";
+
+$sql = "SELECT id_user, username AS nama, email, role, status_akun, created_at FROM user" . $where . " ORDER BY (CASE WHEN LOWER(role)='pelamar' THEN 0 WHEN LOWER(role)='perusahaan' THEN 1 ELSE 2 END), username ASC";
 
 $result = mysqli_query($conn, $sql); 
 $users = [];

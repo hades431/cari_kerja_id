@@ -131,7 +131,7 @@ $notifikasi  = getNotifikasi();
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 20v-2a6 6 0 1112 0v2" />
             </svg>
             <p class="text-3xl font-bold text-teal-700"><?= $jumlahUser ?></p>
-            <p class="text-gray-600 mt-1">User</p>
+            <p class="text-gray-600 mt-1">Pelamar</p>
           </div>
 
 
@@ -187,7 +187,7 @@ $notifikasi  = getNotifikasi();
           <div class="space-y-3">
             <?php foreach($aktivitas as $a): ?>
               <div class="p-4 bg-gray-50 rounded-xl shadow-sm text-sm text-gray-700">
-                <?= $a['icon'] ?> <?= $a['pesan'] ?> - <span class="text-xs text-gray-400"><?= date("d/m/Y", strtotime($a['tanggal'])) ?></span>
+                <?= $a['jumlah'] ?> <?= $a['pesan'] ?> - <span class="text-xs text-gray-400"><?= date("d/m/Y", strtotime($a['tanggal'])) ?></span>
               </div>
             <?php endforeach; ?>
           </div>

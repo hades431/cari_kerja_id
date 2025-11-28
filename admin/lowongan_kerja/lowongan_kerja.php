@@ -147,7 +147,32 @@ if (isset($_GET['pesan'])) {
                 <?php foreach ($lowongan as $i => $row) : ?>
                   <tr class="border-b last:border-0 hover:bg-gray-50">
                     <td class="px-6 py-4"><?= $i + 1 ?></td>
-                    <td class="px-6 py-4 font-medium text-gray-800"><?= htmlspecialchars($row['nama_perusahaan']) ?></td>
+                    <td class="px-6 py-4 font-medium text-gray-800">
+                      <div class="flex flex-col">
+                        <span><?= htmlspecialchars($row['nama_perusahaan']) ?></span>
+                        <?php
+                          $companyEmail = $row['email_perusahaan'] ?? '';
+                          if (empty($companyEmail)) {
+                              if (!empty($row['id_perusahaan'])) {
+                                  $stmtEmail = $conn->prepare("SELECT email_perusahaan FROM perusahaan WHERE id_perusahaan = ? LIMIT 1");
+                                  $stmtEmail->bind_param('i', $row['id_perusahaan']);
+                                  $stmtEmail->execute();
+                                  $resEmail = $stmtEmail->get_result()->fetch_assoc();
+                                  $companyEmail = $resEmail['email_perusahaan'] ?? '';
+                              } else {
+                                  $stmtEmail = $conn->prepare("SELECT email_perusahaan FROM perusahaan WHERE nama_perusahaan = ? LIMIT 1");
+                                  $stmtEmail->bind_param('s', $row['nama_perusahaan']);
+                                  $stmtEmail->execute();
+                                  $resEmail = $stmtEmail->get_result()->fetch_assoc();
+                                  $companyEmail = $resEmail['email_perusahaan'] ?? '';
+                              }
+                          }
+                        ?>
+                        <?php if (!empty($companyEmail)): ?>
+                          <span class="text-sm text-gray-500">Email: <?= htmlspecialchars($companyEmail) ?></span>
+                        <?php endif; ?>
+                      </div>
+                    </td>
                     <td class="px-6 py-4"><?= htmlspecialchars($row['lokasi']) ?></td>
                     <td class="px-6 py-4"><?= htmlspecialchars($row['judul']) ?></td>
                     <td class="px-6 py-4"><?= htmlspecialchars($row['tanggal_post']) ?></td>
