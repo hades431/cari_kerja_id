@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if(isset($message) && $message): echo "<div class='bg-green-100 text-green-700 p-3 rounded mb-4'>".htmlspecialchars($message)."</div>"; endif; ?>
 
         <div class="mb-4">
-            <p>Paket saat ini: <strong><?= htmlspecialchars($nama_perusahaan) ?></strong></p>
+            <p>Paket saat ini: <strong><?= htmlspecialchars($paket) ?></strong></p>
             <p>Durasi lowongan paket: <strong><?= htmlspecialchars($durasi_hari) ?> hari</strong></p>
             <p>Kuota lowongan paket: <strong><?= $max_lowongan ?></strong></p>
             <p>status: <strong><?= $status == "expire" ? "kadaluarsa" : "aktif"; ?></strong></p>
