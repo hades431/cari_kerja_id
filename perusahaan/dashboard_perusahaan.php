@@ -42,6 +42,17 @@ $jmlpelamar = $conn->query("SELECT COUNT(*)
     WHERE l.id_perusahaan = $id_perusahaan
 ")->fetch_row()[0];
 
+// Query untuk lamaran diterima dan ditolak
+$jmlDiterima = $conn->query("SELECT COUNT(*) FROM pelamar_kerja pk
+    JOIN lowongan l ON pk.id_lowongan = l.id_lowongan
+    WHERE l.id_perusahaan = $id_perusahaan AND pk.status = 'diterima'
+")->fetch_row()[0];
+
+$jmlDitolak = $conn->query("SELECT COUNT(*) FROM pelamar_kerja pk
+    JOIN lowongan l ON pk.id_lowongan = l.id_lowongan
+    WHERE l.id_perusahaan = $id_perusahaan AND pk.status = 'ditolak'
+")->fetch_row()[0];
+
 // Lowongan saya
 $lowongan_saya = [];
 // var_dump($user_id);die;
@@ -88,18 +99,22 @@ if($res){
                     <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
                 </div>
                 <!-- Menu -->
-                <nav class="mt-6 space-y-2 px-4">
+                    <nav class="mt-6 space-y-2 px-4">
                     <a href="dashboard_perusahaan.php"
-                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
+                       class="sidebar-link always-white block py-2 px-4 rounded-lg transition text-white font-semibold flex items-center gap-2"
+                       data-key="dashboard_perusahaan.php" aria-current="page">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18"></path></svg>
+                        <span>Dashboard</span>
+                    </a>
                     <a href="../perusahaan/daftar_pelamar.php"
                         class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
                     <a href="../perusahaan/form_pasang_lowongan.php"
                         class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
                     <a href="../landing/landing_page.php"
-                        class="block py-2 px-4 rounded-lg bg-gray-200 text-[#00797a] font-semibold hover:bg-gray-300 transition mt-4">Kembali</a>
+                        class="block py-2 px-4 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-gray-100 transition mt-4">Kembali</a>
+
                     <form action="../logout.php" method="post" class="mt-2">
-                        <!-- Ubah type submit jadi button agar tidak langsung submit; JS akan buka modal -->
-                        <button type="button" id="logout-btn"
+                        <button type="submit"
                             class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
                     </form>
                 </nav>
@@ -127,7 +142,7 @@ if($res){
         <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
             <!-- Hapus <h1>Dashboard</h1> di sini -->
             <!-- Statistik -->
-            <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-4 gap-6 mb-8">
                 <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
                     <div class="text-lg mb-2">Total Lowongan</div>
                     <div class="text-4xl font-bold"><?= $jmlLowongan ?></div>
@@ -135,6 +150,14 @@ if($res){
                 <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
                     <div class="text-lg mb-2">Total Pelamar</div>
                     <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
+                </div>
+                <div class="bg-green-600 text-white p-6 rounded-lg shadow">
+                    <div class="text-lg mb-2">Total Diterima</div>
+                    <div class="text-4xl font-bold"><?= $jmlDiterima ?></div>
+                </div>
+                <div class="bg-red-600 text-white p-6 rounded-lg shadow">
+                    <div class="text-lg mb-2">Total Ditolak</div>
+                    <div class="text-4xl font-bold"><?= $jmlDitolak ?></div>
                 </div>
             </div>
 
@@ -237,6 +260,59 @@ document.addEventListener('DOMContentLoaded', function() {
         // Redirect ke logout script (sesuaikan path)
         window.location.href = '../logout.php';
     });
+
+    // Handle sidebar active state. Links with class 'always-white' tetap putih.
+    function setActiveKey(key) {
+        var links = document.querySelectorAll('.sidebar-link');
+        links.forEach(function(link) {
+            if (link.classList.contains('always-white')) {
+                // pastikan selalu putih
+                link.classList.add('bg-white','text-[#00646A]','shadow-sm');
+                link.classList.remove('text-white','hover:bg-[#006b68]');
+                return;
+            }
+            if (link.dataset.key === key || link.getAttribute('href') === key) {
+                link.classList.remove('text-white','hover:bg-[#006b68]');
+                link.classList.add('bg-white','text-[#00646A]','shadow-sm');
+            } else {
+                link.classList.remove('bg-white','text-[#00646A]','shadow-sm');
+                if (!link.classList.contains('text-white')) link.classList.add('text-white');
+            }
+        });
+        try { localStorage.setItem('activeSidebar', key); } catch(e){}
+    }
+
+    var sidebarLinks = document.querySelectorAll('.sidebar-link');
+    sidebarLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            var key = this.dataset.key || this.getAttribute('href');
+            // Jangan set active jika link ini diberi kelas always-white
+            if (!this.classList.contains('always-white')) {
+                setActiveKey(key);
+            }
+            // biarkan navigasi normal terjadi (jika menuju halaman lain)
+        });
+    });
+
+    // Restore active dari localStorage jika ada (abaikan jika saved = 'kembali')
+    var saved = null;
+    try { saved = localStorage.getItem('activeSidebar'); } catch(e){}
+    if (saved && saved !== 'kembali') {
+        setActiveKey(saved);
+    } else {
+        // default: cocokkan file di URL dengan href link non-always-white
+        var path = window.location.pathname.split('/').pop();
+        if (path) {
+            var matched = Array.from(sidebarLinks).find(function(l){
+                if (l.classList.contains('always-white')) return false;
+                var hrefFilename = l.getAttribute('href').split('/').pop();
+                return hrefFilename === path;
+            });
+            if (matched) {
+                setActiveKey(matched.dataset.key || matched.getAttribute('href'));
+            }
+        }
+    }
 
     // optional: tutup modal saat tekan Escape
     document.addEventListener('keydown', function(e) {
