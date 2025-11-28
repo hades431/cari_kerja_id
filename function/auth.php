@@ -17,7 +17,7 @@ function register($data){
     // tambahkan validasi: minimal 8 karakter dan hanya huruf atau angka
     if (!preg_match('/^[A-Za-z0-9]{8,}$/', $password)) {
         // kembalikan ke halaman register dengan flag error
-        header("location: ../login/register.php?error=password");
+       echo "<script>alert('Password harus minimal 8 karakter dan hanya mengandung huruf atau angka!');</script>";
         return false;
     }
 
