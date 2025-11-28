@@ -20,4 +20,10 @@ if ($stmt->num_rows > 0) {
 $stmt->close();
 $sql = "INSERT INTO save_lowongan (user_id,lowongan_id) VALUES ($id_user,$id_lowongan)";
 mysqli_query($conn,$sql);
-header("LOCATION: landing_page.php?sukses=Lowongan berhasil disimpan");
+if(mysqli_affected_rows($conn) > 0){
+    echo"<script>alert('Lowongan berhasil disimpan');window.location='landing_page.php'</script>";
+    exit;
+} else {
+    echo"<script>alert('Gagal menyimpan lowongan');</script>";
+    exit;
+}

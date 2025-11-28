@@ -553,7 +553,8 @@ function cari($data){
     // select pengalaman
     if (!empty($data['pengalaman']) && $data['pengalaman'] !== 'Pengalaman') {
         if ($data['pengalaman'] === 'tanpa') {
-            $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0')";
+            // tangani berbagai variasi nilai "tanpa" (kosong, '0', 'tanpa', NULL)
+            $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0' OR LOWER(TRIM(l.pengalaman)) = 'tanpa' OR l.pengalaman IS NULL)";
         } elseif ($data['pengalaman'] === '1-5') {
             $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) BETWEEN 1 AND 5)";
         } elseif ($data['pengalaman'] === '>5') {
@@ -563,7 +564,7 @@ function cari($data){
 
     // checkbox alternatif dari header form
     if (isset($data['tanpa_pengalaman'])) {
-        $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0')";
+        $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0' OR LOWER(TRIM(l.pengalaman)) = 'tanpa' OR l.pengalaman IS NULL)";
     }
     if (isset($data['satu_lima_tahun'])) {
         $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) BETWEEN 1 AND 5)";
@@ -619,7 +620,8 @@ function cari_diamond($data){
     // select pengalaman
     if (!empty($data['pengalaman']) && $data['pengalaman'] !== 'Pengalaman') {
         if ($data['pengalaman'] === 'tanpa') {
-            $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0')";
+            // tangani berbagai variasi nilai "tanpa" (kosong, '0', 'tanpa', NULL)
+            $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0' OR LOWER(TRIM(l.pengalaman)) = 'tanpa' OR l.pengalaman IS NULL)";
         } elseif ($data['pengalaman'] === '1-5') {
             $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) BETWEEN 1 AND 5)";
         } elseif ($data['pengalaman'] === '>5') {
@@ -629,7 +631,7 @@ function cari_diamond($data){
 
     // checkbox alternatif dari header form
     if (isset($data['tanpa_pengalaman'])) {
-        $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0')";
+        $pengConditions[] = "(l.pengalaman = '' OR l.pengalaman = '0' OR LOWER(TRIM(l.pengalaman)) = 'tanpa' OR l.pengalaman IS NULL)";
     }
     if (isset($data['satu_lima_tahun'])) {
         $pengConditions[] = "(CAST(l.pengalaman AS UNSIGNED) BETWEEN 1 AND 5)";

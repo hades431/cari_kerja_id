@@ -6,6 +6,10 @@ if(isset($_SESSION['user'])){
     $id_user = $_SESSION['user']['id'];
 }
 
+// Tambahkan pengecekan sederhana: default belum disimpan.
+// Jika halaman dipanggil dengan ?saved=1 maka tampilkan bintang kuning.
+$is_saved = tampil("SELECT * FROM save_lowongan WHERE user_id = $user_id AND lowongan_id = " . ($_GET['id'] ?? $_GET['id_lowongan'] ?? 0));
+
 $id = $_GET['id'] ?? $_GET['id_lowongan'] ?? 0;
 
 $sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo
@@ -113,7 +117,8 @@ elseif (!empty($data[0]['logo'])) {
 
             <a href="save.php?id=<?php echo $data[0]["id_lowongan"] ?>"
                 class="flex items-center gap-2 border-2 border-[#d1d5db] text-[#23395d] font-semibold px-8 py-3 rounded-lg bg-white hover:bg-gray-100 transition">
-                <span class="text-yellow-400"><i class="fa fa-star"></i></span>
+                <span class="<?php echo $is_saved ? 'text-yellow-400' : 'text-gray-400'; ?>"><i
+                        class="fa fa-star"></i></span>
                 Simpan
             </a>
         </div>
