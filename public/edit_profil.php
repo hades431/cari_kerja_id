@@ -5,6 +5,28 @@ require_once '../function/logic.php';
 $id_user = $_SESSION['user']['id'];
 // Ambil data profil user dari database
 $pelamar = getProfilPelamarByUserId($id_user);
+$required_predefined = [
+    'HTML','CSS','JavaScript','PHP','MySQL','Laravel','Git'
+];
+$additional_predefined = [
+    'React','Node.js','UI/UX','Python'
+];
+
+$userSkills = [];
+if (!empty($pelamar['keahlian'])) {
+    $k = $pelamar['keahlian'];
+    if (is_array($k)) {
+        $userSkills = $k;
+    } else {
+        $decoded = json_decode($k, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            $userSkills = $decoded;
+        } else {
+            // fallback: comma separated
+            $userSkills = array_filter(array_map('trim', explode(',', $k)));
+        }
+    }
+}
 
 // Insert data pelamar jika belum ada
 if (!$pelamar) {
@@ -46,15 +68,52 @@ if (isset($_POST['submit'])) {
     }
     // Tetap lakukan update walaupun hanya satu field yang diisi
     if (!empty($data_update) || !empty($files_update)) {
-        if (updateProfilPelamar($id_user, $data_update, $files_update) > 0) {
+        // VALIDASI: batas maksimal keahlian
+        $max_required = 5;
+        $max_additional = 3;
+
+        // ambil nilai sementara untuk validasi (bisa berupa array atau single)
+        $w_tmp = $data_update['keahlian_wajib'] ?? [];
+        $t_tmp = $data_update['keahlian_tambahan'] ?? [];
+        if (!is_array($w_tmp)) $w_tmp = [$w_tmp];
+        if (!is_array($t_tmp)) $t_tmp = [$t_tmp];
+        $w_tmp = array_values(array_filter(array_map('trim', $w_tmp)));
+        $t_tmp = array_values(array_filter(array_map('trim', $t_tmp)));
+
+        if (count($w_tmp) > $max_required) {
+            echo "<script>alert('Keahlian wajib maksimal {$max_required}. Silakan hapus beberapa.');</script>";
+            // batalkan update dengan mengosongkan $data_update agar tidak diproses
+            $data_update = [];
+        } elseif (count($t_tmp) > $max_additional) {
+            echo "<script>alert('Keahlian tambahan maksimal {$max_additional}. Silakan hapus beberapa.');</script>";
+            $data_update = [];
+        } else {
+            // Gabungkan keahlian wajib + tambahan menjadi satu key 'keahlian' yang akan disimpan
+            if (isset($data_update['keahlian_wajib']) || isset($data_update['keahlian_tambahan'])) {
+                $w = $data_update['keahlian_wajib'] ?? [];
+                $t = $data_update['keahlian_tambahan'] ?? [];
+                if (!is_array($w)) $w = [$w];
+                if (!is_array($t)) $t = [$t];
+                $combined = array_values(array_filter(array_map('trim', array_merge($w, $t))));
+                if (!empty($combined)) {
+                    $data_update['keahlian'] = $combined;
+                }
+                unset($data_update['keahlian_wajib'], $data_update['keahlian_tambahan']);
+            }
+        }
+
+        if (!empty($data_update) && updateProfilPelamar($id_user, $data_update, $files_update) > 0) {
             echo "<script>
                     alert('Berhasil edit profil');
                     document.location.href = 'profil_pelamar.php';
                   </script>";
-        } else {
+        } elseif (!empty($data_update)) {
             echo "<script>
                     alert('Gagal edit profil');
                   </script>";
+        } else {
+            // jika $data_update dikosongkan karena validasi gagal, jangan lakukan update
+            // (alert sudah ditampilkan di atas)
         }
     } else {
         echo "<script>
@@ -184,50 +243,61 @@ if (isset($_POST['submit'])) {
                 <p class="text-xs text-gray-400 mt-1">* Tambahkan lebih banyak pengalaman dengan klik tombol di atas.
                 </p>
             </div>
-            <!-- Keahlian (diperbarui: support custom input) -->
+            <!-- Keahlian (diperbarui: wajib & tambahan, support custom input) -->
             <div>
                 <label class="block text-gray-700 mb-1">Keahlian</label>
 
-                <div class="grid grid-cols-2 gap-2" id="predefined-skills">
-                    <?php foreach ($predefined as $skill): ?>
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" name="keahlian[]" value="<?php echo htmlspecialchars($skill) ?>"
-                            class="form-checkbox text-[#00646A]"
-                            <?php echo in_array($skill, $userSkills) ? 'checked' : '' ?>>
-                        <span class="ml-2"><?php echo htmlspecialchars($skill) ?></span>
-                    </label>
-                    <?php endforeach; ?>
-                </div>
-
-                <!-- Tambah keahlian custom -->
-                <div class="mt-3">
-                    <label class="block text-gray-700 mb-1">Tambahkan Keahlian Lain</label>
-                    <div class="flex gap-2">
-                        <input id="keahlian-input" type="text"
-                            class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
-                            placeholder="Ketik keahlian lalu tekan Tambah (mis. React, Node.js)" />
-                        <button type="button" id="add-keahlian"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">Tambah</button>
-                    </div>
-
-                    <div id="custom-keahlian-list" class="flex flex-wrap gap-2 mt-3">
-                        <?php
-                        // render keahlian user yang bukan bagian predefined sebagai pill + hidden input
-                        foreach ($userSkills as $s):
-                            if (trim($s) === '') continue;
-                            if (in_array($s, $predefined)) continue;
-                        ?>
-                        <span class="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <span><?php echo htmlspecialchars($s) ?></span>
-                            <button type="button" class="remove-custom-keahlian text-red-500"
-                                data-value="<?php echo htmlspecialchars($s) ?>">×</button>
-                            <input type="hidden" name="keahlian[]" value="<?php echo htmlspecialchars($s) ?>">
-                        </span>
+                <div class="mb-3">
+                    <div class="font-semibold text-sm text-gray-600 mb-1">Keahlian Wajib</div>
+                    <div class="grid grid-cols-2 gap-2" id="required-skills">
+                        <?php foreach ($required_predefined as $skill): ?>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="keahlian_wajib[]"
+                                value="<?php echo htmlspecialchars($skill) ?>" class="form-checkbox text-[#00646A]"
+                                <?php echo in_array($skill, $userSkills) ? 'checked' : '' ?>>
+                            <span class="ml-2"><?php echo htmlspecialchars($skill) ?></span>
+                        </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <p class="text-xs text-gray-400 mt-1">* Pilih atau tambahkan keahlian yang kamu miliki.</p>
+                <div class="mb-2">
+                    <div class="font-semibold text-sm text-gray-600 mb-1">Keahlian Tambahan</div>
+
+                    <!-- Tambah keahlian custom (masuk ke 'keahlian_tambahan') -->
+                    <div class="mt-3">
+                        <label class="block text-gray-700 mb-1">Tambahkan Keahlian Lain</label>
+                        <div class="flex gap-2">
+                            <input id="keahlian-input" type="text"
+                                class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00646A]"
+                                placeholder="Ketik keahlian lalu tekan Tambah (mis. React, Node.js)" />
+                            <button type="button" id="add-keahlian"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">Tambah</button>
+                        </div>
+
+                        <!-- pastikan container custom tambahan juga menempati bar sendiri -->
+                        <div id="custom-keahlian-list" class="flex flex-wrap gap-2 mt-3 w-full">
+                            <?php
+                            // render keahlian user yang bukan bagian predefined sebagai pill + hidden input (masuk tambahan)
+                            foreach ($userSkills as $s):
+                                if (trim($s) === '') continue;
+                                if (in_array($s, $required_predefined)) continue;
+                                if (in_array($s, $additional_predefined)) continue;
+                            ?>
+                            <span class="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm"
+                                data-group="additional">
+                                <span><?php echo htmlspecialchars($s) ?></span>
+                                <button type="button" class="remove-custom-keahlian text-red-500"
+                                    data-value="<?php echo htmlspecialchars($s) ?>">×</button>
+                                <input type="hidden" name="keahlian_tambahan[]"
+                                    value="<?php echo htmlspecialchars($s) ?>">
+                            </span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-xs text-gray-400 mt-1">* Pilih keahlian wajib dan keahlian tambahan jika anda ingin.</p>
             </div>
             <!-- Upload CV -->
             <div>
@@ -286,32 +356,71 @@ if (isset($_POST['submit'])) {
         document.getElementById('logout-modal').classList.add('hidden');
     }
 
-    // Keahlian custom: tambah / hapus
+    // Keahlian custom: tambah / hapus untuk kedua grup (wajib & tambahan) + batas maksimal
     (function() {
-        const input = document.getElementById('keahlian-input');
-        const addBtn = document.getElementById('add-keahlian');
-        const list = document.getElementById('custom-keahlian-list');
+        const MAX_REQUIRED = 5;
+        const MAX_ADDITIONAL = 3;
+
+        const cfg = [
+            // groupId, inputId, addBtnId, listId, hiddenInputName, groupName
+            {
+                input: 'keahlian-input-required',
+                addBtn: 'add-keahlian-required',
+                list: 'custom-keahlian-list-required',
+                hiddenName: 'keahlian_wajib[]',
+                group: 'required'
+            },
+            {
+                input: 'keahlian-input',
+                addBtn: 'add-keahlian',
+                list: 'custom-keahlian-list',
+                hiddenName: 'keahlian_tambahan[]',
+                group: 'additional'
+            }
+        ];
 
         function normalize(s) {
             return s.trim();
         }
 
-        function existsValue(val) {
+        function getGroupCount(listId, checkboxName) {
+            let cnt = 0;
+            const lst = document.getElementById(listId);
+            if (lst) {
+                cnt += lst.querySelectorAll('input[type="hidden"]').length;
+            }
+            const boxes = document.querySelectorAll('input[type="checkbox"][name="' + checkboxName + '"]');
+            boxes.forEach(b => {
+                if (b.checked) cnt++;
+            });
+            return cnt;
+        }
+
+        function existsValueInDOM(val) {
             if (!val) return false;
             val = normalize(val).toLowerCase();
-            // cek hidden inputs nama keahlian[] dan juga predefined checkboxes
-            const hidden = list.querySelectorAll('input[type="hidden"][name="keahlian[]"]');
-            for (const h of hidden)
-                if (h.value.trim().toLowerCase() === val) return true;
-            const checkboxes = document.querySelectorAll('input[type="checkbox"][name="keahlian[]"]');
-            for (const c of checkboxes)
+            // cek hidden inputs di kedua list (di dalam masing-masing container)
+            for (const c of cfg) {
+                const lst = document.getElementById(c.list);
+                if (!lst) continue;
+                const hidden = lst.querySelectorAll('input[type="hidden"]');
+                for (const h of hidden)
+                    if (h.value.trim().toLowerCase() === val) return true;
+            }
+            // cek kedua grup checkbox
+            const checkboxesW = document.querySelectorAll('input[type="checkbox"][name="keahlian_wajib[]"]');
+            for (const c of checkboxesW)
+                if (c.value.trim().toLowerCase() === val && c.checked) return true;
+            const checkboxesT = document.querySelectorAll('input[type="checkbox"][name="keahlian_tambahan[]"]');
+            for (const c of checkboxesT)
                 if (c.value.trim().toLowerCase() === val && c.checked) return true;
             return false;
         }
 
-        function createPill(value) {
+        function createPill(value, hiddenName, group) {
             const span = document.createElement('span');
             span.className = 'flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm';
+            span.dataset.group = group; // tandai grup supaya tidak tercampur
             const text = document.createElement('span');
             text.textContent = value;
             const btn = document.createElement('button');
@@ -321,7 +430,7 @@ if (isset($_POST['submit'])) {
             btn.textContent = '×';
             const hidden = document.createElement('input');
             hidden.type = 'hidden';
-            hidden.name = 'keahlian[]';
+            hidden.name = hiddenName;
             hidden.value = value;
             span.appendChild(text);
             span.appendChild(btn);
@@ -329,20 +438,75 @@ if (isset($_POST['submit'])) {
             return span;
         }
 
-        addBtn && addBtn.addEventListener('click', function() {
-            const v = input.value.trim();
-            if (!v) return;
-            if (existsValue(v)) {
-                alert('Keahlian "' + v + '" sudah ada atau sudah dipilih.');
+        cfg.forEach(function(c) {
+            const input = document.getElementById(c.input);
+            const addBtn = document.getElementById(c.addBtn);
+            const list = document.getElementById(c.list);
+            if (!addBtn || !input || !list) return;
+
+            const max = c.hiddenName === 'keahlian_wajib[]' ? MAX_REQUIRED : MAX_ADDITIONAL;
+            const groupLabel = c.hiddenName === 'keahlian_wajib[]' ? 'Keahlian Wajib' : 'Keahlian Tambahan';
+
+            addBtn.addEventListener('click', function() {
+                const v = input.value.trim();
+                if (!v) return;
+                // cek batas sebelum menambah pill
+                const current = getGroupCount(c.list, c.hiddenName);
+                if (current >= max) {
+                    alert('Maksimal ' + max + ' ' + groupLabel + '.');
+                    return;
+                }
+                if (existsValueInDOM(v)) {
+                    alert('Keahlian "' + v + '" sudah ada atau sudah dipilih.');
+                    input.value = '';
+                    return;
+                }
+                const pill = createPill(v, c.hiddenName, c.group);
+                list.appendChild(
+                    pill); // append ke list grup yang sesuai — tetap berada di bawah bar grup itu
                 input.value = '';
-                return;
-            }
-            const pill = createPill(v);
-            list.appendChild(pill);
-            input.value = '';
+            });
         });
 
-        // delegate remove
+        // cek/ceklist handlers (tetap menegakkan limit)
+        document.querySelectorAll('input[type="checkbox"][name="keahlian_wajib[]"]').forEach(cb => {
+            cb.addEventListener('change', function(e) {
+                if (!cb.checked) return;
+                const cnt = getGroupCount('custom-keahlian-list-required', 'keahlian_wajib[]');
+                if (cnt > MAX_REQUIRED) {
+                    // seharusnya tidak terjadi karena kita periksa sebelum submit, tetapi jaga-jaga:
+                    cb.checked = false;
+                    alert('Keahlian wajib maksimal ' + MAX_REQUIRED);
+                } else {
+                    // hitung total setelah centang
+                    let total = cnt; // cnt already includes checked checkboxes in getGroupCount
+                    // Note: getGroupCount counts checkboxes including this one (because it's checked).
+                    if (total > MAX_REQUIRED) {
+                        cb.checked = false;
+                        alert('Keahlian wajib maksimal ' + MAX_REQUIRED);
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('input[type="checkbox"][name="keahlian_tambahan[]"]').forEach(cb => {
+            cb.addEventListener('change', function(e) {
+                if (!cb.checked) return;
+                const cnt = getGroupCount('custom-keahlian-list', 'keahlian_tambahan[]');
+                if (cnt > MAX_ADDITIONAL) {
+                    cb.checked = false;
+                    alert('Maksimal ' + MAX_ADDITIONAL + ' Keahlian Tambahan.');
+                } else {
+                    let total = cnt;
+                    if (total > MAX_ADDITIONAL) {
+                        cb.checked = false;
+                        alert('Maksimal ' + MAX_ADDITIONAL + ' Keahlian Tambahan.');
+                    }
+                }
+            });
+        });
+
+        // delegate remove untuk semua pill (counts otomatis berubah karena DOM)
         document.addEventListener('click', function(e) {
             if (e.target && e.target.classList.contains('remove-custom-keahlian')) {
                 const btn = e.target;
@@ -352,9 +516,6 @@ if (isset($_POST['submit'])) {
         });
     })();
     </script>
-</body>
-
-</html>
 </body>
 
 </html>
