@@ -6,7 +6,7 @@ if (!$id_pelamar) {
     // no pelamar in session -> nothing to return
     http_response_code(204);
     exit;
-}
+} 
 
 $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
 if (!$conn) {
@@ -83,7 +83,7 @@ if (empty($notifications)) {
     exit;
 }
 
-// header summary: count unread before marking (we computed $unread_ids)
+
 $unreadCount = count($unread_ids);
 echo '<div class="mb-3 text-sm">';
 if ($unreadCount > 0) {
@@ -91,7 +91,7 @@ if ($unreadCount > 0) {
 }
 echo '</div>';
 
-// list notifications
+
 echo '<div class="space-y-2">';
 foreach ($notifications as $n) {
     $id_notif = (int)$n['id_notifikasi'];
@@ -99,7 +99,7 @@ foreach ($notifications as $n) {
     $waktu = htmlspecialchars($n['created_at']);
     $isRead = (int)($n['is_read'] ?? 0);
 
-    // color heuristics
+   
     $colorClass = 'text-gray-800';
     if (stripos($pesan, 'diterima') !== false || stripos($pesan, 'terima') !== false) $colorClass = 'text-[#00797a] font-semibold';
     elseif (stripos($pesan, 'ditolak') !== false || stripos($pesan, 'tolak') !== false) $colorClass = 'text-red-600 font-semibold';
@@ -111,11 +111,10 @@ foreach ($notifications as $n) {
     echo '<div class="text-xs text-gray-500 mt-1">(' . $waktu . ')</div>';
     echo '</div>';
 
-    // status label + delete button
+    
     $labelClass = $isRead ? 'text-gray-500 bg-gray-100' : 'text-white bg-red-600';
     $labelText = $isRead ? 'Sudah dibaca' : 'Baru';
     echo '<div class="flex-shrink-0 flex items-center gap-2">';
-    // delete button
     echo '<button type="button" class="notif-delete-btn text-xs text-red-600 hover:underline" data-id="' . $id_notif . '">Hapus</button>';
     echo '<span class="px-2 py-1 text-xs rounded ' . $labelClass . '">' . $labelText . '</span>';
     echo '</div>';
