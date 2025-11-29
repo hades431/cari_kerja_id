@@ -11,8 +11,6 @@ if(!isset($_SESSION['login']) || $_SESSION['role'] !== 'Perusahaan'){
 }
 
 // Ambil perusahaan & paket
-
-
 $user_id = $_SESSION["user"]["id"];
 $id_perusahaan = $_SESSION['user']['id_perusahaan'] ?? null;
 $paket = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0]['paket'] ?? 'default';
@@ -88,7 +86,9 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Pastikan masih boleh membuat lowongan sesuai paket
     $cek = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0];
-    if ($cek['Lowogan_post'] <= 0 || $cek["verifikasi"] == "expire") {
+    if ($cek['verifikasi'] == "expire") {
+        $error = "Paket sudah kadaluarsa, perpanjang paket untuk memasang lowongan.";
+    } elseif ($cek['Lowogan_post'] <= 0) {
         $error = "Kuota lowongan Anda sudah penuh untuk paket saat ini (maks: $max_lowongan). Silakan upgrade paket atau tunggu lowongan berakhir.";
     } else {
         $judul = trim($_POST['judul'] ?? '');
@@ -134,10 +134,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Hitung batas_lamaran berdasarkan durasi paket
             $tanggal_post = date('Y-m-d H:i:s');
             $batas_lamaran = date('Y-m-d', strtotime("+{$durasi_hari} days", strtotime($tanggal_post)));
-            // Simpan ke DB (prepared)
-            $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, posisi, deskripsi, pengalaman, pendidikan, gender, gaji, lokasi, tanggal_post, batas_lamaran, banner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            // Simpan ke DB (prepared) - TAMBAHKAN status = 'aktif'
+            $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, posisi, deskripsi, pengalaman, pendidikan, gender, gaji, lokasi, tanggal_post, batas_lamaran, banner, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $banner_to_bind = $banner_path ?: '';
-            $stmt->bind_param("isssssssssss", $id_perusahaan, $judul, $judul, $deskripsi, $pengalaman, $pendidikan, $gender, $gaji, $lokasi, $tanggal_post, $batas_lamaran, $banner_to_bind);
+            $status_lowongan = 'aktif';
+            $stmt->bind_param("isssssssssss", $id_perusahaan, $judul, $judul, $deskripsi, $pengalaman, $pendidikan, $gender, $gaji, $lokasi, $tanggal_post, $batas_lamaran, $banner_to_bind, $status_lowongan);
             if ($stmt->execute()) {
                 $stmt2 = $conn->prepare("UPDATE perusahaan SET Lowogan_post = Lowogan_post - 1 WHERE id_perusahaan = ?");
                 $stmt2->bind_param("i", $id_perusahaan);
@@ -174,16 +175,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if(!empty($paket_notice)): ?>
         <div class='bg-yellow-100 text-yellow-800 p-3 rounded mb-4'><?= htmlspecialchars($paket_notice) ?></div>
         <?php endif; ?>
-        <?php if(isset($error) && $error): echo "<div class='bg-red-100 text-red-700 p-3 rounded mb-4'>".htmlspecialchars($error)."</div>"; endif; ?>
+        <?php if(isset($error) && $error): ?>
+        <div class='bg-red-100 text-red-700 p-3 rounded mb-4'><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
         <?php if(isset($message) && $message): echo "<div class='bg-green-100 text-green-700 p-3 rounded mb-4'>".htmlspecialchars($message)."</div>"; endif; ?>
 
-        <div class="mb-4">
-            <p>Paket saat ini: <strong><?= htmlspecialchars($paket) ?></strong></p>
-            <p>Durasi lowongan paket: <strong><?= htmlspecialchars($durasi_hari) ?> hari</strong></p>
-            <p>Kuota lowongan paket: <strong><?= $max_lowongan ?></strong></p>
-            <p>status: <strong><?= $status == "expire" ? "kadaluarsa" : "aktif"; ?></strong></p>
-            <p>Lowongan aktif saat ini: <strong><?= htmlspecialchars($active_count) ?></strong></p>
-            <p>Expire paket: <strong id="expire_date"><?= htmlspecialchars($expire_formatted ?? '-') ?></strong></p>
+        <div class="mb-6 bg-gradient-to-r from-[#00646A] to-[#00797a] text-white p-6 rounded-xl shadow-md">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-sm opacity-90">Paket saat ini</p>
+                    <p class="text-2xl font-bold"><?= htmlspecialchars(ucfirst($paket)) ?></p>
+                </div>
+                <div>
+                    <p class="text-sm opacity-90">Durasi lowongan paket</p>
+                    <p class="text-2xl font-bold"><?= htmlspecialchars($durasi_hari) ?> hari</p>
+                </div>
+                <div>
+                    <p class="text-sm opacity-90">Kuota lowongan paket</p>
+                    <p class="text-2xl font-bold"><?= $max_lowongan ?></p>
+                </div>
+                <div>
+                    <p class="text-sm opacity-90">Status paket</p>
+                    <p class="text-2xl font-bold <?= $status == "expire" ? "text-red-300" : "text-green-300"; ?>">
+                        <?= $status == "expire" ? "Kadaluarsa" : "Aktif"; ?>
+                    </p>
+                </div>
+                <div>
+                    <p class="text-sm opacity-90">Lowongan aktif saat ini</p>
+                    <p class="text-2xl font-bold"><?= htmlspecialchars($active_count) ?></p>
+                </div>
+                <div>
+                    <p class="text-sm opacity-90">Expire paket</p>
+                    <p class="text-lg font-bold" id="countdown_timer"><?= htmlspecialchars($expire_formatted ?? '-') ?></p>
+                    <p class="text-xs opacity-75" id="days_left"><?= $days_left !== null ? $days_left . ' hari' : '-' ?></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box: Cara Kerja Durasi -->
+        <div class="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+            <h3 class="font-semibold text-blue-900 mb-2">Cara Kerja Durasi Lowongan</h3>
+            <ul class="text-sm text-blue-800 space-y-1">
+                <li><strong>✓ Durasi dimulai</strong> saat lowongan dipasang</li>
+                <li><strong>✓ Durasi berkurang</strong> setiap harinya secara otomatis</li>
+                <li><strong>✓ Status "Aktif"</strong> saat durasi masih berlangsung</li>
+                <li><strong>✓ Status "Expired"</strong> saat durasi telah berakhir atau mencapai tanggal batas lamaran</li>
+                <li><strong>✓ Lowongan expired</strong> tidak akan ditampilkan di landing page</li>
+                <li><strong>✓ Paket upgrade</strong> memberikan durasi lebih lama (Diamond: 60 hari, Gold: 45 hari, Silver: 30 hari, Bronze: 15 hari)</li>
+            </ul>
         </div>
 
         <form method="POST" enctype="multipart/form-data" class="space-y-6" id="lowonganForm">
@@ -200,6 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="block text-gray-700 font-semibold mb-2">Judul Lowongan</label>
                 <input type="text" autocomplete="off" name="judul" required
                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
+                <p class="text-xs text-gray-500 mt-1">Lowongan akan berlaku selama <strong><?= $durasi_hari ?> hari</strong> sejak dipasang</p>
             </div>
 
             <div>
