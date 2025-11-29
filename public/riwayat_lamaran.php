@@ -28,6 +28,8 @@ if (!empty($_GET['sort']) && $_GET['sort'] == "lama") {
 
 
 $sql = "SELECT 
+            lam.id_lamaran AS id_lamaran,
+            l.id_lowongan AS id_lowongan,
             p.nama_perusahaan AS perusahaan,
             l.posisi AS posisi,
             lam.tanggal_lamar AS tanggal,
@@ -47,12 +49,132 @@ if ($result && mysqli_num_rows($result) > 0) {
     }
 }
 
-// tentukan URL profil pelamar (cek keberadaan file, fallback ke beranda)
-$profile_file = __DIR__ . '/profil_pelamar.php';
-if (file_exists($profile_file)) {
-    $profile_url = 'profil_pelamar.php';
-} else {
-    $profile_url = '../'; // fallback jika file profil tidak ada
+// === baru: jika ada lamaran "di proses" baru (5 menit terakhir), buat notifikasi jika belum ada ===
+if (!empty($id_pelamar)) {
+    $q_new = "SELECT lam.id_lamaran, l.posisi, p.nama_perusahaan, lam.tanggal_lamar
+              FROM lamaran lam
+              JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
+              JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
+              WHERE lam.id_pelamar = ?
+                AND lam.status_lamaran = 'di proses'
+                AND lam.tanggal_lamar >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
+    if ($st_new = mysqli_prepare($conn, $q_new)) {
+        mysqli_stmt_bind_param($st_new, "i", $id_pelamar);
+        mysqli_stmt_execute($st_new);
+        $res_new = mysqli_stmt_get_result($st_new);
+        if ($res_new) {
+            while ($rown = mysqli_fetch_assoc($res_new)) {
+                $posisi = trim($rown['posisi'] ?? '');
+                $perusahaan = trim($rown['nama_perusahaan'] ?? '');
+                if ($posisi === '' && $perusahaan === '') continue;
+
+                $pesan = "Lamaran Anda untuk posisi {$posisi} di {$perusahaan} sedang di proses.";
+
+                // cek apakah notifikasi serupa sudah ada
+                $q_check = "SELECT 1 FROM notifikasi_lamaran WHERE id_pelamar = ? AND pesan LIKE CONCAT('%', ?, '%', ?, '%') LIMIT 1";
+                if ($st_check = mysqli_prepare($conn, $q_check)) {
+                    mysqli_stmt_bind_param($st_check, "iss", $id_pelamar, $posisi, $perusahaan);
+                    mysqli_stmt_execute($st_check);
+                    $res_check = mysqli_stmt_get_result($st_check);
+                    $exists = ($res_check && mysqli_num_rows($res_check) > 0);
+                    mysqli_stmt_close($st_check);
+
+                    if (!$exists) {
+                        // insert notifikasi baru (is_read = 0)
+                        $q_ins = "INSERT INTO notifikasi_lamaran (id_pelamar, pesan, is_read, created_at) VALUES (?, ?, 0, NOW())";
+                        if ($st_ins = mysqli_prepare($conn, $q_ins)) {
+                            mysqli_stmt_bind_param($st_ins, "is", $id_pelamar, $pesan);
+                            mysqli_stmt_execute($st_ins);
+                            mysqli_stmt_close($st_ins);
+                        }
+                    }
+                }
+            }
+        }
+        mysqli_stmt_close($st_new);
+    }
+}
+// === end baru ===
+
+// --- baru: ambil judul lowongan jika tersedia dan tanggal diterima/ditolak per lamaran ---
+
+// Deteksi nama kolom judul pada tabel lowongan
+$possible_title_cols = ['judul','judul_lowongan','title','nama_lowongan'];
+$found_title_col = null;
+foreach ($possible_title_cols as $c) {
+    $c_esc = mysqli_real_escape_string($conn, $c);
+    $rescol = mysqli_query($conn, "SHOW COLUMNS FROM `lowongan` LIKE '$c_esc'");
+    if ($rescol && mysqli_num_rows($rescol) > 0) {
+        $found_title_col = $c;
+        break;
+    }
+}
+
+// Deteksi nama kolom tanggal diterima/ditolak di tabel lamaran (DETEKSI SEKALI, di luar loop)
+$possible_accept_cols = ['tanggal_diterima','tanggal_terima','diterima_pada','diterima_tanggal'];
+$possible_reject_cols  = ['tanggal_ditolak','tanggal_tolak','ditolak_pada','ditolak_tanggal'];
+
+$accept_col = null;
+foreach ($possible_accept_cols as $c) {
+    $c_esc = mysqli_real_escape_string($conn, $c);
+    $r = mysqli_query($conn, "SHOW COLUMNS FROM `lamaran` LIKE '$c_esc'");
+    if ($r && mysqli_num_rows($r) > 0) { $accept_col = $c; break; }
+}
+$reject_col = null;
+foreach ($possible_reject_cols as $c) {
+    $c_esc = mysqli_real_escape_string($conn, $c);
+    $r = mysqli_query($conn, "SHOW COLUMNS FROM `lamaran` LIKE '$c_esc'");
+    if ($r && mysqli_num_rows($r) > 0) { $reject_col = $c; break; }
+}
+
+// Siapkan cache data lowongan dan lamaran untuk menghindari query berulang
+$lowongan_cache = []; // id_lowongan => judul
+$lamaran_cache = [];  // id_lamaran => ['diterima'=>..., 'ditolak'=>...]
+
+if (!empty($filtered)) {
+    // kumpulkan unique id_lowongan dan id_lamaran
+    $ids_low = [];
+    $ids_lamaran = [];
+    foreach ($filtered as $f) {
+        if (!empty($f['id_lowongan'])) $ids_low[(int)$f['id_lowongan']] = true;
+        if (!empty($f['id_lamaran'])) $ids_lamaran[(int)$f['id_lamaran']] = true;
+    }
+
+    // ambil judul untuk setiap lowongan bila kolom tersedia (bangun IN-clause aman dari integer)
+    if ($found_title_col !== null && !empty($ids_low)) {
+        $ids = array_keys($ids_low);
+        $ids = array_map('intval', $ids);
+        $in = implode(',', $ids);
+        $q = "SELECT id_lowongan, `{$found_title_col}` AS judul FROM lowongan WHERE id_lowongan IN ($in)";
+        $res = mysqli_query($conn, $q);
+        if ($res) {
+            while ($r = mysqli_fetch_assoc($res)) {
+                $lowongan_cache[(int)$r['id_lowongan']] = $r['judul'];
+            }
+        }
+    }
+
+    // untuk setiap lamaran ambil tanggal diterima/ditolak berdasarkan kolom yang sudah dideteksi
+    if (!empty($ids_lamaran) && ($accept_col || $reject_col)) {
+        foreach (array_keys($ids_lamaran) as $idl) {
+            $idl = (int)$idl;
+            $lamaran_cache[$idl] = ['diterima' => null, 'ditolak' => null];
+            $cols = [];
+            if ($accept_col) $cols[] = "`$accept_col`";
+            if ($reject_col) $cols[] = "`$reject_col`";
+            $cols_sql = implode(',', $cols);
+            $q2 = "SELECT $cols_sql FROM lamaran WHERE id_lamaran = $idl LIMIT 1";
+            $res2 = mysqli_query($conn, $q2);
+            if ($res2 && $d = mysqli_fetch_assoc($res2)) {
+                if ($accept_col && isset($d[$accept_col]) && $d[$accept_col] !== null && $d[$accept_col] !== '') {
+                    $lamaran_cache[$idl]['diterima'] = $d[$accept_col];
+                }
+                if ($reject_col && isset($d[$reject_col]) && $d[$reject_col] !== null && $d[$reject_col] !== '') {
+                    $lamaran_cache[$idl]['ditolak'] = $d[$reject_col];
+                }
+            }
+        }
+    }
 }
 ?>
 
@@ -118,31 +240,43 @@ if (file_exists($profile_file)) {
         <thead class="primary text-white">
           <tr>
             <th class="py-3 px-4 text-left">Perusahaan</th>
-            <th class="py-3 px-4 text-left">Tanggal </th>
+            <th class="py-3 px-4 text-left">Posisi</th>
+            <th class="py-3 px-4 text-left">Tanggal Lamar</th>
             <th class="py-3 px-4 text-left">Status</th>
+            <th class="py-3 px-4 text-left">Diterima Pada</th>
+            <th class="py-3 px-4 text-left">Ditolak Pada</th>
           </tr>
         </thead>
         <tbody>
           <?php if (!empty($filtered)): ?>
-            <?php foreach($filtered as $r): ?>
+            <?php foreach($filtered as $r): 
+                $id_lamaran = (int)($r['id_lamaran'] ?? 0);
+                $id_lowongan = (int)($r['id_lowongan'] ?? 0);
+                // judul: dari cache jika ada, kalau tidak pakai posisi
+                $judul = isset($lowongan_cache[$id_lowongan]) ? $lowongan_cache[$id_lowongan] : ($r['posisi'] ?? '-');
+                $diterima = isset($lamaran_cache[$id_lamaran]['diterima']) ? $lamaran_cache[$id_lamaran]['diterima'] : null;
+                $ditolak  = isset($lamaran_cache[$id_lamaran]['ditolak']) ? $lamaran_cache[$id_lamaran]['ditolak'] : null;
+            ?>
               <tr class="border-b hover:bg-gray-50">
                 <td class="py-3 px-4"><?= htmlspecialchars($r["perusahaan"]); ?></td>
+                <td class="py-3 px-4"><?= htmlspecialchars($judul); ?></td>
                 <td class="py-3 px-4"><?= htmlspecialchars($r["tanggal"]); ?></td>
                 <td class="py-3 px-4">
-                  <?php if($r["status"] == "di proses"): ?>
-    <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
-<?php elseif($r["status"] == "di terima"): ?>
-    <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
-<?php elseif($r["status"] == "di tolak"): ?>
-    <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
-<?php endif; ?>
-
+                  <?php if(isset($r["status"]) && $r["status"] == "di proses"): ?>
+                    <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
+                  <?php elseif(isset($r["status"]) && $r["status"] == "di terima"): ?>
+                    <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
+                  <?php elseif(isset($r["status"]) && $r["status"] == "di tolak"): ?>
+                    <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
+                  <?php endif; ?>
                 </td>
+                <td class="py-3 px-4"><?= $diterima ? htmlspecialchars($diterima) : '-' ?></td>
+                <td class="py-3 px-4"><?= $ditolak ? htmlspecialchars($ditolak) : '-' ?></td>
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="3" class="text-center py-4 text-gray-500">Tidak ada riwayat ditemukan.</td>
+              <td colspan="6" class="text-center py-4 text-gray-500">Tidak ada riwayat ditemukan.</td>
             </tr>
           <?php endif; ?>
         </tbody>
@@ -161,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('notifikasi.php?count=1')
           .then(resp => resp.json())
           .then(data => {
-            const c = data.count || 0;
+            const c = (data && data.count) ? data.count : 0;
             if (c > 0) {
               countEl.textContent = c;
               countEl.classList.remove('hidden');
@@ -209,15 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(r => r.text())
             .then(html => {
                 panel.innerHTML = html;
-                // remove duplicate fallback messages if present
-                // (existing helper from previous edits)
-                Array.from(panel.querySelectorAll('.text-gray-500, .text-sm.text-gray-600, .bg-white.p-4')).forEach(el => {
-                    const t = (el.textContent || '').trim();
-                    if (!t) return;
-                    if (/^(Semua pesan sudah dibaca|Tidak ada notifikasi baru|Belum ada notifikasi)\b/i.test(t)) {
-                        el.remove();
-                    }
-                });
+                // isi panel langsung ditampilkan; pasang handler hapus jika ada tombol
                 attachDeleteHandlers();
                 panel.classList.remove('hidden');
                 // hide badge

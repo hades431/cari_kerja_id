@@ -198,14 +198,17 @@ foreach ($keahlian as $k) {
                     <i class="fas fa-file-pdf text-red-500 text-2xl"></i>
                     <span class="text-gray-700 text-sm"><?= $cv ? htmlspecialchars($cv) : 'Belum upload CV' ?></span>
                 </div>
-                <?php if ($cv): ?>
+                <?php if ($cv): 
+                    // pastikan hanya nama file saja untuk link
+                    $cv_file = basename($cv);
+                ?>
                 <div class="flex gap-2 mt-2 sm:mt-0">
-                    <a href="../uploads/<?= htmlspecialchars($cv) ?>"
-                        class="text-[#00646A] hover:underline flex items-center gap-1" download>
+                    <a href="download_cv.php?file=<?= urlencode($cv_file) ?>"
+                        class="text-[#00646A] hover:underline flex items-center gap-1">
                         <i class="fas fa-download"></i> Download
                     </a>
-                    <a href="../uploads/<?= htmlspecialchars($cv) ?>"
-                        class="text-blue-600 hover:underline flex items-center gap-1" target="_blank">
+                    <a href="view_cv.php?file=<?= urlencode($cv_file) ?>"
+                        class="text-blue-600 hover:underline flex items-center gap-1" target="_blank" rel="noopener">
                         <i class="fas fa-eye"></i> Lihat
                     </a>
                 </div>
