@@ -11,7 +11,7 @@ $lowongan_simpan = tampil("SELECT
     FROM save_lowongan s
     JOIN lowongan l ON s.lowongan_id = l.id_lowongan
     JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
-    WHERE s.user_id = '{$user_id}'
+    WHERE s.user_id = '{$user_id}' AND l.status = 'aktif'
     ORDER BY s.save_lowongan_id DESC");
 }
     if(isset($_POST["hapus_semua"])){
@@ -56,7 +56,7 @@ $data = tampil("SELECT
     perusahaan.nama_perusahaan 
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
-WHERE perusahaan.paket IN ('gold', 'silver', 'bronze')
+WHERE perusahaan.paket IN ('gold', 'silver', 'bronze') AND lowongan.status = 'aktif'
 ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC");
 $jumlah_data_halaman = 4; // Number of articles per page
 $jumlah_data = count(tampil("SELECT 
@@ -64,7 +64,7 @@ $jumlah_data = count(tampil("SELECT
     perusahaan.nama_perusahaan 
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
-WHERE perusahaan.paket IN ('diamond')
+WHERE perusahaan.paket IN ('diamond') AND lowongan.status = 'aktif'
 ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC"));
 $jumlah_halaman = ceil($jumlah_data / $jumlah_data_halaman);
 $halaman_aktif = (isset($_GET["halaman"])) ? (int)$_GET["halaman"] : 1;
@@ -75,7 +75,7 @@ $diamond = tampil("SELECT
     perusahaan.nama_perusahaan 
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
-WHERE perusahaan.paket IN ('diamond')
+WHERE perusahaan.paket IN ('diamond') AND lowongan.status = 'aktif'
 ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC
 LIMIT $awal_halaman, $jumlah_data_halaman
 ");

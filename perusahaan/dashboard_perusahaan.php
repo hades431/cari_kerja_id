@@ -36,12 +36,9 @@ $logo_perusahaan = isset($logo_perusahaan_arr[0]["logo"]) ? $logo_perusahaan_arr
 $jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan where id_perusahaan = $id_perusahaan")->fetch_row()[0];
 $jmlPerusahaan  = $conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
 // Ubah query pelamar: hanya pelamar ke perusahaan ini
-$jmlpelamar = $conn->query("SELECT COUNT(*) 
-    FROM pelamar_kerja pk
-    JOIN lowongan l ON pk.id_pelamar = l.id_lowongan
-    WHERE l.id_perusahaan = $id_perusahaan
-")->fetch_row()[0];
-
+$jmlpelamar     = $conn->query("SELECT COUNT(DISTINCT l.id_pelamar) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan")->fetch_row()[0];
+$jmlDiterima    = $conn->query("SELECT COUNT(*) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan AND l.status_lamaran = 'di terima'")->fetch_row()[0];
+$jmlDitolak     = $conn->query("SELECT COUNT(*) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan AND l.status_lamaran = 'di tolak'")->fetch_row()[0];
 // Lowongan saya
 $lowongan_saya = [];
 // var_dump($user_id);die;
@@ -84,22 +81,26 @@ if($res){
                         class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden block">
                         <img src="<?= htmlspecialchars($logo_perusahaan) ?>" alt="Logo Perusahaan"
                             class="w-full h-full object-cover">
-                    </a>
+                    </a> <?php  ?>
                     <h2 class="mt-3 text-lg font-semibold"><?= htmlspecialchars($nama_perusahaan) ?></h2>
                 </div>
                 <!-- Menu -->
-                <nav class="mt-6 space-y-2 px-4">
+                    <nav class="mt-6 space-y-2 px-4">
                     <a href="dashboard_perusahaan.php"
-                        class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Dashboard</a>
+                       class="sidebar-link always-white block py-2 px-4 rounded-lg transition text-white font-semibold flex items-center gap-2"
+                       data-key="dashboard_perusahaan.php" aria-current="page">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18"></path></svg>
+                        <span>Dashboard</span>
+                    </a>
                     <a href="../perusahaan/daftar_pelamar.php"
                         class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Daftar Pelamar</a>
                     <a href="../perusahaan/form_pasang_lowongan.php"
                         class="block py-2 px-4 rounded-lg hover:bg-[#006b68] transition">Pasang Lowongan</a>
                     <a href="../landing/landing_page.php"
-                        class="block py-2 px-4 rounded-lg bg-gray-200 text-[#00797a] font-semibold hover:bg-gray-300 transition mt-4">Kembali</a>
+                        class="block py-2 px-4 rounded-lg bg-white text-[#00797a] font-semibold hover:bg-gray-100 transition mt-4">Kembali</a>
+
                     <form action="../logout.php" method="post" class="mt-2">
-                        <!-- Ubah type submit jadi button agar tidak langsung submit; JS akan buka modal -->
-                        <button type="button" id="logout-btn"
+                        <button type="submit"
                             class="w-full py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold">Logout</button>
                     </form>
                 </nav>
@@ -127,7 +128,7 @@ if($res){
         <main class="flex-1 p-8 overflow-y-auto bg-gray-100 ml-64" style="min-height:calc(100vh - 68px)">
             <!-- Hapus <h1>Dashboard</h1> di sini -->
             <!-- Statistik -->
-            <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-4 gap-6 mb-8">
                 <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
                     <div class="text-lg mb-2">Total Lowongan</div>
                     <div class="text-4xl font-bold"><?= $jmlLowongan ?></div>
@@ -135,6 +136,14 @@ if($res){
                 <div class="bg-[#00646A] text-white p-6 rounded-lg shadow">
                     <div class="text-lg mb-2">Total Pelamar</div>
                     <div class="text-4xl font-bold"><?= $jmlpelamar ?></div>
+                </div>
+                <div class="bg-green-600 text-white p-6 rounded-lg shadow">
+                    <div class="text-lg mb-2">Total Diterima</div>
+                    <div class="text-4xl font-bold"><?= $jmlDiterima ?></div>
+                </div>
+                <div class="bg-red-600 text-white p-6 rounded-lg shadow">
+                    <div class="text-lg mb-2">Total Ditolak</div>
+                    <div class="text-4xl font-bold"><?= $jmlDitolak ?></div>
                 </div>
             </div>
 
@@ -150,6 +159,8 @@ if($res){
                                 <th class="px-4 py-2 text-left">Gaji</th>
                                 <th class="px-4 py-2 text-left">Lokasi</th>
                                 <th class="px-4 py-2 text-left">Banner</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                                <th class="px-4 py-2 text-left">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -169,11 +180,31 @@ if($res){
                                     <span class="text-gray-400 text-sm">Tidak ada banner</span>
                                     <?php endif; ?>
                                 </td>
+                                <td class="px-4 py-2">
+                                    <?php $status = isset($l['status']) ? $l['status'] : 'aktif'; ?>
+                                    <span class="px-3 py-1 rounded-full text-sm font-semibold <?= $status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
+                                        <?= ucfirst($status) ?>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <?php $status = isset($l['status']) ? $l['status'] : 'aktif'; ?>
+                                    <?php if($status === 'aktif'): ?>
+                                    <button onclick="openCloseModal(<?= $l['id_lowongan'] ?>, '<?= htmlspecialchars($l['judul']) ?>')" 
+                                            class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm font-semibold transition">
+                                        Tutup
+                                    </button>
+                                    <?php else: ?>
+                                    <button onclick="openReopenModal(<?= $l['id_lowongan'] ?>, '<?= htmlspecialchars($l['judul']) ?>')" 
+                                            class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm font-semibold transition">
+                                        Buka
+                                    </button>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                             <?php else: ?>
                             <tr>
-                                <td colspan="5" class="text-center px-4 py-6 text-gray-400">Belum ada lowongan</td>
+                                <td colspan="7" class="text-center px-4 py-6 text-gray-400">Belum ada lowongan</td>
                             </tr>
                             <?php endif; ?>
                         </tbody>
@@ -205,12 +236,71 @@ if($res){
                 </div>
             </div>
 
+            <!-- Close Lowongan Modal -->
+            <div id="close-lowongan-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+                    <button onclick="closeCloseModal()"
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+                    <h2 class="text-2xl font-bold text-[#00646A] mb-2">Tutup Lowongan</h2>
+                    <p class="text-gray-500 mb-2">Apakah Anda yakin ingin menutup lowongan:</p>
+                    <p id="close-modal-title" class="font-semibold text-[#00646A] mb-6"></p>
+                    <p class="text-sm text-gray-400 mb-6">Lowongan yang ditutup tidak akan tampil di landing page</p>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="closeCloseModal()"
+                            class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+                        <button id="confirm-close-lowongan"
+                            class="border border-red-600 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 font-semibold">Tutup</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reopen Lowongan Modal -->
+            <div id="reopen-lowongan-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center relative">
+                    <button onclick="closeReopenModal()"
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+                    <h2 class="text-2xl font-bold text-[#00646A] mb-2">Buka Lowongan</h2>
+                    <p class="text-gray-500 mb-2">Apakah Anda yakin ingin membuka kembali lowongan:</p>
+                    <p id="reopen-modal-title" class="font-semibold text-[#00646A] mb-6"></p>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="closeReopenModal()"
+                            class="border border-gray-400 px-6 py-2 rounded text-gray-700 hover:bg-gray-100 font-semibold">Batal</button>
+                        <button id="confirm-reopen-lowongan"
+                            class="border border-green-600 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 font-semibold">Buka</button>
+                    </div>
+                </div>
+            </div>
+
     </div>
 
 </body>
 
 </html>
 <script>
+var currentLowonganId = null;
+
+function openCloseModal(id, judul) {
+    currentLowonganId = id;
+    document.getElementById('close-modal-title').textContent = judul;
+    document.getElementById('close-lowongan-modal').classList.remove('hidden');
+}
+
+function closeCloseModal() {
+    document.getElementById('close-lowongan-modal').classList.add('hidden');
+    currentLowonganId = null;
+}
+
+function openReopenModal(id, judul) {
+    currentLowonganId = id;
+    document.getElementById('reopen-modal-title').textContent = judul;
+    document.getElementById('reopen-lowongan-modal').classList.remove('hidden');
+}
+
+function closeReopenModal() {
+    document.getElementById('reopen-lowongan-modal').classList.add('hidden');
+    currentLowonganId = null;
+}
+
 function openLogoutModal() {
     document.getElementById('logout-modal').classList.remove('hidden');
 }
@@ -238,11 +328,80 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '../logout.php';
     });
 
+    var confirmClosBtn = document.getElementById('confirm-close-lowongan');
+    if (confirmClosBtn) confirmClosBtn.addEventListener('click', function() {
+        if (currentLowonganId) {
+            window.location.href = 'handle_tutup_lowongan.php?id=' + currentLowonganId + '&action=close';
+        }
+    });
+
+    var confirmReopenBtn = document.getElementById('confirm-reopen-lowongan');
+    if (confirmReopenBtn) confirmReopenBtn.addEventListener('click', function() {
+        if (currentLowonganId) {
+            window.location.href = 'handle_tutup_lowongan.php?id=' + currentLowonganId + '&action=reopen';
+        }
+    });
+
+    // Handle sidebar active state. Links with class 'always-white' tetap putih.
+    function setActiveKey(key) {
+        var links = document.querySelectorAll('.sidebar-link');
+        links.forEach(function(link) {
+            if (link.classList.contains('always-white')) {
+                // pastikan selalu putih
+                link.classList.add('bg-white','text-[#00646A]','shadow-sm');
+                link.classList.remove('text-white','hover:bg-[#006b68]');
+                return;
+            }
+            if (link.dataset.key === key || link.getAttribute('href') === key) {
+                link.classList.remove('text-white','hover:bg-[#006b68]');
+                link.classList.add('bg-white','text-[#00646A]','shadow-sm');
+            } else {
+                link.classList.remove('bg-white','text-[#00646A]','shadow-sm');
+                if (!link.classList.contains('text-white')) link.classList.add('text-white');
+            }
+        });
+        try { localStorage.setItem('activeSidebar', key); } catch(e){}
+    }
+
+    var sidebarLinks = document.querySelectorAll('.sidebar-link');
+    sidebarLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            var key = this.dataset.key || this.getAttribute('href');
+            // Jangan set active jika link ini diberi kelas always-white
+            if (!this.classList.contains('always-white')) {
+                setActiveKey(key);
+            }
+            // biarkan navigasi normal terjadi (jika menuju halaman lain)
+        });
+    });
+
+    // Restore active dari localStorage jika ada (abaikan jika saved = 'kembali')
+    var saved = null;
+    try { saved = localStorage.getItem('activeSidebar'); } catch(e){}
+    if (saved && saved !== 'kembali') {
+        setActiveKey(saved);
+    } else {
+        // default: cocokkan file di URL dengan href link non-always-white
+        var path = window.location.pathname.split('/').pop();
+        if (path) {
+            var matched = Array.from(sidebarLinks).find(function(l){
+                if (l.classList.contains('always-white')) return false;
+                var hrefFilename = l.getAttribute('href').split('/').pop();
+                return hrefFilename === path;
+            });
+            if (matched) {
+                setActiveKey(matched.dataset.key || matched.getAttribute('href'));
+            }
+        }
+    }
+
     // optional: tutup modal saat tekan Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeLogoutModal();
             closeBannerModal();
+            closeCloseModal();
+            closeReopenModal();
         }
     });
 });

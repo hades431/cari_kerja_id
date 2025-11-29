@@ -15,7 +15,7 @@ $id = $_GET['id'] ?? $_GET['id_lowongan'] ?? 0;
 $sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo
         FROM lowongan AS l
         LEFT JOIN perusahaan AS p ON l.id_perusahaan = p.id_perusahaan
-        WHERE l.id_lowongan = $id";
+        WHERE l.id_lowongan = $id AND l.status = 'aktif'";
 
 $data = tampil($sql);
 

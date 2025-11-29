@@ -220,9 +220,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div>
-                <label class="block text-gray-700 font-semibold mb-2">Lokasi Kerja</label>
-                <input type="text" name="lokasi" required
-                    class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
+               <select name="lokasi"
+                    class="bg-white rounded-xl px-4 py-3 w-1/2 text-gray-700 text-base font-semibold border-2 focus:border-[#00646A] transition">
+                    <option>Lokasi</option>
+                    <option value="baleendah">Baleendah</option>
+                    <option value="banjaran">Banjaran</option>
+                    <option value="bojongsoang">Bojongsoang</option>
+                    <option value="cileunyi">Cileunyi</option>
+                    <option value="dayeuhkolot">Dayeuhkolot</option>
+                    <option value="Kab.Bandung">Kab.Bandung</option>
+                </select>
             </div>
             <div>
                 <label class="block text-gray-700 font-semibold mb-1">Pendidikan Minimal</label>
