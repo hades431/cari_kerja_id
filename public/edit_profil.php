@@ -6,7 +6,9 @@ $id_user = $_SESSION['user']['id'];
 // Ambil data profil user dari database
 $pelamar = getProfilPelamarByUserId($id_user);
 $required_predefined = [
-    'HTML','CSS','JavaScript','PHP','MySQL','Laravel','Git'
+    'HTML','CSS','JavaScript','PHP','MySQL',
+    'SQL','Linux','Docker','API','Bootstrap',
+    'Communication','Problem Solving','Project Management','Data Analysis','AWS'
 ];
 $additional_predefined = [
     'React','Node.js','UI/UX','Python'

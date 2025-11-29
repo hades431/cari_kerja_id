@@ -71,8 +71,12 @@ if (!$pelamar) {
     exit;
 }
 
-// Pisahkan keahlian menjadi wajib dan tambahan
-$required_predefined = ['HTML','CSS','JavaScript','PHP','MySQL','Laravel','Git'];
+// Pisahkan keahlian menjadi wajib dan tambahan (samakan dengan halaman profil/edit)
+$required_predefined = [
+    'HTML','CSS','JavaScript','PHP','MySQL',
+    'SQL','Linux','Docker','API','Bootstrap',
+    'Communication','Problem Solving','Project Management','Data Analysis','AWS'
+];
 $additional_predefined = ['React','Node.js','UI/UX','Python'];
 
 $keahlian_wajib = [];
@@ -80,14 +84,21 @@ $keahlian_tambahan = [];
 
 if (!empty($pelamar['keahlian'])) {
     $skills = array_map('trim', explode(',', $pelamar['keahlian']));
-    foreach ($skills as $skill) {
-        if (in_array($skill, $required_predefined)) {
-            $keahlian_wajib[] = $skill;
-        } elseif (in_array($skill, $additional_predefined)) {
-            $keahlian_tambahan[] = $skill;
+    // normalisasi untuk perbandingan case-insensitive
+    $req_lower = array_map('strtolower', $required_predefined);
+    $add_lower = array_map('strtolower', $additional_predefined);
+
+    foreach ($skills as $skill_raw) {
+        $skill = trim($skill_raw);
+        if ($skill === '') continue;
+        $lower = strtolower($skill);
+        if (in_array($lower, $req_lower, true)) {
+            if (!in_array($skill, $keahlian_wajib, true)) $keahlian_wajib[] = $skill;
+        } elseif (in_array($lower, $add_lower, true)) {
+            if (!in_array($skill, $keahlian_tambahan, true)) $keahlian_tambahan[] = $skill;
         } else {
-            // keahlian custom masuk ke tambahan
-            $keahlian_tambahan[] = $skill;
+            // keahlian custom masuk ke tambahan (hindari duplikasi)
+            if (!in_array($skill, $keahlian_tambahan, true)) $keahlian_tambahan[] = $skill;
         }
     }
 }

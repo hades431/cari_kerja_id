@@ -45,7 +45,11 @@ if (!empty($pelamar['keahlian'])) {
 }
 
 // Pisahkan keahlian menjadi wajib dan tambahan
-$required_predefined = ['HTML','CSS','JavaScript','PHP','MySQL'];
+$required_predefined = [
+    'HTML','CSS','JavaScript','PHP','MySQL',
+    'SQL','Linux','Docker','API','Bootstrap',
+    'Communication','Problem Solving','Project Management','Data Analysis','AWS'
+];
 $additional_predefined = ['React','Node.js','UI/UX','Python'];
 
 $keahlian_wajib = [];
