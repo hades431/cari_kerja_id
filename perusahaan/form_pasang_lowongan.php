@@ -86,7 +86,9 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Pastikan masih boleh membuat lowongan sesuai paket
     $cek = tampil("SELECT*FROM perusahaan WHERE id_perusahaan=$id_perusahaan")[0];
-    if ($cek['Lowogan_post'] <= 0 || $cek["verifikasi"] == "expire") {
+    if ($cek['verifikasi'] == "expire") {
+        $error = "Paket sudah kadaluarsa, perpanjang paket untuk memasang lowongan.";
+    } elseif ($cek['Lowogan_post'] <= 0) {
         $error = "Kuota lowongan Anda sudah penuh untuk paket saat ini (maks: $max_lowongan). Silakan upgrade paket atau tunggu lowongan berakhir.";
     } else {
         $judul = trim($_POST['judul'] ?? '');
@@ -173,7 +175,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if(!empty($paket_notice)): ?>
         <div class='bg-yellow-100 text-yellow-800 p-3 rounded mb-4'><?= htmlspecialchars($paket_notice) ?></div>
         <?php endif; ?>
-        <?php if(isset($error) && $error): echo "<div class='bg-red-100 text-red-700 p-3 rounded mb-4'>".htmlspecialchars($error)."</div>"; endif; ?>
+        <?php if(isset($error) && $error): ?>
+        <div class='bg-red-100 text-red-700 p-3 rounded mb-4'><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
         <?php if(isset($message) && $message): echo "<div class='bg-green-100 text-green-700 p-3 rounded mb-4'>".htmlspecialchars($message)."</div>"; endif; ?>
 
         <div class="mb-6 bg-gradient-to-r from-[#00646A] to-[#00797a] text-white p-6 rounded-xl shadow-md">
