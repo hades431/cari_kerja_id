@@ -116,15 +116,13 @@ if ($keyword) {
 
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
           <table class="w-full text-left border-collapse">
-            <thead class="bg-teal-600 text-white">
+           <thead class="bg-teal-600 text-white">
               <tr>
                 <th class="px-4 py-3">No</th>
                 <th class="px-4 py-3">Foto</th>
                 <th class="px-4 py-3">Judul Artikel</th>
                 <th class="px-4 py-3">Tanggal Posting</th>
-                <th class="px-4 py-3">Aksi</th>
-                <th class="px-4 py-3">Edit</th>
-                <th class="px-4 py-3">Hapus</th>
+                <th class="px-4 py-3 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -142,14 +140,22 @@ if ($keyword) {
                     <td class="px-4 py-3"><?= htmlspecialchars($row['judul']); ?></td>
                     <td class="px-4 py-3"><?= date('d-m-Y', strtotime($row['tanggal'])); ?></td>
                     <td class="px-4 py-3">
-                      <a href="lihat_artikel.php?id=<?= $row['id']; ?>" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm">Lihat</a>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                      <a href="edit_artikel.php?id=<?= $row['id'] ?>" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</a>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                      <a href="hapus_artikel.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin menghapus artikel ini?')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm">Hapus</a>
-                    </td>
+                      <div class="flex items-center justify-center gap-2">
+                          <a href="lihat_artikel.php?id=<?= $row['id']; ?>" 
+                            class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm">
+                            Lihat
+                          </a>
+                          <a href="edit_artikel.php?id=<?= $row['id'] ?>" 
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm">
+                            Edit
+                          </a>
+                          <a href="hapus_artikel.php?id=<?= $row['id'] ?>" 
+                            onclick="return confirm('Yakin ingin menghapus artikel ini?')"
+                            class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm">
+                            Hapus
+                          </a>
+                      </div>
+                  </td>
                   </tr>
                 <?php endforeach; ?>
               <?php else: ?>

@@ -170,9 +170,9 @@ $ditolak = $rowDitolak['total'] ?? 0;
                               'uploads/logo/'.$base,
                               'uploads/logo_perusahaan/'.$base
                           ];
-                          $projectRoot = realpath(__DIR__ . '/../../');
+                          $projectRoot = realpath(DIR . '/../../');
                           foreach ($candidates as $cand) {
-                              $full = realpath(__DIR__ . '/../../' . $cand);
+                              $full = realpath(DIR . '/../../' . $cand);
                               if ($full && strpos($full, $projectRoot) === 0 && file_exists($full)) {
                                   $logoSrc = '../../' . $cand;
                                   break;
@@ -183,33 +183,30 @@ $ditolak = $rowDitolak['total'] ?? 0;
 
                   ?>
                     <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 shadow-sm">
-                        <div
-                            class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
-                            <?php if (!empty($logoSrc)): ?>
-                            <img src="<?= htmlspecialchars($logoSrc) ?>"
-                                alt="Logo <?= htmlspecialchars($n['nama_perusahaan']) ?>"
-                                class="w-full h-full object-cover">
-                            <?php else: ?>
-                            <span class="text-gray-400">🏢</span>
-                            <?php endif; ?>
-                        </div>
-                        <div>
-                            <p class="text-sm">
-                                Perusahaan <span
-                                    class="font-semibold text-gray-800"><?= htmlspecialchars($n['nama_perusahaan']) ?></span>
-                                <?php
-                          if ($n['verifikasi'] === 'sudah') {
-                              echo '<span class="text-green-600 font-medium"> Sudah di ACC</span>';
-                          } elseif ($n['verifikasi'] === 'ditolak') {
-                              echo '<span class="text-red-600 font-medium"> Ditolak</span>';
+                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
+                      <?php if (!empty($logoSrc)): ?>
+                        <img src="<?= htmlspecialchars($logoSrc) ?>" alt="Logo <?= htmlspecialchars($n['nama_perusahaan']) ?>" class="w-full h-full object-cover">
+                      <?php else: ?>
+                        <span class="text-gray-400">🏢</span>
+                      <?php endif; ?>
+                    </div>
+                    <div>
+                      <p class="text-sm">
+                        Perusahaan <span class="font-semibold text-gray-800"><?= htmlspecialchars($n['nama_perusahaan']) ?></span>
+                        <?php
+                          $ver = strtolower(trim($n['verifikasi']));
+                          if ($ver === 'sudah' || $ver === 'acc' || $ver === 'setuju') {
+                              echo '<span class="text-green-600 font-medium"> sudah di ACC</span>';
+                          } elseif ($ver === 'ditolak' || $ver === 'reject') {
+                              echo '<span class="text-red-600 font-medium"> ditolak</span>';
                           } else {
-                              echo '<span class="text-yellow-600 font-medium"> Menunggu ACC</span>';
+                              echo '<span class="text-yellow-600 font-medium"> menunggu ACC</span>';
                           }
                         ?>
-                            </p>
-                            <span class="text-xs text-gray-500"><?= date("d/m/Y", strtotime($n['created_at'])) ?></span>
-                        </div>
+                      </p>
+                      <span class="text-xs text-gray-500"><?= date("d/m/Y H:i", strtotime($n['created_at'])) ?></span>
                     </div>
+                  </div>
                     <?php
               }
           } else {
