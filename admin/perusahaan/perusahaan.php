@@ -159,7 +159,8 @@ $ditolak = $rowDitolak['total'] ?? 0;
                       if (preg_match('#^https?://#i', $logoVal)) {
                           $logoSrc = $logoVal;
                       } else {
-                          $clean = preg_replace('#^(\./|\.\./|/)+#', '', $logoVal);
+                          // bersihkan path/input agar tidak mengandung ../ berbahaya
+                          $clean = preg_replace('#[\\/]+#', '/', preg_replace('#(^\./+|^\.\./+|^/+|\\0)#', '', $logoVal));
                           $base = basename($clean);
                           $candidates = [
                               $clean,
@@ -170,11 +171,12 @@ $ditolak = $rowDitolak['total'] ?? 0;
                               'uploads/logo/'.$base,
                               'uploads/logo_perusahaan/'.$base
                           ];
-                          $projectRoot = realpath(DIR . '/../../');
+                          // gunakan __DIR__ (bukan DIR yang tidak terdefinisi)
+                          $projectRoot = realpath(__DIR__ . '/../../');
                           foreach ($candidates as $cand) {
-                              $full = realpath(DIR . '/../../' . $cand);
-                              if ($full && strpos($full, $projectRoot) === 0 && file_exists($full)) {
-                                  $logoSrc = '../../' . $cand;
+                              $full = realpath(__DIR__ . '/../../' . $cand);
+                              if ($full && $projectRoot && strpos($full, $projectRoot) === 0 && file_exists($full)) {
+                                  $logoSrc = '../../' . str_replace('\\','/',$cand);
                                   break;
                               }
                           }
@@ -183,17 +185,21 @@ $ditolak = $rowDitolak['total'] ?? 0;
 
                   ?>
                     <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 shadow-sm">
-                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
-                      <?php if (!empty($logoSrc)): ?>
-                        <img src="<?= htmlspecialchars($logoSrc) ?>" alt="Logo <?= htmlspecialchars($n['nama_perusahaan']) ?>" class="w-full h-full object-cover">
-                      <?php else: ?>
-                        <span class="text-gray-400">🏢</span>
-                      <?php endif; ?>
-                    </div>
-                    <div>
-                      <p class="text-sm">
-                        Perusahaan <span class="font-semibold text-gray-800"><?= htmlspecialchars($n['nama_perusahaan']) ?></span>
-                        <?php
+                        <div
+                            class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
+                            <?php if (!empty($logoSrc)): ?>
+                            <img src="<?= htmlspecialchars($logoSrc) ?>"
+                                alt="Logo <?= htmlspecialchars($n['nama_perusahaan']) ?>"
+                                class="w-full h-full object-cover">
+                            <?php else: ?>
+                            <span class="text-gray-400">🏢</span>
+                            <?php endif; ?>
+                        </div>
+                        <div>
+                            <p class="text-sm">
+                                Perusahaan <span
+                                    class="font-semibold text-gray-800"><?= htmlspecialchars($n['nama_perusahaan']) ?></span>
+                                <?php
                           $ver = strtolower(trim($n['verifikasi']));
                           if ($ver === 'sudah' || $ver === 'acc' || $ver === 'setuju') {
                               echo '<span class="text-green-600 font-medium"> sudah di ACC</span>';
@@ -203,10 +209,11 @@ $ditolak = $rowDitolak['total'] ?? 0;
                               echo '<span class="text-yellow-600 font-medium"> menunggu ACC</span>';
                           }
                         ?>
-                      </p>
-                      <span class="text-xs text-gray-500"><?= date("d/m/Y H:i", strtotime($n['created_at'])) ?></span>
+                            </p>
+                            <span
+                                class="text-xs text-gray-500"><?= date("d/m/Y H:i", strtotime($n['created_at'])) ?></span>
+                        </div>
                     </div>
-                  </div>
                     <?php
               }
           } else {
