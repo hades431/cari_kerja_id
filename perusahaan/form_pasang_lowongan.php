@@ -98,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pengalaman = trim($_POST['pengalaman'] ?? '');
         $gender = trim($_POST['gender'] ?? '');
         $pendidikan = isset($_POST['pendidikan']) ? implode(',', $_POST['pendidikan']) : '';
+        $maksimal_pelamar = $_POST['max_lowongan']; 
         
         // ===== Banner upload handling =====
         $banner_path = '';
@@ -135,10 +136,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tanggal_post = date('Y-m-d H:i:s');
             $batas_lamaran = date('Y-m-d', strtotime("+{$durasi_hari} days", strtotime($tanggal_post)));
             // Simpan ke DB (prepared) - TAMBAHKAN status = 'aktif'
-            $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, posisi, deskripsi, pengalaman, pendidikan, gender, gaji, lokasi, tanggal_post, batas_lamaran, banner, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO lowongan (id_perusahaan, judul, posisi, deskripsi, pengalaman, pendidikan, gender, gaji, lokasi, tanggal_post, batas_lamaran, banner, status,maks_pelamar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
             $banner_to_bind = $banner_path ?: '';
             $status_lowongan = 'aktif';
-            $stmt->bind_param("isssssssssss", $id_perusahaan, $judul, $judul, $deskripsi, $pengalaman, $pendidikan, $gender, $gaji, $lokasi, $tanggal_post, $batas_lamaran, $banner_to_bind, $status_lowongan);
+            $stmt->bind_param("isssssssssssss", $id_perusahaan, $judul, $judul, $deskripsi, $pengalaman, $pendidikan, $gender, $gaji, $lokasi, $tanggal_post, $batas_lamaran, $banner_to_bind, $status_lowongan,$maksimal_pelamar);
             if ($stmt->execute()) {
                 $stmt2 = $conn->prepare("UPDATE perusahaan SET Lowogan_post = Lowogan_post - 1 WHERE id_perusahaan = ?");
                 $stmt2->bind_param("i", $id_perusahaan);
@@ -300,6 +301,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div>
                 <label class="block text-gray-700 font-semibold mb-2">Besaran Gaji</label>
                 <input type="text" name="gaji" id="besaran_gaji" placeholder="0"
+                    class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2">Maksimal pelamar</label>
+                <input type="number" name="max_lowongan" placeholder="default 10"
                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-teal-500">
             </div>
 
