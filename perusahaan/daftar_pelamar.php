@@ -52,10 +52,8 @@ if ($id_perusahaan > 0) {
             lam.id_lamaran,
             pk.id_pelamar,
             pk.nama_lengkap,
-            pk.no_hp,
-            pk.cv,
             u.email,
-            l.posisi AS jabatan,
+            l.posisi AS posisi,
             lam.status_lamaran,
             lam.tanggal_lamar
         FROM lamaran lam
@@ -176,8 +174,7 @@ foreach ($pelamar_perusahaan as $tmp_p) {
                         <tr>
                             <th class="p-3 text-left">Nama</th>
                             <th class="p-3 text-left">Email</th>
-                            <th class="p-3 text-left">No HP</th>
-                            <th class="p-3 text-left">CV</th>
+                            <th class="p-3 text-left">Posisi</th>
                             <th class="p-3 text-left">Status</th>
                             <th class="p-3 text-left">Tanggal</th>
                             <th class="p-3 text-left"></th>
@@ -190,44 +187,8 @@ foreach ($pelamar_perusahaan as $tmp_p) {
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3"><?= htmlspecialchars($p['nama_lengkap']) ?></td>
                             <td class="p-3"><?= htmlspecialchars($p['email']) ?></td>
-                            <td class="p-3"><?= htmlspecialchars($p['no_hp']) ?></td>
-                            <td class="p-3 text-center">
-                                <?php
-                                $cv_rel = trim($p['cv'] ?? '');
-                                if ($cv_rel === '') {
-                                    echo '<span class="text-gray-500">Tidak ada CV</span>';
-                                } else {
-                                    // try common server locations
-                                    $candidates = [
-                                        __DIR__ . '/../' . $cv_rel,
-                                        __DIR__ . '/../uploads/cv/' . basename($cv_rel),
-                                        __DIR__ . '/../uploads/' . basename($cv_rel),
-                                    ];
-                                    $found = '';
-                                    foreach ($candidates as $cand) {
-                                        if (file_exists($cand)) { $found = $cand; break; }
-                                    }
-                                    if ($found) {
-                                        // build web-relative URL from project folder
-                                        $webPath = str_replace('\\', '/', substr($found, strlen(__DIR__ . '/../')));
-                                        $cv_url = '../' . ltrim($webPath, '/');
-                                    } else {
-                                        // fallback: assume stored value is web-relative or already correct
-                                        if (strpos($cv_rel, 'http://') === 0 || strpos($cv_rel, 'https://') === 0) {
-                                            $cv_url = $cv_rel;
-                                        } else {
-                                            $cv_url = '../' . ltrim($cv_rel, '/');
-                                        }
-                                    }
-                                    // render only the "Buka CV" link (no download)
-                                    echo '<a href="' . htmlspecialchars($cv_url) . '" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Buka CV</a>';
-                                }
-                                ?>
-                            </td>
-
-                            <!-- Status (form removed) -->
+                            <td class="p-3"><?= htmlspecialchars($p['posisi'] ?? '-') ?></td>
                             <td class="p-3"><?= htmlspecialchars($p['status_lamaran']) ?></td>
-
                             <td class="p-3"><?= htmlspecialchars(date("d/m/Y", strtotime($p['tanggal_lamar']))) ?></td>
                             <td class="p-3">
                                 <a href="view_pelamar.php?id=<?= urlencode($p['id_pelamar']) ?>"
@@ -237,7 +198,7 @@ foreach ($pelamar_perusahaan as $tmp_p) {
                         <?php endforeach; ?>
                         <?php else: ?>
                         <tr>
-                            <td colspan="7" class="text-center p-4 text-gray-500">Tidak ada data pelamar</td>
+                            <td colspan="6" class="text-center p-4 text-gray-500">Tidak ada data pelamar</td>
                         </tr>
                         <?php endif; ?>
                     </tbody>
