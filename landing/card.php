@@ -2,15 +2,23 @@
 $judul_halaman = "Detail Card";
 include '../header.php';
 
-if(isset($_SESSION['user'])){
-    $id_user = $_SESSION['user']['id'];
+// pastikan user_id dan id_lowongan sudah terdefinisi dengan aman
+if (isset($_SESSION['user']) && !empty($_SESSION['user']['id'])) {
+    $user_id = intval($_SESSION['user']['id']);
+} else {
+    $user_id = 0;
 }
 
-// Tambahkan pengecekan sederhana: default belum disimpan.
-// Jika halaman dipanggil dengan ?saved=1 maka tampilkan bintang kuning.
-$is_saved = tampil("SELECT * FROM save_lowongan WHERE user_id = $user_id AND lowongan_id = " . ($_GET['id'] ?? $_GET['id_lowongan'] ?? 0));
+// tentukan id lowongan dari parameter yang tersedia (prioritas id, lalu id_lowongan)
+$id = isset($_GET['id']) ? intval($_GET['id']) : (isset($_GET['id_lowongan']) ? intval($_GET['id_lowongan']) : 0);
 
-$id = $_GET['id'] ?? $_GET['id_lowongan'] ?? 0;
+// Tambahkan pengecekan sederhana: default belum disimpan.
+// Hanya jalankan query jika kedua id valid untuk menghindari SQL syntax error
+$is_saved = false;
+if ($user_id > 0 && $id > 0) {
+    $saved_rows = tampil("SELECT * FROM save_lowongan WHERE user_id = $user_id AND lowongan_id = $id");
+    $is_saved = !empty($saved_rows);
+}
 
 $sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo
         FROM lowongan AS l
