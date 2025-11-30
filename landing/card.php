@@ -98,7 +98,7 @@ elseif (!empty($data[0]['logo'])) {
                     <span class="text-xl"><i class="fa fa-briefcase"></i></span>
                     <span>Pengalaman</span>
                     <span class="ml-2 text-[#7b8ca0]">:
-                        <?php echo str_replace(',', ' - ', $data[0]["pengalaman"]  . " Tahun"); ?></span>
+                        <?php echo ucfirst(str_replace(',', ' - ', $data[0]['pengalaman'] . " Pengalaman")); ?></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="text-xl"><i class="fa fa-venus"></i></span>
