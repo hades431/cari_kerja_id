@@ -1,5 +1,6 @@
 <?php
 include '../../function/logic.php';
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 $menuAktif = menu_aktif('perusahaan');
 
 $qAcc = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE verifikasi='sudah'") or die(mysqli_error($conn));
@@ -13,6 +14,30 @@ $belum = $rowBelum['total'] ?? 0;
 $qDitolak = mysqli_query($conn, "SELECT COUNT(*) AS total FROM perusahaan WHERE verifikasi='ditolak'") or die(mysqli_error($conn));
 $rowDitolak = mysqli_fetch_assoc($qDitolak);
 $ditolak = $rowDitolak['total'] ?? 0;
+
+// Jika ada redirect setelah aksi approve/deny, simpan notifikasi ke session tanpa menghapus riwayat
+if (isset($_GET['acc_id']) && isset($_GET['status'])) {
+    $accId = intval($_GET['acc_id']);
+    $status = $_GET['status'];
+    $resName = mysqli_query($conn, "SELECT nama_perusahaan FROM perusahaan WHERE id_perusahaan = " . $accId);
+    $companyName = 'Perusahaan';
+    if ($resName && mysqli_num_rows($resName) > 0) {
+        $r = mysqli_fetch_assoc($resName);
+        $companyName = $r['nama_perusahaan'] ?? $companyName;
+    }
+    if (!isset($_SESSION['admin_notif']) || !is_array($_SESSION['admin_notif'])) {
+        $_SESSION['admin_notif'] = [];
+    }
+    $icon = ($status === 'sudah') ? '✅' : (($status === 'ditolak') ? '❌' : 'ℹ️');
+    $msg = ($status === 'sudah') ? "Perusahaan {$companyName} telah di-ACC" : (($status === 'ditolak') ? "Perusahaan {$companyName} ditolak" : "Perusahaan {$companyName}: {$status}");
+    $_SESSION['admin_notif'][] = [
+        'icon' => $icon,
+        'pesan' => $msg,
+        'link' => 'acc.php',
+        'aksi' => 'Lihat',
+        'tanggal' => date('Y-m-d H:i:s')
+    ];
+}
 ?>
 
 <!DOCTYPE html>
@@ -146,6 +171,20 @@ $ditolak = $rowDitolak['total'] ?? 0;
                 <h3 class="text-xl font-bold mb-4">Aktivitas Terbaru</h3>
                 <div class="space-y-3">
                     <?php
+                    // Tampilkan notifikasi yang disimpan di session (riwayat admin)
+                    if (!empty($_SESSION['admin_notif']) && is_array($_SESSION['admin_notif'])):
+                        foreach ($_SESSION['admin_notif'] as $sn): ?>
+                    <div class="bg-blue-50 rounded-xl p-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg"><?= htmlspecialchars($sn['icon']) ?></span>
+                            <span class="text-sm text-gray-800"><?= htmlspecialchars($sn['pesan']) ?></span>
+                        </div>
+                        <a href="<?= htmlspecialchars($sn['link']) ?>"
+                            class="text-xs text-blue-600 hover:underline"><?= htmlspecialchars($sn['aksi']) ?></a>
+                    </div>
+                    <?php endforeach;
+                    endif;
+
           $qNotif = mysqli_query($conn, "SELECT nama_perusahaan, logo, verifikasi, created_at 
                                          FROM perusahaan 
                                          ORDER BY created_at DESC LIMIT 5");
@@ -159,8 +198,7 @@ $ditolak = $rowDitolak['total'] ?? 0;
                       if (preg_match('#^https?://#i', $logoVal)) {
                           $logoSrc = $logoVal;
                       } else {
-                          // bersihkan path/input agar tidak mengandung ../ berbahaya
-                          $clean = preg_replace('#[\\/]+#', '/', preg_replace('#(^\./+|^\.\./+|^/+|\\0)#', '', $logoVal));
+                          $clean = preg_replace('#^(\./|\.\./|/)+#', '', $logoVal);
                           $base = basename($clean);
                           $candidates = [
                               $clean,
@@ -171,7 +209,6 @@ $ditolak = $rowDitolak['total'] ?? 0;
                               'uploads/logo/'.$base,
                               'uploads/logo_perusahaan/'.$base
                           ];
-                          // gunakan __DIR__ (bukan DIR yang tidak terdefinisi)
                           $projectRoot = realpath(__DIR__ . '/../../');
                           foreach ($candidates as $cand) {
                               $full = realpath(__DIR__ . '/../../' . $cand);
