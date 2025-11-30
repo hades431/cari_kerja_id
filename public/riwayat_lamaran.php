@@ -2,13 +2,35 @@
 session_start();
 include '../header.php';
 
-if (!isset($_SESSION['id_pelamar'])) {
-    $_SESSION['id_pelamar'] = 1; 
+$id_pelamar = null;
+
+if (!empty($_SESSION['id_pelamar'])) {
+    $id_pelamar = (int) $_SESSION['id_pelamar'];
 }
 
-$id_pelamar = $_SESSION['id_pelamar'];
+// 2) otherwise try to resolve from logged-in user (common key: $_SESSION['user']['id'] or $_SESSION['id_user'])
+if (empty($id_pelamar)) {
+    $userId = $_SESSION['user']['id'] ?? $_SESSION['id_user'] ?? null;
+    if (!empty($userId)) {
+        $tmpConn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
+        if ($tmpConn) {
+            $uid = (int)$userId;
+            $res = mysqli_query($tmpConn, "SELECT id_pelamar FROM pelamar_kerja WHERE id_user = $uid LIMIT 1");
+            if ($res && $row = mysqli_fetch_assoc($res)) {
+                $id_pelamar = (int)$row['id_pelamar'];
+                $_SESSION['id_pelamar'] = $id_pelamar; // cache for future requests
+            }
+            mysqli_close($tmpConn);
+        }
+    }
+}
 
-
+// 3) if still not found, require login / profile completion
+if (empty($id_pelamar)) {
+    // redirect user to login or profile completion (choose page used in your app)
+    header('Location: ../login/login.php');
+    exit;
+}
 
 $conn = mysqli_connect("localhost", "root", "", "lowongan_kerja");
 if (!$conn) {
@@ -243,8 +265,6 @@ if (!empty($filtered)) {
             <th class="py-3 px-4 text-left">Posisi</th>
             <th class="py-3 px-4 text-left">Tanggal Lamar</th>
             <th class="py-3 px-4 text-left">Status</th>
-            <th class="py-3 px-4 text-left">Diterima Pada</th>
-            <th class="py-3 px-4 text-left">Ditolak Pada</th>
           </tr>
         </thead>
         <tbody>
@@ -270,13 +290,11 @@ if (!empty($filtered)) {
                     <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700"><?= ucfirst(htmlspecialchars($r["status"])); ?></span>
                   <?php endif; ?>
                 </td>
-                <td class="py-3 px-4"><?= $diterima ? htmlspecialchars($diterima) : '-' ?></td>
-                <td class="py-3 px-4"><?= $ditolak ? htmlspecialchars($ditolak) : '-' ?></td>
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="6" class="text-center py-4 text-gray-500">Tidak ada riwayat ditemukan.</td>
+              <td colspan="4" class="text-center py-4 text-gray-500">Tidak ada riwayat ditemukan.</td>
             </tr>
           <?php endif; ?>
         </tbody>
@@ -293,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadCount() {
         fetch('notifikasi.php?count=1')
-          .then(resp => resp.json())
+          .then(resp => resp.ok ? resp.json() : Promise.reject('Network error'))
           .then(data => {
             const c = (data && data.count) ? data.count : 0;
             if (c > 0) {
@@ -303,14 +321,17 @@ document.addEventListener('DOMContentLoaded', function() {
               countEl.classList.add('hidden');
             }
           })
-          .catch(err => console.error('Notif count error', err));
+          .catch(err => {
+              console.error('Notif count error', err);
+              countEl.classList.add('hidden');
+          });
     }
 
     function attachDeleteHandlers() {
         const delBtns = panel.querySelectorAll('.notif-delete-btn');
-        delBtns.forEach(btn => {
-            btn.removeEventListener('click', handleDelete); // ensure no duplicate
-            btn.addEventListener('click', handleDelete);
+        delBtns.forEach(b => {
+            b.removeEventListener('click', handleDelete);
+            b.addEventListener('click', handleDelete);
         });
     }
 
@@ -321,10 +342,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const fd = new FormData();
         fd.append('id_notifikasi', id);
         fetch('hapus_notifikasi.php', { method: 'POST', body: fd })
-            .then(r => r.json())
+            .then(r => r.ok ? r.json() : Promise.reject('Network error'))
             .then(json => {
                 if (json && json.success) {
-                    // reload panel and count
                     loadPanel();
                     loadCount();
                 } else {
@@ -340,17 +360,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadPanel() {
         fetch('notifikasi.php')
-            .then(r => r.text())
+            .then(r => r.ok ? r.text() : Promise.reject('Network error'))
             .then(html => {
                 panel.innerHTML = html;
-                // isi panel langsung ditampilkan; pasang handler hapus jika ada tombol
                 attachDeleteHandlers();
                 panel.classList.remove('hidden');
-                // hide badge
+                // hide badge after opening panel
                 countEl.classList.add('hidden');
                 countEl.textContent = '0';
             })
-            .catch(err => console.error('Notif load error', err));
+            .catch(err => {
+                console.error('Notif load error', err);
+                panel.innerHTML = '<div class="p-4 text-sm text-gray-600">Gagal memuat notifikasi.</div>';
+                panel.classList.remove('hidden');
+            });
     }
 
     // initial load

@@ -15,6 +15,50 @@ if (!$conn) {
     exit;
 }
 
+// === sinkronisasi: pastikan 1 notifikasi DB per (pelamar,posisi,perusahaan) yang mencerminkan status saat ini ===
+$q_lam_sync = "SELECT lam.id_lamaran, l.posisi, p.nama_perusahaan, lam.status_lamaran
+               FROM lamaran lam
+               JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
+               JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
+               WHERE lam.id_pelamar = " . ((int)$id_pelamar);
+$res_lam_sync = mysqli_query($conn, $q_lam_sync);
+if ($res_lam_sync) {
+    while ($lr = mysqli_fetch_assoc($res_lam_sync)) {
+        $posisi = trim($lr['posisi'] ?? '');
+        $perusahaan = trim($lr['nama_perusahaan'] ?? '');
+        $status = trim(strtolower($lr['status_lamaran'] ?? ''));
+        if ($posisi === '' && $perusahaan === '') continue;
+
+        // pesan sesuai status (persis seperti yang Anda minta)
+        if (mb_stripos($status, 'terima') !== false) {
+            $msg = "Selamat! Lamaran Anda untuk posisi {$posisi} di {$perusahaan} telah diterima.";
+            $status_key = 'terima';
+        } elseif (mb_stripos($status, 'tolak') !== false) {
+            $msg = "Lamaran Anda untuk posisi {$posisi} di {$perusahaan} ditolak.";
+            $status_key = 'tolak';
+        } else {
+            $msg = "Lamaran Anda untuk posisi {$posisi} di {$perusahaan} sedang di proses.";
+            $status_key = 'proses';
+        }
+
+        // hapus notifikasi lama untuk pasangan posisi+perusahaan agar tidak ada duplikat/status lama
+        $pos_esc = mysqli_real_escape_string($conn, $posisi);
+        $per_esc = mysqli_real_escape_string($conn, $perusahaan);
+        $del_q = "DELETE FROM notifikasi_lamaran
+                  WHERE id_pelamar = " . ((int)$id_pelamar) . "
+                    AND pesan LIKE '%$pos_esc%'
+                    AND pesan LIKE '%$per_esc%'";
+        mysqli_query($conn, $del_q);
+
+        // insert notifikasi baru tunggal (is_read = 0)
+        $msg_esc = mysqli_real_escape_string($conn, $msg);
+        $ins_q = "INSERT INTO notifikasi_lamaran (id_pelamar, pesan, is_read, created_at) VALUES (" . ((int)$id_pelamar) . ", '$msg_esc', 0, NOW())";
+        mysqli_query($conn, $ins_q);
+    }
+    mysqli_free_result($res_lam_sync);
+}
+// === end sinkronisasi ===
+
 // support count endpoint: ?count=1 -> JSON { count: N }
 if (isset($_GET['count']) && $_GET['count'] == '1') {
     $stmt = mysqli_prepare($conn, "SELECT COUNT(*) AS cnt FROM notifikasi_lamaran WHERE id_pelamar = ? AND is_read = 0");
@@ -154,6 +198,21 @@ if ($st_lp) {
     }
     mysqli_stmt_close($st_lp);
 }
+
+// Setelah $notifications terisi (termasuk yang dari DB dan sintetis), lakukan deduplikasi normalisasi:
+$seen = [];
+$unique_notifications = [];
+foreach ($notifications as $notif) {
+    $text = $notif['pesan'] ?? '';
+    $norm = trim(preg_replace('/\s+/u', ' ', strip_tags($text)));
+    $norm = mb_strtolower($norm);
+    if ($norm === '') continue;
+    if (!isset($seen[$norm])) {
+        $seen[$norm] = true;
+        $unique_notifications[] = $notif;
+    }
+}
+$notifications = $unique_notifications;
 
 // render HTML fragment
 header('Content-Type: text/html; charset=utf-8'); // ensure correct content-type
