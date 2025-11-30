@@ -281,7 +281,7 @@ if (!empty($row["banner"])) {
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-briefcase"></i>
-                        <?php echo str_replace(',', ' - ', $row["pengalaman"] . " Ta"); ?>
+                        <?php echo ucfirst(str_replace(',', ' - ', $row['pengalaman'] . " Pengalaman")); ?>
                     </div>
                     <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <i class="fa fa-map-marker-alt"></i>

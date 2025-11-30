@@ -13,7 +13,7 @@ if (!empty($keyword)) {
     $where = " WHERE (username LIKE '%" . $safeKeyword . "%' OR email LIKE '%" . $safeKeyword . "%')";
 }
 
-$sql = "SELECT id_user, username AS nama, email, role, status_akun, created_at FROM user" . $where . " ORDER BY (CASE WHEN LOWER(role)='pelamar' THEN 0 WHEN LOWER(role)='perusahaan' THEN 1 ELSE 2 END), username ASC";
+$sql = "SELECT id_user, username AS nama, email, role, status_akun, created_at FROM user" . $where . " ORDER BY (CASE WHEN LOWER(role)='admin' THEN 0 WHEN LOWER(role)='pelamar' THEN 1 WHEN LOWER(role)='perusahaan' THEN 2 ELSE 3 END), username ASC";
 
 $result = mysqli_query($conn, $sql); 
 $users = [];
