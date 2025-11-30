@@ -28,21 +28,40 @@ if ($res_perusahaan && $row = $res_perusahaan->fetch_assoc()) {
 $user_id =  $_SESSION["user"]["id"];
 $id_perusahaan_arr = tampil("SELECT*FROM perusahaan where id_user = $user_id");
 $id_perusahaan = isset($id_perusahaan_arr[0]['id_perusahaan']) ? $id_perusahaan_arr[0]['id_perusahaan'] : 0;
+$id_perusahaan = (int)$id_perusahaan; // pastikan integer
 
 $logo_perusahaan_arr = tampil("SELECT*FROM perusahaan WHERE id_perusahaan = $id_perusahaan");
 $logo_perusahaan = isset($logo_perusahaan_arr[0]["logo"]) ? $logo_perusahaan_arr[0]["logo"] : "";
 
+// jika belum ada notifikasi, inisialisasi agar tidak error di view
+if (!isset($notifikasi) || !is_array($notifikasi)) $notifikasi = [];
+
 // Statistik
-$jmlLowongan    = $conn->query("SELECT COUNT(*) FROM lowongan where id_perusahaan = $id_perusahaan")->fetch_row()[0];
-$jmlPerusahaan  = $conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
+$jmlLowongan    = (int)$conn->query("SELECT COUNT(*) FROM lowongan where id_perusahaan = $id_perusahaan")->fetch_row()[0];
+$jmlPerusahaan  = (int)$conn->query("SELECT COUNT(*) FROM perusahaan")->fetch_row()[0];
 // Ubah query pelamar: hanya pelamar ke perusahaan ini
-$jmlpelamar     = $conn->query("SELECT COUNT(DISTINCT l.id_pelamar) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan")->fetch_row()[0];
-$jmlDiterima    = $conn->query("SELECT COUNT(*) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan AND l.status_lamaran = 'di terima'")->fetch_row()[0];
-$jmlDitolak     = $conn->query("SELECT COUNT(*) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan AND l.status_lamaran = 'di tolak'")->fetch_row()[0];
+$jmlpelamar     = (int)$conn->query("SELECT COUNT(DISTINCT l.id_pelamar) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan")->fetch_row()[0];
+$jmlDiterima    = (int)$conn->query("SELECT COUNT(*) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan AND l.status_lamaran = 'di terima'")->fetch_row()[0];
+$jmlDitolak     = (int)$conn->query("SELECT COUNT(*) FROM lamaran l JOIN lowongan lo ON l.id_lowongan = lo.id_lowongan WHERE lo.id_perusahaan = $id_perusahaan AND l.status_lamaran = 'di tolak'")->fetch_row()[0];
 // Lowongan saya
 $lowongan_saya = [];
 // var_dump($user_id);die;
 $tampil = tampil("SELECT*FROM perusahaan WHERE id_user = $user_id")[0]["id_perusahaan"] ?? false;
+$cek = count(tampil("        SELECT 
+            lam.id_lamaran,
+            pk.id_pelamar,
+            pk.nama_lengkap,
+            pk.no_hp,
+            pk.cv,
+            u.email,
+            l.posisi AS jabatan,
+            lam.status_lamaran,
+            lam.tanggal_lamar
+        FROM lamaran lam
+        JOIN pelamar_kerja pk ON lam.id_pelamar = pk.id_pelamar
+        JOIN user u ON pk.id_user = u.id_user
+        JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
+        WHERE l.id_perusahaan = $id_perusahaan"));
 
 if(!$tampil){
     include '../perusahaan/belumpilihpaket.php';
@@ -55,6 +74,23 @@ if($res){
         $lowongan_saya[] = $row;
     }
 }
+
+// ===== tambah: hitung pelamar per lowongan =====
+$pelamar_per_lowongan = [];
+$cntSql = "
+    SELECT lam.id_lowongan, COUNT(DISTINCT lam.id_pelamar) AS total
+    FROM lamaran lam
+    JOIN lowongan lo ON lam.id_lowongan = lo.id_lowongan
+    WHERE lo.id_perusahaan = {$id_perusahaan}
+    GROUP BY lam.id_lowongan
+";
+$cntRes = $conn->query($cntSql);
+if ($cntRes) {
+    while ($r = $cntRes->fetch_assoc()) {
+        $pelamar_per_lowongan[(int)$r['id_lowongan']] = (int)$r['total'];
+    }
+}
+// ==================================================
 
 ?>
 <!DOCTYPE html>
@@ -121,7 +157,7 @@ if($res){
                     </div>
                 </div>
             </div>
-            <div class="p-4 text-sm text-center text-[#b2e3e5]">© 2025 Carikerja.id</div>
+            <div class="p-4 text-sm text-center text-[#b2e3e5]">Â© 2025 Carikerja.id</div>
         </aside>
 
         <!-- Content: beri margin-left agar tidak tertutup sidebar -->
@@ -157,6 +193,7 @@ if($res){
                                 <th class="px-4 py-2 text-left">Posisi</th>
                                 <th class="px-4 py-2 text-left">Batas Lamaran</th>
                                 <th class="px-4 py-2 text-left">Gaji</th>
+                                <th class="px-4 py-2 text-left">Maks Pelamar</th>
                                 <th class="px-4 py-2 text-left">Lokasi</th>
                                 <th class="px-4 py-2 text-left">Banner</th>
                                 <th class="px-4 py-2 text-left">Status</th>
@@ -170,6 +207,7 @@ if($res){
                                 <td class="px-4 py-2"><?= htmlspecialchars($l['judul']) ?></td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($l['batas_lamaran']) ?></td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($l['gaji']) ?></td>
+                                <td class="px-4 py-2"><?= (int)($pelamar_per_lowongan[$l['id_lowongan']] ?? 0) ?> / <?= htmlspecialchars($l['maks_pelamar'] ?? '-') ?></td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($l['lokasi']) ?></td>
                                 <td class="px-4 py-2">
                                     <?php if(!empty($l['banner'])): ?>

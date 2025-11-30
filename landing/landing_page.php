@@ -56,15 +56,28 @@ $data = tampil("SELECT
     perusahaan.nama_perusahaan 
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
+LEFT JOIN (
+    SELECT id_lowongan, COUNT(*) as jml_pelamar 
+    FROM lamaran 
+    GROUP BY id_lowongan
+) lm ON lowongan.id_lowongan = lm.id_lowongan
 WHERE perusahaan.paket IN ('gold', 'silver', 'bronze') AND lowongan.status = 'aktif'
+AND (lowongan.maks_pelamar IS NULL OR lowongan.maks_pelamar = 0 OR COALESCE(lm.jml_pelamar, 0) < lowongan.maks_pelamar)
 ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC");
+
 $jumlah_data_halaman = 4; // Number of articles per page
 $jumlah_data = count(tampil("SELECT 
     lowongan.*, 
     perusahaan.nama_perusahaan 
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
+LEFT JOIN (
+    SELECT id_lowongan, COUNT(*) as jml_pelamar 
+    FROM lamaran 
+    GROUP BY id_lowongan
+) lm ON lowongan.id_lowongan = lm.id_lowongan
 WHERE perusahaan.paket IN ('diamond') AND lowongan.status = 'aktif'
+AND (lowongan.maks_pelamar IS NULL OR lowongan.maks_pelamar = 0 OR COALESCE(lm.jml_pelamar, 0) < lowongan.maks_pelamar)
 ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC"));
 $jumlah_halaman = ceil($jumlah_data / $jumlah_data_halaman);
 $halaman_aktif = (isset($_GET["halaman"])) ? (int)$_GET["halaman"] : 1;
@@ -75,7 +88,13 @@ $diamond = tampil("SELECT
     perusahaan.nama_perusahaan 
 FROM lowongan 
 JOIN perusahaan ON lowongan.id_perusahaan = perusahaan.id_perusahaan
+LEFT JOIN (
+    SELECT id_lowongan, COUNT(*) as jml_pelamar 
+    FROM lamaran 
+    GROUP BY id_lowongan
+) lm ON lowongan.id_lowongan = lm.id_lowongan
 WHERE perusahaan.paket IN ('diamond') AND lowongan.status = 'aktif'
+AND (lowongan.maks_pelamar IS NULL OR lowongan.maks_pelamar = 0 OR COALESCE(lm.jml_pelamar, 0) < lowongan.maks_pelamar)
 ORDER BY FIELD(perusahaan.paket, 'gold', 'silver', 'bronze'), lowongan.tanggal_post DESC
 LIMIT $awal_halaman, $jumlah_data_halaman
 ");
