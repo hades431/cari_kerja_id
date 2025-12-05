@@ -71,56 +71,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     }
 }
 
-// === baru: jika ada lamaran "di proses" baru (5 menit terakhir), buat notifikasi jika belum ada ===
-if (!empty($id_pelamar)) {
-    $q_new = "SELECT lam.id_lamaran, l.posisi, p.nama_perusahaan, lam.tanggal_lamar
-              FROM lamaran lam
-              JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
-              JOIN perusahaan p ON l.id_perusahaan = p.id_perusahaan
-              WHERE lam.id_pelamar = ?
-                AND lam.status_lamaran = 'di proses'
-                AND lam.tanggal_lamar >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
-    if ($st_new = mysqli_prepare($conn, $q_new)) {
-        mysqli_stmt_bind_param($st_new, "i", $id_pelamar);
-        mysqli_stmt_execute($st_new);
-        $res_new = mysqli_stmt_get_result($st_new);
-        if ($res_new) {
-            while ($rown = mysqli_fetch_assoc($res_new)) {
-                $posisi = trim($rown['posisi'] ?? '');
-                $perusahaan = trim($rown['nama_perusahaan'] ?? '');
-                if ($posisi === '' && $perusahaan === '') continue;
 
-                $pesan = "Lamaran Anda untuk posisi {$posisi} di {$perusahaan} sedang di proses.";
-
-                // cek apakah notifikasi serupa sudah ada
-                $q_check = "SELECT 1 FROM notifikasi_lamaran WHERE id_pelamar = ? AND pesan LIKE CONCAT('%', ?, '%', ?, '%') LIMIT 1";
-                if ($st_check = mysqli_prepare($conn, $q_check)) {
-                    mysqli_stmt_bind_param($st_check, "iss", $id_pelamar, $posisi, $perusahaan);
-                    mysqli_stmt_execute($st_check);
-                    $res_check = mysqli_stmt_get_result($st_check);
-                    $exists = ($res_check && mysqli_num_rows($res_check) > 0);
-                    mysqli_stmt_close($st_check);
-
-                    if (!$exists) {
-                        // insert notifikasi baru (is_read = 0)
-                        $q_ins = "INSERT INTO notifikasi_lamaran (id_pelamar, pesan, is_read, created_at) VALUES (?, ?, 0, NOW())";
-                        if ($st_ins = mysqli_prepare($conn, $q_ins)) {
-                            mysqli_stmt_bind_param($st_ins, "is", $id_pelamar, $pesan);
-                            mysqli_stmt_execute($st_ins);
-                            mysqli_stmt_close($st_ins);
-                        }
-                    }
-                }
-            }
-        }
-        mysqli_stmt_close($st_new);
-    }
-}
-// === end baru ===
-
-// --- baru: ambil judul lowongan jika tersedia dan tanggal diterima/ditolak per lamaran ---
-
-// Deteksi nama kolom judul pada tabel lowongan
 $possible_title_cols = ['judul','judul_lowongan','title','nama_lowongan'];
 $found_title_col = null;
 foreach ($possible_title_cols as $c) {
@@ -132,7 +83,6 @@ foreach ($possible_title_cols as $c) {
     }
 }
 
-// Deteksi nama kolom tanggal diterima/ditolak di tabel lamaran (DETEKSI SEKALI, di luar loop)
 $possible_accept_cols = ['tanggal_diterima','tanggal_terima','diterima_pada','diterima_tanggal'];
 $possible_reject_cols  = ['tanggal_ditolak','tanggal_tolak','ditolak_pada','ditolak_tanggal'];
 
@@ -149,12 +99,10 @@ foreach ($possible_reject_cols as $c) {
     if ($r && mysqli_num_rows($r) > 0) { $reject_col = $c; break; }
 }
 
-// Siapkan cache data lowongan dan lamaran untuk menghindari query berulang
-$lowongan_cache = []; // id_lowongan => judul
-$lamaran_cache = [];  // id_lamaran => ['diterima'=>..., 'ditolak'=>...]
+$lowongan_cache = [];
+$lamaran_cache = [];  
 
 if (!empty($filtered)) {
-    // kumpulkan unique id_lowongan dan id_lamaran
     $ids_low = [];
     $ids_lamaran = [];
     foreach ($filtered as $f) {
@@ -162,7 +110,6 @@ if (!empty($filtered)) {
         if (!empty($f['id_lamaran'])) $ids_lamaran[(int)$f['id_lamaran']] = true;
     }
 
-    // ambil judul untuk setiap lowongan bila kolom tersedia (bangun IN-clause aman dari integer)
     if ($found_title_col !== null && !empty($ids_low)) {
         $ids = array_keys($ids_low);
         $ids = array_map('intval', $ids);
@@ -176,7 +123,7 @@ if (!empty($filtered)) {
         }
     }
 
-    // untuk setiap lamaran ambil tanggal diterima/ditolak berdasarkan kolom yang sudah dideteksi
+  
     if (!empty($ids_lamaran) && ($accept_col || $reject_col)) {
         foreach (array_keys($ids_lamaran) as $idl) {
             $idl = (int)$idl;
@@ -215,7 +162,6 @@ if (!empty($filtered)) {
 </head>
 <body class="bg-gray-100 font-sans">
 
-  <!-- Container Full Width dengan Padding -->
   <div class="w-full px-6 mt-10">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-3xl font-bold primary-text">📄 Riwayat Lamaran</h1>
@@ -226,7 +172,7 @@ if (!empty($filtered)) {
         </button>
       </div>
     </div>
-  <!-- Button Kembali -->
+  <!--Button Kembali -->
 <div class="max-w-4xl mt-4 px-4 flex justify-start">
     <a href="../public/profil_pelamar.php"
         class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition mb-4">
@@ -272,7 +218,6 @@ if (!empty($filtered)) {
             <?php foreach($filtered as $r): 
                 $id_lamaran = (int)($r['id_lamaran'] ?? 0);
                 $id_lowongan = (int)($r['id_lowongan'] ?? 0);
-                // judul: dari cache jika ada, kalau tidak pakai posisi
                 $judul = isset($lowongan_cache[$id_lowongan]) ? $lowongan_cache[$id_lowongan] : ($r['posisi'] ?? '-');
                 $diterima = isset($lamaran_cache[$id_lamaran]['diterima']) ? $lamaran_cache[$id_lamaran]['diterima'] : null;
                 $ditolak  = isset($lamaran_cache[$id_lamaran]['ditolak']) ? $lamaran_cache[$id_lamaran]['ditolak'] : null;
@@ -365,7 +310,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 panel.innerHTML = html;
                 attachDeleteHandlers();
                 panel.classList.remove('hidden');
-                // hide badge after opening panel
                 countEl.classList.add('hidden');
                 countEl.textContent = '0';
             })
@@ -376,10 +320,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // initial load
+    
     loadCount();
 
-    // Toggle panel
     btn.addEventListener('click', function() {
         if (!panel.classList.contains('hidden')) {
             panel.classList.add('hidden');

@@ -23,7 +23,7 @@ if (!$conn) {
     exit;
 }
 
-// Hapus hanya jika notifikasi milik pelamar ini
+
 $stmt = mysqli_prepare($conn, "DELETE FROM notifikasi_lamaran WHERE id_notifikasi = ? AND id_pelamar = ? LIMIT 1");
 if (!$stmt) {
     mysqli_close($conn);
@@ -40,7 +40,7 @@ mysqli_close($conn);
 if ($affected > 0) {
     echo json_encode(['success' => true]);
 } else {
-    // mungkin tidak ditemukan / bukan milik pelamar
+   
     http_response_code(404);
     echo json_encode(['success' => false, 'error' => 'Notifikasi tidak ditemukan atau bukan milik Anda']);
 }
