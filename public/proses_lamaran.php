@@ -20,14 +20,11 @@ if ($get_pelamar && mysqli_num_rows($get_pelamar) > 0) {
 
     $_SESSION['id_pelamar'] = $id_pelamar;
 } else {
-    // Jika tidak ada, coba buat record minimal untuk pelamar_kerja agar FK tidak gagal.
-    // Jika INSERT gagal karena kolom wajib lain, arahkan user untuk melengkapi profil.
     $ins = mysqli_query($conn, "INSERT INTO pelamar_kerja (id_user) VALUES ('" . mysqli_real_escape_string($conn, $id_user) . "')");
     if ($ins) {
         $id_pelamar = mysqli_insert_id($conn);
         $_SESSION['id_pelamar'] = $id_pelamar;
     } else {
-        // Gagal membuat record otomatis — arahkan user mengisi profil pelamar
         header("Location: lengkapi_profil_pelamar.php");
         exit;
     }
@@ -65,7 +62,6 @@ $query = "INSERT INTO lamaran (id_lowongan, id_pelamar, tanggal_lamar, status_la
 $result = mysqli_query($conn, $query);
 
 if ($result) {
-    // Redirect to application history page so the data appears in riwayat_lamaran.php
     header("Location: riwayat_lamaran.php");
     exit;
 } else {

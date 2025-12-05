@@ -13,10 +13,8 @@ if ($koneksi->connect_error) {
     die("Koneksi gagal: " . $koneksi->connect_error);
 }
 
-// Ambil id_user dari session perusahaan (pastikan session set saat login)
 $user_id = $_SESSION['id_user'] ?? 0;
 
-// Ambil data perusahaan yang terkait dengan user yang login
 $id_perusahaan = 0;
 $logo_perusahaan = '';
 $nama_perusahaan = 'Perusahaan';
@@ -29,7 +27,6 @@ if ($stmt) {
     if ($res && $row = $res->fetch_assoc()) {
         $id_perusahaan = (int)$row['id_perusahaan'];
         $logo_perusahaan = $row['logo'] ?: '';
-        // jika logo disimpan path relatif tanpa ../, sesuaikan tampilan
         if (!empty($logo_perusahaan) && strpos($logo_perusahaan, 'uploads/') === 0) {
             $logo_perusahaan = '../' . $logo_perusahaan;
         }
@@ -40,11 +37,10 @@ if ($stmt) {
 
 $q = isset($_GET['q']) ? strtolower(trim($_GET['q'])) : "";
 
-// Ambil pelamar yang melamar ke perusahaan ini saja (filter berdasarkan id_perusahaan dari session)
 $pelamar_perusahaan = [];
 
 if ($id_perusahaan > 0) {
-    // sanitasi pencarian simple
+   
     $q_esc = $koneksi->real_escape_string($q);
 
     $sql = "
@@ -77,11 +73,9 @@ if ($id_perusahaan > 0) {
         }
     }
 } else {
-    // jika perusahaan belum lengkap/tidak ditemukan, kosongkan list
     $pelamar_perusahaan = [];
 }
 
-// Tambahkan: hitung jumlah pelamar yang statusnya mengandung kata "baru" (case-insensitive)
 $count_new_pelamar = 0;
 foreach ($pelamar_perusahaan as $tmp_p) {
     if (!empty($tmp_p['status_lamaran']) && stripos(trim($tmp_p['status_lamaran']), 'baru') !== false) {
@@ -121,7 +115,6 @@ foreach ($pelamar_perusahaan as $tmp_p) {
                         <span>Dashboard</span>
                     </a>
 
-                    <!-- Ubah tampilan menu Daftar Pelamar agar beda dari menu lain: background putih, teks berwarna, border kiri, dan badge jumlah -->
                     <a href="daftar_pelamar.php"
                        class="sidebar-link block py-2 px-4 rounded-lg transition bg-white text-[#00797a] font-semibold border-l-4 border-yellow-400"
                        data-key="daftar_pelamar.php" aria-current="page">
@@ -153,7 +146,7 @@ foreach ($pelamar_perusahaan as $tmp_p) {
 
         <!-- Main Content -->
         <main class="flex-1 p-8 ml-64">
-            <!-- Hapus header profile bar di sini jika ada, hanya tampilkan judul -->
+    
             <h2 class="text-2xl font-bold text-[#00646A] mb-6">Daftar Pelamar</h2>
 
             <!-- Search -->
