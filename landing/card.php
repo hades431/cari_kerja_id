@@ -23,13 +23,7 @@ if ($user_id > 0 && $id > 0) {
 $sql = "SELECT l.id_lowongan, l.*, p.nama_perusahaan, p.alamat, p.logo
         FROM lowongan AS l
         LEFT JOIN perusahaan AS p ON l.id_perusahaan = p.id_perusahaan
-        LEFT JOIN (
-            SELECT id_lowongan, COUNT(*) as jml_pelamar 
-            FROM lamaran 
-            GROUP BY id_lowongan
-        ) lm ON l.id_lowongan = lm.id_lowongan
-        WHERE l.id_lowongan = $id AND l.status = 'aktif'
-        AND (l.maks_pelamar IS NULL OR l.maks_pelamar = 0 OR COALESCE(lm.jml_pelamar, 0) < l.maks_pelamar)";
+        WHERE l.id_lowongan = $id AND l.status = 'aktif'";
 
 $data = tampil($sql);
 
