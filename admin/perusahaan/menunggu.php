@@ -138,7 +138,7 @@ $result = getPerusahaanMenunggu();
                       <td class="px-6 py-4 whitespace-normal text-sm text-gray-700"><?= htmlspecialchars($row['email_perusahaan']) ?></td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?= date("d/m/Y", strtotime($row['created_at'])) ?></td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <a href="../transaksi/riwayat_transaksi.php?id=<?= (int)$row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                        <a href="../transaksi/bukti_pembayaran.php?id=<?= (int)$row['id_perusahaan'] ?>" class="text-blue-600 hover:underline">Lihat Bukti</a>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
                         <form method="POST" class="inline">

@@ -61,16 +61,17 @@ if (!empty($data['logo'])) {
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-700">Detail Perusahaan</h2>
 
-            <a href="acc.php" class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700">
-                Kembali
-            </a>
+        <a href="acc.php"
+           class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700">
+            Kembali
+        </a>
+    </div>
+
+    <div class="flex items-center gap-6 mb-6">
+        <div class="w-32 h-32 bg-gray-200 rounded-xl overflow-hidden">
+            <img src="<?= htmlspecialchars($logoSrc) ?>" class="w-full h-full object-cover" alt="Logo <?= htmlspecialchars($data['nama_perusahaan']) ?>">
         </div>
 
-        <div class="flex items-center gap-6 mb-6">
-            <div class="w-32 h-32 bg-gray-200 rounded-xl overflow-hidden">
-                <img src="<?= htmlspecialchars($logoSrc) ?>" class="w-full h-full object-cover"
-                    alt="Logo <?= htmlspecialchars($data['nama_perusahaan']) ?>">
-            </div>
 
             <div>
                 <h3 class="text-xl font-bold text-gray-800"><?= htmlspecialchars($data['nama_perusahaan']); ?></h3>
