@@ -46,16 +46,17 @@ if ($id_perusahaan > 0) {
     $sql = "
         SELECT 
             lam.id_lamaran,
-            pk.id_pelamar,
-            pk.nama_lengkap,
+            lam.id_pelamar AS lam_id_pelamar,
+            pk.id_pelamar AS id_pelamar,
+            COALESCE(NULLIF(pk.nama_lengkap, ''), NULLIF(u.username, ''), NULLIF(u.email, ''), '-') AS nama_lengkap,
             u.email,
             l.posisi AS posisi,
             lam.status_lamaran,
             lam.tanggal_lamar
         FROM lamaran lam
-        JOIN pelamar_kerja pk ON lam.id_pelamar = pk.id_pelamar
-        JOIN user u ON pk.id_user = u.id_user
-        JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
+        LEFT JOIN pelamar_kerja pk ON (lam.id_pelamar = pk.id_pelamar OR lam.id_pelamar = pk.id_user)
+        LEFT JOIN user u ON COALESCE(pk.id_user, lam.id_pelamar) = u.id_user
+        LEFT JOIN lowongan l ON lam.id_lowongan = l.id_lowongan
         WHERE l.id_perusahaan = $id_perusahaan
     ";
 
