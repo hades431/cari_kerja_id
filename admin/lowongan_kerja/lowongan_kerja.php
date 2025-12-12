@@ -159,7 +159,6 @@ if (isset($_GET['pesan'])) {
                                     <div class="flex flex-col">
                                         <span><?= htmlspecialchars($row['nama_perusahaan']) ?></span>
                                         <?php
-                          // Prioritaskan email user yang meng-upload lowongan (jika tersedia)
                           $companyEmail = '';
                           if (!empty($row['id_lowongan'])) {
                               $stmtUploader = $conn->prepare("SELECT email FROM lowongan JOIN user ON id_user = id_user WHERE id_lowongan = ? LIMIT 1");
@@ -174,12 +173,10 @@ if (isset($_GET['pesan'])) {
                               }
                           }
 
-                          // Jika uploader tidak punya email, gunakan email_perusahaan dari row jika ada
                           if (empty($companyEmail)) {
                               $companyEmail = $row['email_perusahaan'] ?? '';
                           }
 
-                          // Fallback terakhir: cari email di tabel perusahaan berdasarkan id_perusahaan atau nama
                           if (empty($companyEmail)) {
                               if (!empty($row['id_perusahaan'])) {
                                   $stmtEmail = $conn->prepare("SELECT email_perusahaan FROM perusahaan WHERE id_perusahaan = ? LIMIT 1");
@@ -196,10 +193,7 @@ if (isset($_GET['pesan'])) {
                               }
                           }
                         ?>
-                                        <?php if (!empty($companyEmail)): ?>
-                                        <span class="text-sm text-gray-500">Email:
-                                            <?= htmlspecialchars($companyEmail) ?></span>
-                                        <?php endif; ?>
+                                        
                                     </div>
                                 </td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['lokasi']) ?></td>
