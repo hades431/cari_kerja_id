@@ -5,8 +5,9 @@ $menuAktif = menu_aktif('perusahaan');
 
 if (isset($_POST['submit'])) {
     $id = $_POST['id'];
+    $id_user = tampil("SELECT id_user FROM perusahaan WHERE id_perusahaan = $id")[0]['id_user'];
     $aksi = $_POST['verifikasi'];
-    verifikasiPerusahaan($id, $aksi);
+    verifikasiPerusahaan($id, $aksi, $id_user);
     header("Location: perusahaan.php");
     exit;
 }
